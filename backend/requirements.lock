@@ -1,0 +1,9 @@
+# Python 3.12. Reproduce with: python -m pip install -r requirements.lock
+asgiref==3.12.1
+Django==5.2.17
+djangorestframework==3.16.1
+mysqlclient==2.2.8
+pillow==12.3.0
+python-dotenv==1.2.3
+sqlparse==0.6.0
+tzdata==2026.4

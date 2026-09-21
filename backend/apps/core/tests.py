@@ -71,6 +71,6 @@ class FoundationDataTests(TestCase):
         self.assertNotEqual(user.password, "Example-password-123!")
 
     def test_superuser_has_admin_role(self):
-        user = User.objects.create_superuser("admin@example.com", "Example-password-123!", full_name="Quản trị")
+        user = User.objects.create_superuser("admin", "Example-password-123!", full_name="Quản trị")
         self.assertTrue(user.is_staff and user.is_superuser)
         self.assertEqual(user.role, "admin")

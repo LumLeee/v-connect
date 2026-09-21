@@ -8,6 +8,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Uncommitted model changes require migrations.' }
     & "$ProjectRoot/.venv/Scripts/python.exe" backend/manage.py test apps.core apps.accounts --noinput
     if ($LASTEXITCODE -ne 0) { throw 'Backend tests failed.' }
+    & "$ProjectRoot/.venv/Scripts/python.exe" scripts/test_e2e_safety.py
+    if ($LASTEXITCODE -ne 0) { throw 'E2E database safety tests failed.' }
     Set-Location "$ProjectRoot/frontend"
     & npm.cmd run lint
     if ($LASTEXITCODE -ne 0) { throw 'Frontend lint failed.' }

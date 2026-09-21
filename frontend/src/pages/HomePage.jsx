@@ -43,7 +43,7 @@ export default function HomePage() {
         {data && <div className="skill-tags">{data.results.map((skill) => <span key={skill.id}>{skill.name}</span>)}</div>}
         {data?.count === 0 && <p className="muted">Danh mục kỹ năng đang được chuẩn bị.</p>}
       </section>
-      <section className="page-width project-note"><div><p className="eyebrow">V-CONNECT ĐANG ĐƯỢC XÂY DỰNG</p><h2>Cùng chuẩn bị cho hành trình sắp tới.</h2><p>Đây là phiên bản nền tảng. Tài khoản, hồ sơ và đăng ký hoạt động sẽ được bổ sung ở các giai đoạn tiếp theo.</p></div><Link to="/gioi-thieu" className="button secondary">Tìm hiểu thêm <ArrowRight size={18} /></Link></section>
+      <section className="page-width project-note"><div><p className="eyebrow">V-CONNECT ĐANG ĐƯỢC XÂY DỰNG</p><h2>Cùng chuẩn bị cho hành trình sắp tới.</h2><p>Bạn đã có thể tạo tài khoản tình nguyện viên hoặc nhà tổ chức. Hồ sơ chi tiết và đăng ký hoạt động sẽ được bổ sung ở các giai đoạn tiếp theo.</p></div><Link to="/dang-ky" className="button secondary">Tham gia V-Connect <ArrowRight size={18} /></Link></section>
     </>
   )
 }

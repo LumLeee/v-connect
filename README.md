@@ -4,9 +4,9 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Bản nền tảng giai đoạn 1: Django/DRF, MySQL, custom User, danh mục kỹ năng, health API và giao diện React tiếng Việt. Chưa có đăng ký/đăng nhập website, hồ sơ, hoạt động hoặc AI.
+Đã có nền tảng giai đoạn 1 và chức năng giai đoạn 2: đăng ký Volunteer/Organizer, đăng nhập/đăng xuất, quản lý phiên, đặt lại mật khẩu và khu vực theo vai trò. **Chưa có chức năng chỉnh sửa hồ sơ, avatar, lịch rảnh, CRUD hoạt động, điểm danh hoặc AI.**
 
-Kết quả: [giai đoạn 1](document/GIAI_DOAN_1_KET_QUA.md).
+Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
 
 Kế hoạch chi tiết: [document/KE_HOACH_TRIEN_KHAI.md](document/KE_HOACH_TRIEN_KHAI.md).
 
@@ -26,12 +26,12 @@ cd D:\V-connect
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r backend/requirements.lock
 cd frontend
-npm.cmd ci --cache D:/V-connect/.npm-cache
+npm.cmd ci
 cd ..
 .\.venv\Scripts\python.exe backend/scripts/init_env.py
 ```
 
-Nếu `py` chưa có trên PATH, dùng đường dẫn đến Python 3.12. `requirements.lock` và `frontend/package-lock.json` cố định phiên bản đã cài; `requirements.txt` mô tả khoảng phiên bản cho lần nâng cấp có chủ đích.
+Nếu `py` chưa có trên PATH, dùng đường dẫn đến Python 3.12. Workspace hiện đã có `.venv`, nên không cần tạo lại. `requirements.lock` và `frontend/package-lock.json` cố định phiên bản đã cài; `requirements.txt` mô tả khoảng phiên bản cho lần nâng cấp có chủ đích.
 
 `init_env.py` sinh khóa Django và mật khẩu tài khoản ứng dụng ngẫu nhiên. Nếu `backend/.env` đã tồn tại, script giữ nguyên toàn bộ nội dung.
 
@@ -140,7 +140,7 @@ npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 9 tests nền tảng: readiness, phân trang, UTF-8, seed, custom User và vai trò superuser. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Bộ kiểm tra bao gồm nền tảng, xác thực, username Admin và migration: readiness, phân trang, UTF-8, seed, đăng ký, CSRF, cookie/session, vai trò, tài khoản bị khóa, đặt lại mật khẩu và giới hạn yêu cầu. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -148,6 +148,22 @@ Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 Invoke-RestMethod http://127.0.0.1:5173/api/v1/health/
 Invoke-RestMethod http://127.0.0.1:5173/api/v1/skills/
 ```
+
+### Kiểm thử giao diện bằng Playwright
+
+Cần Google Chrome đã cài trên máy. Chạy từ thư mục dự án, sau bộ kiểm tra backend:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/test_e2e.py
+```
+
+Runner khởi động backend ở cổng `8001`, Vite ở `5174` và chạy Chrome headless với profile kiểm thử riêng. Hai cổng phải trống. Có thể chọn Edge bằng biến `E2E_BROWSER_CHANNEL=msedge` nếu máy không có Chrome.
+
+Tests đi qua form React và API Django thật, dùng MySQL `DB_TEST_NAME` riêng; runner từ chối chạy nếu database test đã tồn tại. Không chạy đồng thời với bộ tests backend. Tài khoản Admin và các tài khoản đăng ký được tạo trong database test, sau đó database này được xóa khi kết thúc. Database ứng dụng được giữ nguyên.
+
+Email đặt lại mật khẩu được ghi ra file cục bộ, không gửi SMTP. Screenshot và email nằm trong `tmp/e2e-*/`; báo cáo HTML nằm trong `frontend/playwright-report/`. Các thư mục này bị Git bỏ qua. Không chia sẻ file email chứa liên kết reset.
+
+Playwright kiểm tra desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Không giả lập phản hồi API và không tắt CSRF.
 
 ## 7. Cấu hình môi trường
 
@@ -169,6 +185,72 @@ Django dùng duy nhất `backend/config/settings.py`, không tách file theo mô
 
 Build frontend nằm ở `frontend/dist`; web server production phải fallback các route ứng dụng về `index.html` và proxy `/api` tới Django. `npm run preview` chỉ xem build tĩnh, không được cấu hình làm server API.
 
-## 8. Bước tiếp theo
+## 8. Tài khoản và xác thực
 
-Giai đoạn 2: đăng ký Volunteer/Organizer, đăng nhập/đăng xuất, quản lý phiên, đặt lại mật khẩu và phân quyền.
+- Đăng ký: http://127.0.0.1:5173/dang-ky — chọn Tình nguyện viên hoặc Nhà tổ chức.
+- Đăng nhập: http://127.0.0.1:5173/dang-nhap
+- Quên mật khẩu: http://127.0.0.1:5173/quen-mat-khau
+- Khu vực riêng: `/tinh-nguyen-vien`, `/nha-to-chuc`, `/quan-tri`.
+
+Đăng ký thành công tự đăng nhập. Đăng nhập không chọn “Ghi nhớ” dùng cookie phiên trình duyệt; chọn “Ghi nhớ” lưu cookie 14 ngày. Session được lưu phía Django/MySQL, cookie HttpOnly; không lưu token đăng nhập hoặc mật khẩu trong localStorage. Website kiểm tra lại phiên khi lấy focus; API vẫn kiểm tra người dùng và vai trò mỗi request.
+
+Tạo Admin bằng lệnh tương tác, nhập mật khẩu trực tiếp trong terminal:
+
+```powershell
+.\.venv\Scripts\python.exe backend/manage.py createsuperuser --username admin
+```
+
+Lệnh trên chỉ yêu cầu mật khẩu và xác nhận; bỏ `--username admin` nếu muốn được hỏi username. Không hỏi email hay họ tên; tên hiển thị ban đầu lấy từ username và có thể sửa trong Django Admin. Username không phân biệt hoa/thường, chỉ gồm chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang. Mật khẩu vẫn được kiểm tra độ mạnh.
+
+Admin dùng username trên cả `/dang-nhap` và Django Admin ở `http://127.0.0.1:8000/admin/`. Volunteer/Organizer vẫn nhập email. Admin không dùng luồng quên mật khẩu qua email; đổi mật khẩu bằng lệnh sau (thay `admin` bằng username thực tế):
+
+```powershell
+.\.venv\Scripts\python.exe backend/manage.py changepassword admin
+```
+
+Không gửi `role=admin`, `username` hoặc `is_staff` qua form đăng ký công khai. Backend sẽ từ chối. Các trang workspace có thông tin tài khoản, chưa phải dashboard nghiệp vụ.
+
+### API xác thực
+
+Mọi endpoint dưới đây có tiền tố `/api/v1/auth/`.
+
+| Method | Endpoint | Dữ liệu / hành vi |
+|---|---|---|
+| GET | `csrf/` | Trả `csrfToken` và đặt cookie CSRF |
+| POST | `register/` | `email`, `full_name`, `role`, `password`, `password_confirm`; trả 201 và `user` |
+| POST | `login/` | `identifier` (email hoặc username Admin), `password`, `remember` (boolean); trả `user` gồm cả `username` |
+| POST | `logout/` | Hủy session hiện tại |
+| GET | `me/` | Chỉ thông tin người đang đăng nhập, không nhận ID để xem người khác |
+| GET | `workspace/<role>/` | Chỉ cho phép đúng vai trò `volunteer`, `organizer`, `admin` |
+| POST | `password-reset/` | `email`; trả thông báo chung cho email có/không tồn tại |
+| POST | `password-reset/confirm/` | `uid`, `token`, `password`, `password_confirm` |
+
+Client phải giữ cookies, lấy CSRF token trước POST và gửi bằng header `X-CSRFToken`. CSRF được kiểm tra cả khi chưa đăng nhập. Đăng nhập sẽ xoay token; frontend lấy token hiện tại trước mỗi POST. Chưa đăng nhập/hết phiên trả 401; sai quyền hoặc CSRF không hợp lệ trả 403.
+
+API đăng nhập còn nhận `email` hoặc `username` thay cho `identifier` để tương thích; chỉ gửi một trong ba trường. Email của Admin cũ được giữ nếu có nhưng không dùng làm tên đăng nhập hoặc đích khôi phục mật khẩu.
+
+### Email đặt lại mật khẩu
+
+Mặc định dùng console email: nội dung email và liên kết xuất hiện ở **terminal backend**, chưa gửi tới hộp thư thật. Mở liên kết để đặt mật khẩu mới. Liên kết chỉ dùng được một lần, hết hạn sau 1 giờ; đặt lại mật khẩu làm các phiên đăng nhập cũ mất hiệu lực. Không chia sẻ log có liên kết đặt lại mật khẩu.
+
+Khi cần gửi email thật, cấu hình trong `backend/.env`:
+
+```dotenv
+FRONTEND_URL=http://127.0.0.1:5173
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=your-account
+EMAIL_HOST_PASSWORD=your-app-password
+DEFAULT_FROM_EMAIL=your-sender@example.com
+```
+
+Đổi `FRONTEND_URL` thành origin website thực tế khi triển khai. Backend không lấy địa chỉ liên kết từ Host hoặc redirect do người gọi gửi lên. TLS được bật cho SMTP. Đã kiểm thử email bằng backend email trong bộ nhớ; chưa xác minh nhà cung cấp SMTP thật.
+
+API xác thực giới hạn 30 request/phút cho mỗi user đã đăng nhập hoặc IP chưa đăng nhập; nhóm đặt lại mật khẩu giới hạn 5 request/phút. Cache mặc định nằm trong từng tiến trình, phù hợp bản local; triển khai nhiều worker cần cache chung và giới hạn tại reverse proxy.
+
+## 9. Các bước tiếp theo
+
+Tiếp tục giai đoạn 3: hồ sơ cơ bản, avatar, hồ sơ Nhà tổ chức, kỹ năng, sở thích và lịch rảnh.
+
+Migration xác thực `accounts.0003` phụ thuộc trực tiếp `0001_initial`; số thứ tự được giữ để tương thích database local đã áp dụng. Migration hồ sơ của giai đoạn 3 chưa thuộc bản này.

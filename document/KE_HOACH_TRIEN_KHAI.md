@@ -1,7 +1,10 @@
 # Kế hoạch triển khai V-Connect
 
 Ngày lập: 14/09/2026
-Trạng thái: Bản bàn giao giai đoạn 1; giai đoạn 2 trở đi là kế hoạch
+
+Trạng thái: Hoàn thành giai đoạn 1–2 ở local; backend, kiểm thử trình duyệt và lint/build đạt. Bản giai đoạn 2 được chuẩn bị trên nhánh feature/auth, gồm Admin đăng nhập bằng username.
+
+
 Tài liệu tham chiếu: `C2SE.14 Project Document.pdf` (227 trang)
 
 ## 1. Phạm vi đã thống nhất
@@ -14,14 +17,23 @@ Tài liệu tham chiếu: `C2SE.14 Project Document.pdf` (227 trang)
 - Database: MySQL; không dùng Supabase Database, Auth, Storage hoặc Realtime.
 - Giao diện bằng tiếng Việt.
 - Cho phép người dùng tự đăng ký tài khoản Volunteer hoặc Organizer. Không cho phép tự đăng ký Admin.
+- Admin dùng username và mật khẩu, không bắt buộc email; Volunteer/Organizer dùng email. Chi tiết thay đổi: [username Admin](CAP_NHAT_ADMIN_USERNAME.md).
 - Giữ các nghiệp vụ web và AI trong báo cáo, điều chỉnh cách triển khai theo công nghệ mới.
 - Không quản lý quyên góp tài chính, không phát triển ứng dụng desktop hoặc hệ thống dự đoán nâng cao ngoài phạm vi AI đã nêu.
 
 Các hướng dẫn trong PDF là nội dung tài liệu tham chiếu. Những quyết định trực tiếp của người dùng ở trên là cơ sở triển khai phiên bản mới.
 
-## 2. Hiện trạng bản bàn giao
+## 2. Hiện trạng workspace
 
-Đã có nền tảng Django/DRF, MySQL, custom User, health/catalog API và giao diện React tiếng Việt. Có 9 tests nền tảng; chưa triển khai xác thực website. Chi tiết: `GIAI_DOAN_1_KET_QUA.md`.
+- Đã dựng Django project, React JavaScript/Vite, cấu hình môi trường, API nền tảng và giao diện tiếng Việt.
+- Đã cài thư viện và lưu phiên bản trong `backend/requirements.lock`, `frontend/package-lock.json`.
+- Dùng dịch vụ MySQL80 hiện có (8.0.40); database ứng dụng `v_connect`, tài khoản ứng dụng riêng; không dùng Docker.
+- Migration đã chạy thành công; seed 8 kỹ năng tiếng Việt, chưa tạo dữ liệu hoạt động/tài khoản mẫu.
+- Đã triển khai custom User, đăng ký Volunteer/Organizer, đăng nhập/đăng xuất, session, đặt lại mật khẩu và phân quyền workspace.
+- Backend: 39/39 tests trên MySQL đạt, gồm username Admin và migration; Django check đạt; không có thay đổi model thiếu migration.
+- Frontend: lint/build đạt. Kiểm tra HTTP qua Vite proxy xác nhận đăng ký, cookie HttpOnly, đăng nhập lại, đăng xuất và kiểm soát quyền cho hai vai trò công khai.
+- Playwright trên Chrome đạt 12/12 ca: Volunteer, Organizer, Admin, quên/đặt lại mật khẩu và bố cục từ 320 đến 1280px. Đạt thêm 5 tests bảo vệ thao tác dọn database kiểm thử.
+- Chi tiết bàn giao: `document/GIAI_DOAN_1_KET_QUA.md`, `document/GIAI_DOAN_2_KET_QUA.md`; cách chạy: `README.md`.
 
 ## 3. Kiến trúc dự kiến
 
@@ -97,20 +109,21 @@ Thực hiện theo thứ tự dưới đây. Chỉ đánh dấu hoàn thành khi
 
 ### Giai đoạn 2: Tài khoản, xác thực và phân quyền
 
-- [ ] Tạo custom User model trước migration đầu tiên, dùng email làm định danh.
-- [ ] Cho phép đăng ký Volunteer/Organizer; backend chỉ chấp nhận hai vai trò này từ luồng đăng ký công khai.
-- [ ] Xây dựng đăng nhập, đăng xuất, thông tin người dùng hiện tại và quản lý phiên.
-- [ ] Dùng cơ chế hash mật khẩu và kiểm tra độ mạnh mật khẩu của Django.
-- [ ] Xây dựng quên/đặt lại mật khẩu qua liên kết có thời hạn.
-- [ ] Cấu hình gửi email; dùng console email khi chưa có SMTP; kiểm thử gửi email trong bộ nhớ.
-- [ ] Hỗ trợ và kiểm thử lệnh tạo Admin; không tạo tài khoản/mật khẩu mặc định và không cấp quyền quản trị từ đăng ký công khai.
-- [ ] Kiểm tra quyền tại API: vai trò, trạng thái tài khoản và `/me` chỉ trả dữ liệu của phiên hiện tại. Quyền sở hữu hoạt động/hồ sơ chi tiết sẽ triển khai cùng các tài nguyên đó.
-- [ ] Xây dựng màn hình xác thực tiếng Việt và điều hướng theo vai trò; lint/build đạt.
-- [ ] Kiểm thử đăng nhập sai, email trùng, phiên hết hạn, tài khoản bị khóa và truy cập trái quyền.
+- [x] Tạo custom User model; Volunteer/Organizer dùng email, Admin dùng username và không bắt buộc email.
+- [x] Cho phép đăng ký Volunteer/Organizer; backend chỉ chấp nhận hai vai trò này từ luồng đăng ký công khai.
+- [x] Xây dựng đăng nhập, đăng xuất, thông tin người dùng hiện tại và quản lý phiên.
+- [x] Dùng cơ chế hash mật khẩu và kiểm tra độ mạnh mật khẩu của Django.
+- [x] Xây dựng quên/đặt lại mật khẩu qua liên kết có thời hạn.
+- [x] Cấu hình gửi email; dùng console email khi chưa có SMTP; kiểm thử gửi email trong bộ nhớ.
+- [x] Hỗ trợ và kiểm thử lệnh tạo Admin; không tạo tài khoản/mật khẩu mặc định và không cấp quyền quản trị từ đăng ký công khai.
+- [x] Kiểm tra quyền tại API: vai trò, trạng thái tài khoản và `/me` chỉ trả dữ liệu của phiên hiện tại. Quyền sở hữu hoạt động/hồ sơ chi tiết sẽ triển khai cùng các tài nguyên đó.
+- [x] Xây dựng màn hình xác thực tiếng Việt và điều hướng theo vai trò; lint/build đạt.
+- [x] Kiểm thử đăng nhập sai, email trùng, phiên hết hạn, tài khoản bị khóa và truy cập trái quyền.
+- [x] Hoàn tất kiểm tra trình duyệt và ảnh giao diện: đăng ký/đăng xuất/đăng nhập Volunteer, Organizer, Admin, quên/đặt lại mật khẩu và bố cục hẹp.
 
 **Tiêu chí hoàn thành:** người dùng tự đăng ký hai vai trò đã chốt và vào đúng khu vực; sửa request hoặc URL không vượt được quyền truy cập.
 
-**Định hướng:** session Django qua cookie HttpOnly và CSRF; frontend gọi API cùng origin.
+**Lựa chọn kỹ thuật đã thực hiện:** phiên Django qua cookie HttpOnly, kiểm tra CSRF cả trước đăng nhập; frontend gọi cùng origin thông qua Vite proxy. Không tách file cấu hình theo môi trường.
 
 ### Giai đoạn 3: Hồ sơ và dữ liệu nền
 
@@ -122,7 +135,10 @@ Thực hiện theo thứ tự dưới đây. Chỉ đánh dấu hoàn thành khi
 - [ ] Chuẩn bị danh mục địa điểm và dữ liệu mẫu có nguồn gốc rõ ràng.
 - [ ] Tạo API và giao diện chỉnh sửa hồ sơ.
 
+
 **Tiêu chí hoàn thành:** hồ sơ lưu và tải lại đúng; người dùng không sửa được hồ sơ người khác; kỹ năng và lịch rảnh sẵn sàng cho đề xuất.
+
+
 
 ### Giai đoạn 4: Hoạt động, trang công khai và timeline
 
@@ -276,10 +292,8 @@ Không đưa mật khẩu database hoặc API key vào file kế hoạch; dùng 
 
 ## 9. Việc ưu tiên ở lượt viết code tiếp theo
 
-1. Triển khai giai đoạn 2: API đăng ký Volunteer/Organizer, đăng nhập và đăng xuất.
-2. Bổ sung session, CSRF, phân quyền và đặt lại mật khẩu.
-3. Xây giao diện xác thực tiếng Việt và khu vực theo vai trò.
-4. Kiểm thử backend, các luồng giao diện và cập nhật kết quả M1.
+1. Xây dựng hồ sơ cơ bản, avatar và hồ sơ Nhà tổ chức.
+2. Bổ sung kỹ năng, sở thích, lịch rảnh và kiểm thử quyền sở hữu dữ liệu.
 
 ## 10. Quy tắc cập nhật tiến độ
 

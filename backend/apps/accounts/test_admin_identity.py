@@ -39,13 +39,13 @@ class AdminIdentityTests(APITestCase):
             with self.subTest(username=value), self.assertRaises(ValidationError):
                 User.objects.create_superuser(value, self.password)
 
-    def test_login_by_username_and_admin_account_without_email(self):
+    def test_login_by_username_and_admin_profile_without_email(self):
         user = User.objects.create_superuser("site.admin", self.password)
         response = self.post("login", {"identifier": "SITE.ADMIN", "password": self.password})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["user"]["username"], "site.admin")
         self.assertIsNone(response.data["user"]["email"])
-        self.assertEqual(self.client.get("/api/v1/auth/me/").data["user"]["username"], "site.admin")
+        self.assertEqual(self.client.get("/api/v1/auth/profile/").data["profile"]["username"], "site.admin")
         self.assertEqual(self.client.get("/admin/").status_code, 200)
         self.post("logout", {})
         self.assertEqual(self.post("login", {"username": "site.admin", "password": "wrong"}).status_code, 401)

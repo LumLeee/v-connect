@@ -41,6 +41,9 @@ class User(AbstractUser):
         validators=[RegexValidator(r"^[a-zA-Z0-9_.-]+$", "Username chỉ gồm chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang.")])
     email = models.EmailField("Email", unique=True, null=True, blank=True)
     full_name = models.CharField("Họ và tên", max_length=150)
+    phone = models.CharField("Số điện thoại", max_length=25, blank=True)
+    bio = models.TextField("Giới thiệu", max_length=2000, blank=True)
+    avatar = models.ImageField("Ảnh đại diện", upload_to="avatars/", blank=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.VOLUNTEER)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
@@ -71,3 +74,11 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username if self.role == self.Role.ADMIN else self.email
+
+
+class OrganizerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="organizer_profile")
+    organization_name = models.CharField("Tên tổ chức", max_length=200, blank=True)
+    description = models.TextField("Mô tả tổ chức", max_length=4000, blank=True)
+    website = models.URLField("Website", max_length=300, blank=True)
+    contact_address = models.CharField("Địa chỉ liên hệ", max_length=300, blank=True)

@@ -4,7 +4,7 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Đã có nền tảng giai đoạn 1 và chức năng giai đoạn 2: đăng ký Volunteer/Organizer, đăng nhập/đăng xuất, quản lý phiên, đặt lại mật khẩu và khu vực theo vai trò. **Chưa có chức năng chỉnh sửa hồ sơ, avatar, lịch rảnh, CRUD hoạt động, điểm danh hoặc AI.**
+Đã có nền tảng giai đoạn 1 và chức năng giai đoạn 2: đăng ký Volunteer/Organizer, đăng nhập/đăng xuất, quản lý phiên, đặt lại mật khẩu và khu vực theo vai trò. Giai đoạn 3 đã bổ sung hồ sơ cơ bản, avatar và hồ sơ Nhà tổ chức. **Chưa có kỹ năng/sở thích trong hồ sơ, lịch rảnh, CRUD hoạt động, điểm danh hoặc AI.**
 
 Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
 
@@ -140,7 +140,7 @@ npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Bộ kiểm tra bao gồm nền tảng, xác thực, username Admin và migration: readiness, phân trang, UTF-8, seed, đăng ký, CSRF, cookie/session, vai trò, tài khoản bị khóa, đặt lại mật khẩu và giới hạn yêu cầu. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Hiện có 48 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ và avatar. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -200,7 +200,7 @@ Tạo Admin bằng lệnh tương tác, nhập mật khẩu trực tiếp trong 
 .\.venv\Scripts\python.exe backend/manage.py createsuperuser --username admin
 ```
 
-Lệnh trên chỉ yêu cầu mật khẩu và xác nhận; bỏ `--username admin` nếu muốn được hỏi username. Không hỏi email hay họ tên; tên hiển thị ban đầu lấy từ username và có thể sửa trong Django Admin. Username không phân biệt hoa/thường, chỉ gồm chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang. Mật khẩu vẫn được kiểm tra độ mạnh.
+Lệnh trên chỉ yêu cầu mật khẩu và xác nhận; bỏ `--username admin` nếu muốn được hỏi username. Không hỏi email hay họ tên; tên hiển thị ban đầu lấy từ username và có thể sửa trong hồ sơ. Username không phân biệt hoa/thường, chỉ gồm chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang. Mật khẩu vẫn được kiểm tra độ mạnh.
 
 Admin dùng username trên cả `/dang-nhap` và Django Admin ở `http://127.0.0.1:8000/admin/`. Volunteer/Organizer vẫn nhập email. Admin không dùng luồng quên mật khẩu qua email; đổi mật khẩu bằng lệnh sau (thay `admin` bằng username thực tế):
 
@@ -208,7 +208,7 @@ Admin dùng username trên cả `/dang-nhap` và Django Admin ở `http://127.0.
 .\.venv\Scripts\python.exe backend/manage.py changepassword admin
 ```
 
-Không gửi `role=admin`, `username` hoặc `is_staff` qua form đăng ký công khai. Backend sẽ từ chối. Các trang workspace có thông tin tài khoản, chưa phải dashboard nghiệp vụ.
+Không gửi `role=admin`, `username` hoặc `is_staff` qua form đăng ký công khai. Backend sẽ từ chối. Các trang workspace có thông tin tài khoản và đường dẫn chỉnh sửa hồ sơ, chưa phải dashboard nghiệp vụ.
 
 ### API xác thực
 
@@ -251,6 +251,30 @@ API xác thực giới hạn 30 request/phút cho mỗi user đã đăng nhập 
 
 ## 9. Các bước tiếp theo
 
-Tiếp tục giai đoạn 3: hồ sơ cơ bản, avatar, hồ sơ Nhà tổ chức, kỹ năng, sở thích và lịch rảnh.
+### Hồ sơ cơ bản — giai đoạn 3 theo phạm vi ngày 22/09/2026
 
-Migration xác thực `accounts.0003` phụ thuộc trực tiếp `0001_initial`; số thứ tự được giữ để tương thích database local đã áp dụng. Migration hồ sơ của giai đoạn 3 chưa thuộc bản này.
+Sau khi đăng nhập, chọn **Chỉnh sửa hồ sơ** trong khu vực tài khoản hoặc mở `/ho-so`.
+
+- Mọi tài khoản có thể sửa họ tên, số điện thoại, giới thiệu và avatar của chính mình. Email đăng nhập và vai trò không được sửa qua API hồ sơ.
+- Nhà tổ chức có thêm tên tổ chức, mô tả, website HTTP/HTTPS và địa chỉ liên hệ. Các trường bổ sung có thể để trống và hoàn thiện dần.
+- Nút **Lưu hồ sơ** lưu thông tin văn bản. Chọn ảnh sẽ tải lên và lưu avatar riêng; có nút xóa ảnh.
+- Nhận JPEG/PNG/WebP tối đa 5 MB và 16 triệu điểm ảnh. Backend đọc nội dung ảnh, chuyển thành JPEG tối đa 512 × 512, đặt tên ngẫu nhiên và loại metadata bằng cách mã hóa lại.
+- File nằm trong `backend/media/avatars/`, database lưu tên file. Ảnh hiện chỉ được chủ tài khoản xem qua API có xác thực; không mở đường dẫn `/media/` công khai.
+
+| Method | API | Chức năng |
+|---|---|---|
+| GET | `/api/v1/auth/profile/` | Xem hồ sơ của phiên hiện tại |
+| PATCH | `/api/v1/auth/profile/` | Lưu `full_name`, `phone`, `bio`; Organizer có thêm object `organizer` |
+| GET | `/api/v1/auth/profile/avatar/` | Đọc ảnh của phiên hiện tại |
+| POST | `/api/v1/auth/profile/avatar/` | Tải một file multipart có tên trường `avatar` |
+| DELETE | `/api/v1/auth/profile/avatar/` | Xóa avatar hiện tại |
+
+Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn, chạy `backend/manage.py migrate` bằng Python trong `.venv`. Migration hồ sơ `accounts.0002` phụ thuộc migration xác thực `accounts.0003`; Django chạy theo dependency. Không dùng `--fake` hoặc chạy lại migration đã áp dụng. Xem [kết quả giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
+
+### Tiến độ tiếp theo
+
+Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
+
+Theo kế hoạch điều chỉnh ngày 22/09/2026, hoàn thành nghiệp vụ chính trước rồi mới bổ sung chức năng phụ và AI. Hồ sơ tối thiểu đã đủ cho đợt đầu; việc tiếp theo là giai đoạn 4: quản lý và xem hoạt động, sau đó đăng ký/xét duyệt, điểm danh thủ công, phản hồi và thống kê/quản trị cơ bản. Kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chuyển sang đợt sau. Giữ nguyên chức năng hồ sơ/avatar đã làm. Xem [kế hoạch mới](document/KE_HOACH_TRIEN_KHAI.md).
+
+Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).

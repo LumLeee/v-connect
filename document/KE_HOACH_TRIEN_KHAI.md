@@ -25,7 +25,8 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 1: nền tảng | Hoàn thành, đã có trên GitHub |
 | Giai đoạn 2: tài khoản và phân quyền | Đã đẩy lên `feature/auth`, commit `0efe855`, ngày 21/09/2026; gồm Admin dùng username |
 | Giai đoạn 3: hồ sơ cơ bản, avatar và hồ sơ Organizer | Hoàn thành theo phạm vi mới; bàn giao trên `feature/profile`, kế thừa giai đoạn 2 |
-| Hoạt động, đăng ký tham gia, xét duyệt, điểm danh và phản hồi | Chưa triển khai |
+| Giai đoạn 4: quản lý và xem hoạt động | Hoàn thành local trên `feature/activities`, chưa commit/push |
+| Đăng ký, xét duyệt, điểm danh, phản hồi | Chưa triển khai |
 | Thống kê và quản trị nghiệp vụ | Chưa triển khai; Django Admin và trang workspace đã có chưa thay thế dashboard nghiệp vụ |
 | Chức năng phụ và AI | Xếp sau đợt nghiệp vụ chính |
 
@@ -68,13 +69,13 @@ Email được kiểm thử cục bộ; chưa xác minh SMTP thật. Không coi 
 
 Kỹ năng, sở thích, lịch rảnh, địa điểm và mở rộng lưu trữ chuyển sang đợt 2. Danh mục kỹ năng đã seed được giữ; chưa có liên kết kỹ năng với hồ sơ. Thu hẹp phạm vi không có nghĩa các công việc chuyển đi đã hoàn thành.
 
-### Giai đoạn 4: Quản lý và xem hoạt động — việc tiếp theo
+### Giai đoạn 4: Quản lý và xem hoạt động — hoàn thành ở local
 
-- [ ] Organizer tạo/sửa hoạt động: tên, mô tả, thời gian bắt đầu/kết thúc, địa chỉ dạng văn bản và sức chứa.
-- [ ] Quản lý trạng thái nháp, công khai, hoàn thành, hủy; chỉ chuyển trạng thái hợp lệ.
-- [ ] Organizer xem danh sách và chi tiết hoạt động của mình.
-- [ ] Guest/Volunteer xem hoạt động công khai; tìm kiếm theo tên và phân trang.
-- [ ] Kiểm tra thời gian, sức chứa và quyền sở hữu; không lộ hoạt động nháp.
+- [x] Organizer tạo/sửa hoạt động: tên, mô tả, thời gian bắt đầu/kết thúc, địa chỉ dạng văn bản và sức chứa.
+- [x] Quản lý trạng thái nháp, công khai, hoàn thành, hủy; chỉ chuyển trạng thái hợp lệ.
+- [x] Organizer xem danh sách và chi tiết hoạt động của mình.
+- [x] Guest/Volunteer xem hoạt động công khai; tìm kiếm theo tên và phân trang.
+- [x] Kiểm tra thời gian, sức chứa và quyền sở hữu; không lộ hoạt động nháp.
 
 **Tiêu chí:** Organizer tạo và công khai được hoạt động; Volunteer tìm và xem được để đăng ký. Chưa phụ thuộc bản đồ, timeline, ảnh hoạt động hoặc ghép nối kỹ năng.
 
@@ -174,12 +175,12 @@ Không sửa báo cáo kết quả cũ thành công việc chưa thực hiện. 
 
 ## 6. Việc tiếp theo
 
-1. Bắt đầu giai đoạn 4: dữ liệu hoạt động và quy tắc chuyển trạng thái.
-2. Xây API/giao diện để Organizer tạo, sửa, công khai và quản lý hoạt động của mình.
-3. Xây danh sách, tìm kiếm cơ bản và chi tiết hoạt động cho Guest/Volunteer.
-4. Kiểm tra quyền và luồng sử dụng, cập nhật tiến độ rồi chuyển sang đăng ký/xét duyệt.
+1. Bắt đầu giai đoạn 5: chốt thời hạn và quy tắc đăng ký/hủy đăng ký.
+2. Xây dữ liệu, API và giao diện Volunteer đăng ký, Organizer duyệt/từ chối.
+3. Kiểm soát đăng ký trùng, sức chứa và quyền sở hữu; hiển thị trạng thái tham gia.
+4. Kiểm tra luồng và cập nhật tài liệu. Xem [kết quả giai đoạn 4](GIAI_DOAN_4_KET_QUA.md).
 
-Không tiếp tục kỹ năng, sở thích, lịch rảnh hoặc AI trước khi hoàn thành đợt 1, trừ khi người dùng đổi ưu tiên.
+Không tiếp tục chức năng phụ hoặc AI trước khi hoàn thành đợt 1, trừ khi người dùng đổi ưu tiên.
 
 ## 7. Quy tắc cập nhật
 

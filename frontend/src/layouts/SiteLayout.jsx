@@ -21,6 +21,7 @@ export default function SiteLayout() {
         <Link to="/" className="brand" aria-label="V-Connect - Trang chủ"><span className="brand-icon"><HeartHandshake size={24} /></span>V-Connect<span className="brand-dot">.</span></Link>
         <nav aria-label="Điều hướng chính">
           <NavLink to="/" end>Trang chủ</NavLink>
+          <NavLink to="/hoat-dong">Hoạt động</NavLink>
           <NavLink to="/gioi-thieu">Về V-Connect</NavLink>
         </nav>
         <div className="header-auth">{loading ? <span role="status">Đang tải…</span> : user ? <><Link to={workspacePaths[user.role]}>Tài khoản của tôi</Link><button className="text-button" disabled={busy} onClick={logout}>Đăng xuất</button></> : <><Link to="/dang-nhap">Đăng nhập</Link><Link to="/dang-ky" className="button primary">Đăng ký</Link></>}</div>

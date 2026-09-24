@@ -12,10 +12,11 @@ export default function WorkspacePage({ role }) {
     {data && <>
       <h1>Xin chào, {data.user.full_name}.</h1>
       <p className="lead">Tài khoản của bạn đã sẵn sàng cho hành trình cùng V-Connect.</p>
+      <Link className="button primary" to={role === 'organizer' ? '/nha-to-chuc/hoat-dong' : '/hoat-dong'}>{role === 'organizer' ? 'Quản lý hoạt động' : 'Khám phá hoạt động'}</Link>
       <div className="steps">
         <article className="step"><UserRound /><h3>Thông tin tài khoản</h3><p>{data.user.role === 'admin' ? data.user.username : data.user.email}</p><p>{roleLabels[data.user.role]}</p><Link to="/ho-so" className="button secondary">Chỉnh sửa hồ sơ</Link></article>
         <article className="step"><ShieldCheck /><h3>Kết nối an toàn</h3><p>Bạn đã đăng nhập vào đúng không gian dành cho vai trò của mình.</p></article>
-        <article className="step"><ArrowRight /><h3>Bước tiếp theo</h3><p>Cập nhật thông tin liên hệ và ảnh đại diện để hoàn thiện hồ sơ của bạn. Các tính năng hoạt động sẽ được bổ sung sau.</p></article>
+        <article className="step"><ArrowRight /><h3>Bước tiếp theo</h3><p>{role === 'organizer' ? 'Tạo hoạt động mới và công khai để mọi người có thể tìm thấy.' : 'Khám phá các hoạt động công khai và tìm hiểu những cơ hội đóng góp cho cộng đồng.'}</p></article>
       </div>
       <Link to="/" className="button secondary workspace-home">Về trang chủ</Link>
     </>}

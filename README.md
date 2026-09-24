@@ -4,7 +4,7 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Đã có nền tảng giai đoạn 1 và chức năng giai đoạn 2: đăng ký Volunteer/Organizer, đăng nhập/đăng xuất, quản lý phiên, đặt lại mật khẩu và khu vực theo vai trò. Giai đoạn 3 đã bổ sung hồ sơ cơ bản, avatar và hồ sơ Nhà tổ chức. **Chưa có kỹ năng/sở thích trong hồ sơ, lịch rảnh, CRUD hoạt động, điểm danh hoặc AI.**
+Đã có nền tảng, xác thực/phân quyền, hồ sơ và avatar. Giai đoạn 4 có tạo/sửa, công khai/hoàn thành/hủy hoạt động, danh sách công khai, tìm kiếm và phân trang. **Chưa có đăng ký tham gia, xét duyệt, điểm danh hoặc AI.** Giai đoạn 4 ở local trên `feature/activities`, chưa commit/push. Xem [kết quả giai đoạn 4](document/GIAI_DOAN_4_KET_QUA.md).
 
 Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
 
@@ -133,14 +133,14 @@ Hoặc chạy từng bước:
 ```powershell
 .\.venv\Scripts\python.exe backend/manage.py check
 .\.venv\Scripts\python.exe backend/manage.py makemigrations --check --dry-run
-.\.venv\Scripts\python.exe backend/manage.py test apps.core apps.accounts --noinput
+.\.venv\Scripts\python.exe backend/manage.py test apps.core apps.accounts apps.activities --noinput
 cd frontend
 npm.cmd run lint
 npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 48 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ và avatar. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Hiện có 57 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar và hoạt động. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -275,6 +275,10 @@ Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn
 
 Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
 
-Theo kế hoạch điều chỉnh ngày 22/09/2026, hoàn thành nghiệp vụ chính trước rồi mới bổ sung chức năng phụ và AI. Hồ sơ tối thiểu đã đủ cho đợt đầu; việc tiếp theo là giai đoạn 4: quản lý và xem hoạt động, sau đó đăng ký/xét duyệt, điểm danh thủ công, phản hồi và thống kê/quản trị cơ bản. Kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chuyển sang đợt sau. Giữ nguyên chức năng hồ sơ/avatar đã làm. Xem [kế hoạch mới](document/KE_HOACH_TRIEN_KHAI.md).
+Theo kế hoạch điều chỉnh ngày 22/09/2026, hoàn thành nghiệp vụ chính trước rồi mới bổ sung chức năng phụ và AI. Hồ sơ và quản lý hoạt động đã hoàn thành; việc tiếp theo là giai đoạn 5: đăng ký/xét duyệt, sau đó điểm danh thủ công, phản hồi và thống kê/quản trị cơ bản. Kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chuyển sang đợt sau. Giữ nguyên chức năng hồ sơ/avatar đã làm. Xem [kế hoạch mới](document/KE_HOACH_TRIEN_KHAI.md).
 
 Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).
+
+## 10. Hoạt động
+
+Chạy migration khi cập nhật: `python backend/manage.py migrate --noinput`. Mở `/hoat-dong` để tìm và xem hoạt động công khai; Organizer mở `/nha-to-chuc/hoat-dong` để tạo và quản lý. Quy tắc, API và kết quả kiểm thử: [giai đoạn 4](document/GIAI_DOAN_4_KET_QUA.md).

@@ -8,14 +8,27 @@ import AuthPage from './pages/AuthPage.jsx'
 import WorkspacePage from './pages/WorkspacePage.jsx'
 import RequireRole from './auth/RequireRole.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
+import ActivitiesPage from './pages/ActivitiesPage.jsx'
+import ActivityDetailPage from './pages/ActivityDetailPage.jsx'
+import ActivityEditorPage from './pages/ActivityEditorPage.jsx'
+import { useAuth } from './auth/context.js'
 
 export default function App() {
+  const { user } = useAuth()
   return (
     <Routes>
       <Route element={<SiteLayout />}>
         <Route index element={<HomePage />} />
         <Route path="gioi-thieu" element={<AboutPage />} />
         <Route path="trang-thai" element={<StatusPage />} />
+        <Route path="hoat-dong" element={<ActivitiesPage key="public" />} />
+        <Route path="hoat-dong/:id" element={<ActivityDetailPage />} />
+        <Route element={<RequireRole role="organizer" />}>
+          <Route path="nha-to-chuc/hoat-dong" element={<ActivitiesPage key={`managed-${user?.id}`} managed />} />
+          <Route path="nha-to-chuc/hoat-dong/tao" element={<ActivityEditorPage key={`create-${user?.id}`} />} />
+          <Route path="nha-to-chuc/hoat-dong/:id" element={<ActivityDetailPage key={user?.id} managed />} />
+          <Route path="nha-to-chuc/hoat-dong/:id/sua" element={<ActivityEditorPage key={user?.id} />} />
+        </Route>
         <Route path="dang-nhap" element={<AuthPage key="login" mode="login" />} />
         <Route path="dang-ky" element={<AuthPage key="register" mode="register" />} />
         <Route path="quen-mat-khau" element={<AuthPage key="forgot" mode="forgot" />} />

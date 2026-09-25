@@ -4,6 +4,7 @@ import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
 import { apiPost } from '../api/client.js'
 import { activityStatuses, activityTime } from '../api/activityFormat.js'
+import ParticipationPanel from '../components/ParticipationPanel.jsx'
 
 function ActivityDetail({ activity, managed, refresh }) {
   const [pending, setPending] = useState(null)
@@ -25,8 +26,10 @@ function ActivityDetail({ activity, managed, refresh }) {
     <p className="muted">Thời gian hiển thị theo giờ Việt Nam (UTC+7).</p>
     <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
     {activity.status === 'cancelled' && <p role="status">Hoạt động này đã bị hủy.</p>}
-    {!managed && activity.status === 'published' && <p className="activity-empty">Hoạt động chưa mở đăng ký trực tuyến.</p>}
+    <p>Đã được duyệt: {activity.approved_count}/{activity.capacity} người.</p>
+    {!managed && <ParticipationPanel activity={activity} refresh={refresh} />}
     {managed && <div className="activity-actions">
+      <Link className="button primary" to={`/nha-to-chuc/hoat-dong/${activity.id}/dang-ky`}>Xem danh sách đăng ký</Link>
       {editable && <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/sua`}>Chỉnh sửa hoạt động</Link>}
       {activity.status === 'draft' && <button className="button primary" onClick={() => { setPending('published'); setError('') }}>Công khai hoạt động</button>}
       {activity.status === 'published' && <button className="button primary" disabled={new Date(activity.ends_at) > new Date()} onClick={() => { setPending('completed'); setError('') }}>Hoàn thành hoạt động</button>}

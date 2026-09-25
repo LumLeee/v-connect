@@ -43,7 +43,7 @@ export default function HomePage() {
         {data && <div className="skill-tags">{data.results.map((skill) => <span key={skill.id}>{skill.name}</span>)}</div>}
         {data?.count === 0 && <p className="muted">Danh mục kỹ năng đang được chuẩn bị.</p>}
       </section>
-      <section className="page-width project-note"><div><p className="eyebrow">CÙNG TẠO NÊN THAY ĐỔI</p><h2>Tìm một hoạt động để bắt đầu.</h2><p>Bạn có thể hoàn thiện hồ sơ và khám phá hoạt động công khai. Nhà tổ chức có thể tạo và quản lý hoạt động của mình. Chức năng đăng ký tham gia trực tuyến hiện chưa mở.</p></div><Link to="/hoat-dong" className="button secondary">Xem hoạt động <ArrowRight size={18} /></Link></section>
+      <section className="page-width project-note"><div><p className="eyebrow">CÙNG TẠO NÊN THAY ĐỔI</p><h2>Tìm một hoạt động để bắt đầu.</h2><p>Hoàn thiện hồ sơ, khám phá hoạt động và đăng ký tham gia. Bạn có thể theo dõi kết quả xét duyệt trong danh sách đăng ký của mình. Nhà tổ chức quản lý hoạt động và xét duyệt người tham gia.</p></div><Link to="/hoat-dong" className="button secondary">Xem hoạt động <ArrowRight size={18} /></Link></section>
     </>
   )
 }

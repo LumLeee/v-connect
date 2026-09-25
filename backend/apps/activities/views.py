@@ -71,6 +71,13 @@ class ManagedDetail(APIView):
                 raise ValidationError('Không thể sửa hoạt động đã hoàn thành hoặc đã hủy.')
             serializer = ActivitySerializer(activity, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
+            if serializer.validated_data.get('capacity', activity.capacity) < activity.participations.filter(status='approved').count():
+                raise ValidationError({'capacity': 'Sức chứa không được thấp hơn số người đã được duyệt.'})
+            if activity.starts_at <= timezone.now() and activity.participations.exists() and any(
+                name in serializer.validated_data and serializer.validated_data[name] != getattr(activity, name)
+                for name in ['starts_at', 'ends_at']
+            ):
+                raise ValidationError('Không thể đổi lịch sau giờ bắt đầu khi đã có đơn đăng ký.')
             serializer.save()
         return Response(serializer.data)
 
@@ -97,4 +104,7 @@ class TransitionView(APIView):
                 raise ValidationError({'status': 'Chỉ hoàn thành hoạt động sau thời gian kết thúc.'})
             activity.status = target
             activity.save(update_fields=['status', 'published_at', 'updated_at'])
+            if target == 'cancelled':
+                activity.participations.filter(status__in=['pending', 'approved']).update(
+                    status='cancelled', cancellation_reason='activity_cancelled', updated_at=now)
         return Response(ActivitySerializer(activity).data)

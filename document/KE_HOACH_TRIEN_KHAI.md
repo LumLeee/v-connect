@@ -1,6 +1,6 @@
 # Kế hoạch triển khai V-Connect
 
-Ngày lập: 14/09/2026. Điều chỉnh: 22/09/2026.
+Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 24/09/2026.
 
 ## 1. Hướng thực hiện đã thống nhất
 
@@ -25,8 +25,9 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 1: nền tảng | Hoàn thành, đã có trên GitHub |
 | Giai đoạn 2: tài khoản và phân quyền | Đã đẩy lên `feature/auth`, commit `0efe855`, ngày 21/09/2026; gồm Admin dùng username |
 | Giai đoạn 3: hồ sơ cơ bản, avatar và hồ sơ Organizer | Hoàn thành theo phạm vi mới; bàn giao trên `feature/profile`, kế thừa giai đoạn 2 |
-| Giai đoạn 4: quản lý và xem hoạt động | Hoàn thành local trên `feature/activities`, chưa commit/push |
-| Đăng ký, xét duyệt, điểm danh, phản hồi | Chưa triển khai |
+| Giai đoạn 4: quản lý và xem hoạt động | Đã đẩy lên `feature/activities`, commit `11cfc7c` |
+| Giai đoạn 5: đăng ký và xét duyệt | Hoàn thành; bàn giao trên `feature/participations` ngày 25/09/2026 |
+| Điểm danh, phản hồi | Chưa triển khai |
 | Thống kê và quản trị nghiệp vụ | Chưa triển khai; Django Admin và trang workspace đã có chưa thay thế dashboard nghiệp vụ |
 | Chức năng phụ và AI | Xếp sau đợt nghiệp vụ chính |
 
@@ -69,7 +70,7 @@ Email được kiểm thử cục bộ; chưa xác minh SMTP thật. Không coi 
 
 Kỹ năng, sở thích, lịch rảnh, địa điểm và mở rộng lưu trữ chuyển sang đợt 2. Danh mục kỹ năng đã seed được giữ; chưa có liên kết kỹ năng với hồ sơ. Thu hẹp phạm vi không có nghĩa các công việc chuyển đi đã hoàn thành.
 
-### Giai đoạn 4: Quản lý và xem hoạt động — hoàn thành ở local
+### Giai đoạn 4: Quản lý và xem hoạt động — đã đẩy GitHub
 
 - [x] Organizer tạo/sửa hoạt động: tên, mô tả, thời gian bắt đầu/kết thúc, địa chỉ dạng văn bản và sức chứa.
 - [x] Quản lý trạng thái nháp, công khai, hoàn thành, hủy; chỉ chuyển trạng thái hợp lệ.
@@ -79,14 +80,16 @@ Kỹ năng, sở thích, lịch rảnh, địa điểm và mở rộng lưu tr�
 
 **Tiêu chí:** Organizer tạo và công khai được hoạt động; Volunteer tìm và xem được để đăng ký. Chưa phụ thuộc bản đồ, timeline, ảnh hoạt động hoặc ghép nối kỹ năng.
 
-### Giai đoạn 5: Đăng ký và xét duyệt tham gia
+### Giai đoạn 5: Đăng ký và xét duyệt tham gia — hoàn thành
 
-- [ ] Volunteer đăng ký/hủy đăng ký theo trạng thái và thời hạn cho phép.
-- [ ] Organizer xem và duyệt/từ chối đơn thuộc hoạt động của mình.
-- [ ] Quản lý trạng thái chờ duyệt, được duyệt, bị từ chối, đã hủy và quy tắc chuyển trạng thái.
-- [ ] Chống đăng ký trùng và duyệt vượt sức chứa, kể cả thao tác đồng thời.
-- [ ] Volunteer xem hoạt động đã đăng ký và kết quả xét duyệt.
-- [ ] Xử lý nhất quán khi hoạt động bị hủy hoặc thay đổi thông tin ảnh hưởng người đã đăng ký.
+- [x] Volunteer đăng ký/hủy đăng ký theo trạng thái và thời hạn cho phép.
+- [x] Organizer xem và duyệt/từ chối đơn thuộc hoạt động của mình.
+- [x] Quản lý trạng thái chờ duyệt, được duyệt, bị từ chối, đã hủy và quy tắc chuyển trạng thái.
+- [x] Chống đăng ký trùng và duyệt vượt sức chứa, kể cả thao tác đồng thời.
+- [x] Volunteer xem hoạt động đã đăng ký và kết quả xét duyệt.
+- [x] Xử lý nhất quán khi hoạt động bị hủy hoặc thay đổi thông tin ảnh hưởng người đã đăng ký.
+
+Quy tắc đã chốt: dùng giờ bắt đầu làm hạn đăng ký, tự hủy và xét duyệt; tự hủy được gửi lại về chờ duyệt, bị từ chối không được gửi lại. Đã đạt 68 tests backend trên MySQL, 26 ca Playwright, 5 tests bảo vệ database kiểm thử và lint/build. Chi tiết: [kết quả giai đoạn 5](GIAI_DOAN_5_KET_QUA.md).
 
 **Tiêu chí:** chạy được đăng ký → xét duyệt → xem kết quả; không thao tác trên đơn ngoài quyền. Xem trạng thái trực tiếp trên trang tài khoản/hoạt động; trung tâm thông báo và tự động đối chiếu lịch làm sau.
 
@@ -175,10 +178,10 @@ Không sửa báo cáo kết quả cũ thành công việc chưa thực hiện. 
 
 ## 6. Việc tiếp theo
 
-1. Bắt đầu giai đoạn 5: chốt thời hạn và quy tắc đăng ký/hủy đăng ký.
-2. Xây dữ liệu, API và giao diện Volunteer đăng ký, Organizer duyệt/từ chối.
-3. Kiểm soát đăng ký trùng, sức chứa và quyền sở hữu; hiển thị trạng thái tham gia.
-4. Kiểm tra luồng và cập nhật tài liệu. Xem [kết quả giai đoạn 4](GIAI_DOAN_4_KET_QUA.md).
+1. Bắt đầu giai đoạn 6: xác định khoảng thời gian cho phép điểm danh thủ công.
+2. Xây dữ liệu, API và giao diện Organizer xác nhận có mặt cho người được duyệt.
+3. Lưu người xác nhận/thời điểm, chống điểm danh trùng và truy cập ngoài quyền; Volunteer xem kết quả.
+4. Kiểm tra luồng và cập nhật tài liệu. Bản bàn giao giai đoạn 5 nằm trên nhánh `feature/participations`.
 
 Không tiếp tục chức năng phụ hoặc AI trước khi hoàn thành đợt 1, trừ khi người dùng đổi ưu tiên.
 

@@ -27,8 +27,8 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 3: hồ sơ cơ bản, avatar và hồ sơ Organizer | Hoàn thành theo phạm vi mới; bàn giao trên `feature/profile`, kế thừa giai đoạn 2 |
 | Giai đoạn 4: quản lý và xem hoạt động | Đã đẩy lên `feature/activities`, commit `11cfc7c` |
 | Giai đoạn 5: đăng ký và xét duyệt | Đã đẩy lên `feature/participations`, commit `eb623f5`, ngày 25/09/2026 |
-| Giai đoạn 6: điểm danh cơ bản | Hoàn thành; bàn giao trên `feature/attendance` ngày 25/09/2026 |
-| Phản hồi | Chưa triển khai |
+| Giai đoạn 6: điểm danh cơ bản | Đã đẩy lên `feature/attendance`, commit `91c53e5`, ngày 25/09/2026 |
+| Giai đoạn 7: phản hồi cơ bản | Hoàn thành; bàn giao trên `feature/feedback` ngày 25/09/2026 |
 | Thống kê và quản trị nghiệp vụ | Chưa triển khai; Django Admin và trang workspace đã có chưa thay thế dashboard nghiệp vụ |
 | Chức năng phụ và AI | Xếp sau đợt nghiệp vụ chính |
 
@@ -108,13 +108,17 @@ Kiểm tra ngày 25/09/2026: 77 tests backend trên MySQL, 30 ca Playwright, 5 t
 
 **Tiêu chí:** ghi nhận được người thực sự tham gia và truy vết thao tác; thao tác lặp không tăng lượt tham gia. QR, mã có thời hạn và check-out làm sau. Đợt 1 thống kê lượt tham gia, chưa tự suy ra số giờ.
 
-### Giai đoạn 7: Đánh giá và phản hồi cơ bản
+### Giai đoạn 7: Đánh giá và phản hồi cơ bản — hoàn thành
 
-- [ ] Người đã được xác nhận tham gia gửi điểm đánh giá và nội dung sau khi hoạt động hoàn thành.
-- [ ] Ràng buộc với lượt tham gia; tối đa một phản hồi/người/hoạt động.
-- [ ] Organizer xem phản hồi thuộc hoạt động mình quản lý.
-- [ ] Admin xem và ẩn phản hồi không phù hợp; lưu người thực hiện và lý do.
-- [ ] Thống kê chỉ tính phản hồi hợp lệ, không tính phản hồi đã bị ẩn.
+Quy tắc đã chốt: điểm 1–5, nội dung bắt buộc tối đa 2.000 ký tự, gửi một lần và chưa sửa/xóa. Admin ẩn cần lý do; phản hồi bị ẩn không hiển thị cho Organizer hoặc tính vào điểm trung bình. Chi tiết: [kết quả giai đoạn 7](GIAI_DOAN_7_KET_QUA.md).
+
+- [x] Người đã được xác nhận tham gia gửi điểm đánh giá và nội dung sau khi hoạt động hoàn thành.
+- [x] Ràng buộc với lượt tham gia; tối đa một phản hồi/người/hoạt động.
+- [x] Organizer xem phản hồi thuộc hoạt động mình quản lý.
+- [x] Admin xem và ẩn phản hồi không phù hợp; lưu người thực hiện và lý do.
+- [x] Thống kê chỉ tính phản hồi hợp lệ, không tính phản hồi đã bị ẩn.
+
+Kiểm tra ngày 25/09/2026: 87 tests backend trên MySQL, 34 ca Playwright, 5 tests bảo vệ database và lint/build đạt. Migration phản hồi đã áp dụng sau sao lưu, giữ nguyên dữ liệu hiện có.
 
 **Tiêu chí:** người tham gia thực tế gửi được phản hồi, không đánh giá trùng hoặc truy cập ngoài quyền. Chưa phân loại cảm xúc, phát hiện spam/sự cố hoặc tóm tắt bằng AI.
 
@@ -183,10 +187,10 @@ Không sửa báo cáo kết quả cũ thành công việc chưa thực hiện. 
 
 ## 6. Việc tiếp theo
 
-1. Bắt đầu giai đoạn 7: phản hồi cơ bản sau khi hoạt động hoàn thành, gắn với người được xác nhận có mặt.
-2. Xây dữ liệu, API và giao diện gửi điểm đánh giá/nội dung, giới hạn một phản hồi mỗi người/hoạt động.
-3. Organizer xem phản hồi của hoạt động mình; Admin ẩn phản hồi không phù hợp và lưu lý do/người thực hiện.
-4. Kiểm tra điều kiện gửi, quyền sở hữu và dữ liệu thống kê hợp lệ. Bản bàn giao giai đoạn 6 nằm trên nhánh `feature/attendance`.
+1. Bắt đầu giai đoạn 8: thống kê cơ bản theo vai trò Volunteer, Organizer và Admin.
+2. Đối chiếu số đăng ký, được duyệt, tham gia và phản hồi với danh sách chi tiết; phân biệt hoạt động bị hủy.
+3. Hoàn thiện quản trị tài khoản, khóa/mở khóa và giám sát nghiệp vụ; tận dụng Django Admin khi phù hợp.
+4. Kiểm tra quyền, tính chính xác của số liệu và truy vết thao tác. Bản bàn giao giai đoạn 7 nằm trên nhánh `feature/feedback`.
 
 Không tiếp tục chức năng phụ hoặc AI trước khi hoàn thành đợt 1, trừ khi người dùng đổi ưu tiên.
 

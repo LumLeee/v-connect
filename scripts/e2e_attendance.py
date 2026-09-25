@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.activities.models import Activity
-from apps.participations.models import Participation
+from apps.participations.models import Attendance, Participation
 
 
 def seed_attendance(env, database, original_database):
@@ -25,14 +25,16 @@ def seed_attendance(env, database, original_database):
     now = timezone.now()
     for project in ['desktop', 'narrow']:
         fixtures[project] = {}
-        for state, start, end in [('ongoing', -1, 2), ('upcoming', 24, 26), ('ended', -3, -1)]:
+        for state, start, end in [('ongoing', -1, 2), ('upcoming', 24, 26), ('ended', -3, -1), ('feedback', -48, -24)]:
             activity = Activity.objects.create(organizer=owner, title=f'Hoạt động điểm danh {state} {project}',
                 description='Dữ liệu chỉ dùng trong database kiểm thử.', address='Huế', capacity=5,
-                starts_at=now + timedelta(hours=start), ends_at=now + timedelta(hours=end), status='published', published_at=now - timedelta(days=2))
+                starts_at=now + timedelta(hours=start), ends_at=now + timedelta(hours=end), status='completed' if state == 'feedback' else 'published', published_at=now - timedelta(days=3))
             entry = Participation.objects.create(activity=activity, volunteer=volunteer, status='approved', reviewed_by=owner, reviewed_at=now - timedelta(days=1),
                 registered_starts_at=activity.starts_at, registered_ends_at=activity.ends_at, registered_address=activity.address)
             Participation.objects.create(activity=activity, volunteer=pending,
                 registered_starts_at=activity.starts_at, registered_ends_at=activity.ends_at, registered_address=activity.address)
+            if state == 'feedback':
+                Attendance.objects.create(participation=entry, confirmed_by=owner)
             fixtures[project][state] = {'activity': str(activity.pk), 'entry': str(entry.pk)}
     env.update(E2E_ATTENDANCE_FIXTURES=json.dumps(fixtures), E2E_ATTENDANCE_PASSWORD=password,
-               E2E_ATTENDANCE_ORGANIZER=owner.email, E2E_ATTENDANCE_VOLUNTEER=volunteer.email)
+               E2E_ATTENDANCE_ORGANIZER=owner.email, E2E_ATTENDANCE_VOLUNTEER=volunteer.email, E2E_PENDING_VOLUNTEER=pending.email)

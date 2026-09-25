@@ -55,6 +55,7 @@ export default function ParticipationsPage({ managed = false, history = false })
           <button className="button secondary" disabled={busy} onClick={() => { setPending({ id: entry.id, name: entry.volunteer_name, status: 'rejected' }); setFailure('') }}>Từ chối</button>
         </div>}
         {!managed && <Link to={`/hoat-dong/${entry.activity.id}`}>Xem hoạt động và quản lý đăng ký</Link>}
+        {!managed && entry.attendance && entry.activity.status === 'completed' && <p><Link to={`/hoat-dong/${entry.activity.id}/phan-hoi`}>Gửi hoặc xem phản hồi của tôi</Link></p>}
       </article>)}</div>
       {(data.previous || data.next) && <nav className="activity-pagination" aria-label="Phân trang đăng ký">
         <button className="button secondary" disabled={!data.previous || busy} onClick={() => { setPending(null); setParams({ page: String(page - 1) }) }}>Trang trước</button>

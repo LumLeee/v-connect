@@ -29,6 +29,7 @@ function VolunteerPanel({ activity, refresh }) {
     {data && <>
       <p role="status">{participation ? `Trạng thái: ${participationLabels[participation.status]}` : 'Bạn chưa đăng ký hoạt động này.'}</p>
       {participation && <AttendanceStatus entry={participation} />}
+      {participation?.attendance && activity.status === 'completed' && <p><Link to={`/hoat-dong/${activity.id}/phan-hoi`}>Gửi hoặc xem phản hồi của tôi</Link></p>}
       {participation?.activity_changed && <p className="activity-empty">Thời gian hoặc địa điểm đã thay đổi từ lúc bạn đăng ký. Hãy kiểm tra thông tin hoạt động mới nhất ở trên.</p>}
       {participation?.cancellation_reason === 'activity_cancelled' && <p>Đơn đăng ký đã bị hủy do hoạt động bị hủy.</p>}
       {!open && <p>Đã đóng đăng ký, hủy đăng ký và xét duyệt.</p>}

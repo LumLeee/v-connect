@@ -31,3 +31,13 @@ class Participation(models.Model):
             models.CheckConstraint(condition=models.Q(status__in=['pending', 'approved', 'rejected', 'cancelled']), name='participation_valid_status'),
         ]
         indexes = [models.Index(fields=['activity', 'status'])]
+
+
+class Attendance(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    participation = models.OneToOneField(Participation, on_delete=models.PROTECT, related_name='attendance')
+    confirmed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='confirmed_attendances')
+    confirmed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-confirmed_at', '-id']

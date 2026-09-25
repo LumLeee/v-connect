@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from apps.activities.models import Activity
-from .models import Participation
+from .models import Attendance, Participation
 
 
 def require_open(activity):
@@ -69,3 +69,18 @@ def review(activity_id, entry_id, organizer, target):
     entry.reviewed_at = timezone.now()
     entry.save(update_fields=['status', 'reviewed_by', 'reviewed_at', 'updated_at'])
     return entry
+
+
+@transaction.atomic
+def confirm_attendance(activity_id, entry_id, organizer):
+    # Share the activity lock with cancellation and participation mutations.
+    activity = get_object_or_404(Activity.objects.select_for_update(), pk=activity_id, organizer=organizer)
+    entry = get_object_or_404(Participation, pk=entry_id, activity=activity)
+    now = timezone.now()
+    if activity.status != 'published' or not (activity.starts_at <= now <= activity.ends_at):
+        raise ValidationError('Chỉ điểm danh từ giờ bắt đầu đến giờ kết thúc khi hoạt động còn công khai.')
+    if entry.status != 'approved':
+        raise ValidationError('Chỉ điểm danh người đã được duyệt và chưa hủy đăng ký.')
+    # An identical retry returns the original record, without changing its audit data.
+    attendance, created = Attendance.objects.get_or_create(participation=entry, defaults={'confirmed_by': organizer})
+    return attendance, created

@@ -5,6 +5,7 @@ import { apiPost } from '../api/client.js'
 import { participationLabels } from '../api/participationFormat.js'
 import useApi from '../hooks/useApi.js'
 import RequestState from './RequestState.jsx'
+import AttendanceStatus from './AttendanceStatus.jsx'
 
 function VolunteerPanel({ activity, refresh }) {
   const { data, loading, error, retry } = useApi(`/activities/${activity.id}/participation/`)
@@ -27,6 +28,7 @@ function VolunteerPanel({ activity, refresh }) {
     <button className="text-button" disabled={busy} onClick={() => { retry(); refresh() }}>Cập nhật trạng thái</button>
     {data && <>
       <p role="status">{participation ? `Trạng thái: ${participationLabels[participation.status]}` : 'Bạn chưa đăng ký hoạt động này.'}</p>
+      {participation && <AttendanceStatus entry={participation} />}
       {participation?.activity_changed && <p className="activity-empty">Thời gian hoặc địa điểm đã thay đổi từ lúc bạn đăng ký. Hãy kiểm tra thông tin hoạt động mới nhất ở trên.</p>}
       {participation?.cancellation_reason === 'activity_cancelled' && <p>Đơn đăng ký đã bị hủy do hoạt động bị hủy.</p>}
       {!open && <p>Đã đóng đăng ký, hủy đăng ký và xét duyệt.</p>}

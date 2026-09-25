@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework import generics
@@ -9,7 +10,7 @@ from rest_framework.views import APIView
 from apps.activities.models import Activity
 from apps.activities.views import IsOrganizer
 from .models import Participation
-from .serializers import ApplicantSerializer, EmptySerializer, ParticipationSerializer, ReviewSerializer
+from .serializers import ApplicantSerializer, AttendanceSerializer, EmptySerializer, ParticipationSerializer, ReviewSerializer
 from . import services
 
 
@@ -19,7 +20,7 @@ class IsVolunteer(BasePermission):
 
 
 def entries():
-    return Participation.objects.select_related('activity', 'activity__organizer', 'activity__organizer__organizer_profile', 'volunteer')
+    return Participation.objects.select_related('activity', 'activity__organizer', 'activity__organizer__organizer_profile', 'volunteer', 'attendance__confirmed_by')
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -29,6 +30,11 @@ class MyList(generics.ListAPIView):
 
     def get_queryset(self):
         return entries().filter(volunteer=self.request.user)
+
+
+class MyHistory(MyList):
+    def get_queryset(self):
+        return super().get_queryset().filter(attendance__isnull=False).order_by('-attendance__confirmed_at', '-id')
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -76,3 +82,25 @@ class ReviewParticipation(APIView):
         serializer.is_valid(raise_exception=True)
         entry = services.review(pk, entry_id, request.user, serializer.validated_data['status'])
         return Response(ApplicantSerializer(entry).data)
+
+
+@method_decorator(never_cache, name='dispatch')
+class AttendanceList(generics.ListAPIView):
+    permission_classes = [IsAuthenticated, IsOrganizer]
+    serializer_class = ApplicantSerializer
+
+    def get_queryset(self):
+        activity = get_object_or_404(Activity, pk=self.kwargs['pk'], organizer=self.request.user)
+        # Preserve evidence if an activity was cancelled after someone attended.
+        return entries().filter(activity=activity).filter(Q(status='approved') | Q(attendance__isnull=False))
+
+
+@method_decorator(never_cache, name='dispatch')
+class ConfirmAttendance(APIView):
+    permission_classes = [IsAuthenticated, IsOrganizer]
+
+    def post(self, request, pk, entry_id):
+        serializer = EmptySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        attendance, created = services.confirm_attendance(pk, entry_id, request.user)
+        return Response(AttendanceSerializer(attendance).data, status=201 if created else 200)

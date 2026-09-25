@@ -30,6 +30,7 @@ function ActivityDetail({ activity, managed, refresh }) {
     {!managed && <ParticipationPanel activity={activity} refresh={refresh} />}
     {managed && <div className="activity-actions">
       <Link className="button primary" to={`/nha-to-chuc/hoat-dong/${activity.id}/dang-ky`}>Xem danh sách đăng ký</Link>
+      <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/diem-danh`}>Điểm danh người tham gia</Link>
       {editable && <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/sua`}>Chỉnh sửa hoạt động</Link>}
       {activity.status === 'draft' && <button className="button primary" onClick={() => { setPending('published'); setError('') }}>Công khai hoạt động</button>}
       {activity.status === 'published' && <button className="button primary" disabled={new Date(activity.ends_at) > new Date()} onClick={() => { setPending('completed'); setError('') }}>Hoàn thành hoạt động</button>}

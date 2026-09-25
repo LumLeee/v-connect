@@ -13,6 +13,7 @@ export default function WorkspacePage({ role }) {
       <h1>Xin chào, {data.user.full_name}.</h1>
       <p className="lead">Tài khoản của bạn đã sẵn sàng cho hành trình cùng V-Connect.</p>
       {role === 'volunteer' && <p><Link className="button secondary" to="/tinh-nguyen-vien/dang-ky">Đăng ký của tôi</Link></p>}
+      {role === 'volunteer' && <p><Link className="button secondary" to="/tinh-nguyen-vien/lich-su">Lịch sử tham gia</Link></p>}
       <Link className="button primary" to={role === 'organizer' ? '/nha-to-chuc/hoat-dong' : '/hoat-dong'}>{role === 'organizer' ? 'Quản lý hoạt động' : 'Khám phá hoạt động'}</Link>
       <div className="steps">
         <article className="step"><UserRound /><h3>Thông tin tài khoản</h3><p>{data.user.role === 'admin' ? data.user.username : data.user.email}</p><p>{roleLabels[data.user.role]}</p><Link to="/ho-so" className="button secondary">Chỉnh sửa hồ sơ</Link></article>

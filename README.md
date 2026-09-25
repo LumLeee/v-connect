@@ -4,7 +4,7 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Đã có nền tảng, xác thực/phân quyền, hồ sơ, avatar, quản lý hoạt động và đăng ký/xét duyệt tham gia. Giai đoạn 4 đã đẩy lên `feature/activities` tại commit `11cfc7c`. Giai đoạn 5 bàn giao trên nhánh `feature/participations`. **Chưa có điểm danh, phản hồi hoặc AI.** Xem [kết quả giai đoạn 5](document/GIAI_DOAN_5_KET_QUA.md).
+Đã có nền tảng, xác thực/phân quyền, hồ sơ, avatar, quản lý hoạt động, đăng ký/xét duyệt và điểm danh thủ công. Giai đoạn 5 đã đẩy lên `feature/participations` tại commit `eb623f5`. Giai đoạn 6 bàn giao trên nhánh `feature/attendance`. **Chưa có phản hồi hoặc AI.** Xem [kết quả giai đoạn 6](document/GIAI_DOAN_6_KET_QUA.md).
 
 Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
 
@@ -140,7 +140,7 @@ npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 68 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động và đăng ký/xét duyệt, bao gồm thao tác đồng thời. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Hiện có 77 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt và điểm danh, bao gồm thao tác đồng thời. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -275,7 +275,7 @@ Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn
 
 Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
 
-Theo kế hoạch điều chỉnh ngày 22/09/2026, hoàn thành nghiệp vụ chính trước rồi mới bổ sung chức năng phụ và AI. Hồ sơ, quản lý hoạt động và đăng ký/xét duyệt đã có; việc tiếp theo là giai đoạn 6: điểm danh thủ công, sau đó phản hồi và thống kê/quản trị cơ bản. Kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chuyển sang đợt sau. Xem [kế hoạch mới](document/KE_HOACH_TRIEN_KHAI.md).
+Theo kế hoạch điều chỉnh ngày 22/09/2026, hoàn thành nghiệp vụ chính trước rồi mới bổ sung chức năng phụ và AI. Hồ sơ, quản lý hoạt động, đăng ký/xét duyệt và điểm danh thủ công đã có; việc tiếp theo là giai đoạn 7: phản hồi cơ bản, sau đó thống kê/quản trị. Kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chuyển sang đợt sau. Xem [kế hoạch mới](document/KE_HOACH_TRIEN_KHAI.md).
 
 Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).
 
@@ -296,3 +296,9 @@ Volunteer đăng ký/hủy tại chi tiết hoạt động, xem kết quả tạ
 | POST | `/api/v1/organizer/activities/<id>/applicants/<entry_id>/review/` | Body `{"status":"approved"}` hoặc `{"status":"rejected"}` |
 
 Các thao tác ghi kiểm tra CSRF, vai trò, chủ sở hữu, thời hạn và trạng thái. Migration `participations.0001_initial` thêm bảng đơn đăng ký. Chi tiết quy tắc và kiểm thử: [giai đoạn 5](document/GIAI_DOAN_5_KET_QUA.md).
+
+## 12. Điểm danh thủ công
+
+Organizer mở chi tiết hoạt động → **Điểm danh người tham gia**, chọn người được duyệt và xác nhận có mặt. Chỉ thực hiện từ giờ bắt đầu đến giờ kết thúc, khi hoạt động còn Công khai. Mỗi đơn có một bản ghi; bấm lại không ghi trùng hoặc thay đổi người/thời điểm xác nhận. Volunteer xem kết quả tại đơn đăng ký và **Lịch sử tham gia** trong tài khoản.
+
+Chạy migration khi cập nhật bằng Python trong `.venv`: `python backend/manage.py migrate --noinput`. Migration `participations.0002_attendance` thêm bảng điểm danh. API, quy tắc giữ lịch sử khi hủy hoạt động và kết quả kiểm thử: [giai đoạn 6](document/GIAI_DOAN_6_KET_QUA.md).

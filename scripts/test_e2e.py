@@ -101,6 +101,8 @@ def main():
         database_created = True
         from apps.accounts.models import User
         User.objects.create_superuser(env["E2E_ADMIN_USERNAME"], env["E2E_ADMIN_PASSWORD"], full_name="Quản trị kiểm thử")
+        from e2e_attendance import seed_attendance
+        seed_attendance(env, database, original_database)
         call_command("seed_data", verbosity=0)
         connections.close_all()
         server = make_server("127.0.0.1", 8001, get_wsgi_application(), server_class=ThreadedServer, handler_class=QuietHandler)

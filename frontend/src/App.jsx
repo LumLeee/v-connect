@@ -13,6 +13,7 @@ import ActivityDetailPage from './pages/ActivityDetailPage.jsx'
 import ActivityEditorPage from './pages/ActivityEditorPage.jsx'
 import { useAuth } from './auth/context.js'
 import ParticipationsPage from './pages/ParticipationsPage.jsx'
+import AttendancePage from './pages/AttendancePage.jsx'
 
 export default function App() {
   const { user } = useAuth()
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="hoat-dong" element={<ActivitiesPage key="public" />} />
         <Route path="hoat-dong/:id" element={<ActivityDetailPage />} />
         <Route element={<RequireRole role="organizer" />}>
+          <Route path="nha-to-chuc/hoat-dong/:id/diem-danh" element={<AttendancePage key={user?.id} />} />
           <Route path="nha-to-chuc/hoat-dong/:id/dang-ky" element={<ParticipationsPage key={user?.id} managed />} />
           <Route path="nha-to-chuc/hoat-dong" element={<ActivitiesPage key={`managed-${user?.id}`} managed />} />
           <Route path="nha-to-chuc/hoat-dong/tao" element={<ActivityEditorPage key={`create-${user?.id}`} />} />
@@ -37,6 +39,7 @@ export default function App() {
         <Route path="dat-lai-mat-khau/:uid/:token" element={<AuthPage key="reset" mode="reset" />} />
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<WorkspacePage role="volunteer" />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/dang-ky" element={<ParticipationsPage key={user?.id} />} /></Route>
+        <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/lich-su" element={<ParticipationsPage key={`history-${user?.id}`} history />} /></Route>
         <Route element={<RequireRole role="organizer" />}><Route path="nha-to-chuc" element={<WorkspacePage role="organizer" />} /></Route>
         <Route element={<RequireRole role="admin" />}><Route path="quan-tri" element={<WorkspacePage role="admin" />} /></Route>
         <Route element={<RequireRole />}><Route path="ho-so" element={<ProfilePage />} /></Route>

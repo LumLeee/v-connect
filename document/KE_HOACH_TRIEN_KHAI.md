@@ -1,6 +1,6 @@
 # Kế hoạch triển khai V-Connect
 
-Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 24/09/2026.
+Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 25/09/2026.
 
 ## 1. Hướng thực hiện đã thống nhất
 
@@ -26,8 +26,9 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 2: tài khoản và phân quyền | Đã đẩy lên `feature/auth`, commit `0efe855`, ngày 21/09/2026; gồm Admin dùng username |
 | Giai đoạn 3: hồ sơ cơ bản, avatar và hồ sơ Organizer | Hoàn thành theo phạm vi mới; bàn giao trên `feature/profile`, kế thừa giai đoạn 2 |
 | Giai đoạn 4: quản lý và xem hoạt động | Đã đẩy lên `feature/activities`, commit `11cfc7c` |
-| Giai đoạn 5: đăng ký và xét duyệt | Hoàn thành; bàn giao trên `feature/participations` ngày 25/09/2026 |
-| Điểm danh, phản hồi | Chưa triển khai |
+| Giai đoạn 5: đăng ký và xét duyệt | Đã đẩy lên `feature/participations`, commit `eb623f5`, ngày 25/09/2026 |
+| Giai đoạn 6: điểm danh cơ bản | Hoàn thành; bàn giao trên `feature/attendance` ngày 25/09/2026 |
+| Phản hồi | Chưa triển khai |
 | Thống kê và quản trị nghiệp vụ | Chưa triển khai; Django Admin và trang workspace đã có chưa thay thế dashboard nghiệp vụ |
 | Chức năng phụ và AI | Xếp sau đợt nghiệp vụ chính |
 
@@ -93,13 +94,17 @@ Quy tắc đã chốt: dùng giờ bắt đầu làm hạn đăng ký, tự hủ
 
 **Tiêu chí:** chạy được đăng ký → xét duyệt → xem kết quả; không thao tác trên đơn ngoài quyền. Xem trạng thái trực tiếp trên trang tài khoản/hoạt động; trung tâm thông báo và tự động đối chiếu lịch làm sau.
 
-### Giai đoạn 6: Điểm danh cơ bản
+### Giai đoạn 6: Điểm danh cơ bản — hoàn thành
 
-- [ ] Organizer xem danh sách người đã được duyệt của hoạt động.
-- [ ] Xác nhận có mặt thủ công trên website, đúng hoạt động và khoảng thời gian cho phép.
-- [ ] Lưu người xác nhận và thời điểm; chống điểm danh trùng.
-- [ ] Từ chối điểm danh người chưa được duyệt, đã hủy hoặc thuộc hoạt động ngoài quyền quản lý.
-- [ ] Volunteer xem trạng thái điểm danh và lịch sử tham gia.
+Quy tắc người dùng đã chọn ngày 25/09/2026: chỉ điểm danh từ giờ bắt đầu đến giờ kết thúc, khi hoạt động còn Công khai. Gửi lại yêu cầu hợp lệ trả bản ghi cũ. Giữ lịch sử có mặt nếu hoạt động bị hủy sau khi điểm danh và hiển thị rõ tình trạng hủy. Chi tiết: [kết quả giai đoạn 6](GIAI_DOAN_6_KET_QUA.md).
+
+- [x] Organizer xem danh sách người đã được duyệt của hoạt động.
+- [x] Xác nhận có mặt thủ công trên website, đúng hoạt động và khoảng thời gian cho phép.
+- [x] Lưu người xác nhận và thời điểm; chống điểm danh trùng.
+- [x] Từ chối điểm danh người chưa được duyệt, đã hủy hoặc thuộc hoạt động ngoài quyền quản lý.
+- [x] Volunteer xem trạng thái điểm danh và lịch sử tham gia.
+
+Kiểm tra ngày 25/09/2026: 77 tests backend trên MySQL, 30 ca Playwright, 5 tests bảo vệ database và lint/build đạt. Migration điểm danh đã áp dụng sau khi sao lưu, giữ nguyên dữ liệu hiện có.
 
 **Tiêu chí:** ghi nhận được người thực sự tham gia và truy vết thao tác; thao tác lặp không tăng lượt tham gia. QR, mã có thời hạn và check-out làm sau. Đợt 1 thống kê lượt tham gia, chưa tự suy ra số giờ.
 
@@ -178,10 +183,10 @@ Không sửa báo cáo kết quả cũ thành công việc chưa thực hiện. 
 
 ## 6. Việc tiếp theo
 
-1. Bắt đầu giai đoạn 6: xác định khoảng thời gian cho phép điểm danh thủ công.
-2. Xây dữ liệu, API và giao diện Organizer xác nhận có mặt cho người được duyệt.
-3. Lưu người xác nhận/thời điểm, chống điểm danh trùng và truy cập ngoài quyền; Volunteer xem kết quả.
-4. Kiểm tra luồng và cập nhật tài liệu. Bản bàn giao giai đoạn 5 nằm trên nhánh `feature/participations`.
+1. Bắt đầu giai đoạn 7: phản hồi cơ bản sau khi hoạt động hoàn thành, gắn với người được xác nhận có mặt.
+2. Xây dữ liệu, API và giao diện gửi điểm đánh giá/nội dung, giới hạn một phản hồi mỗi người/hoạt động.
+3. Organizer xem phản hồi của hoạt động mình; Admin ẩn phản hồi không phù hợp và lưu lý do/người thực hiện.
+4. Kiểm tra điều kiện gửi, quyền sở hữu và dữ liệu thống kê hợp lệ. Bản bàn giao giai đoạn 6 nằm trên nhánh `feature/attendance`.
 
 Không tiếp tục chức năng phụ hoặc AI trước khi hoàn thành đợt 1, trừ khi người dùng đổi ưu tiên.
 

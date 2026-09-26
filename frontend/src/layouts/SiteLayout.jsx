@@ -27,7 +27,7 @@ export default function SiteLayout() {
         <div className="header-auth">{loading ? <span role="status">Đang tải…</span> : user ? <><Link to={workspacePaths[user.role]}>Tài khoản của tôi</Link><button className="text-button" disabled={busy} onClick={logout}>Đăng xuất</button></> : <><Link to="/dang-nhap">Đăng nhập</Link><Link to="/dang-ky" className="button primary">Đăng ký</Link></>}</div>
       </header>
       {logoutError && <div className="page-width request-error" role="alert">{logoutError}</div>}
-      <main id="main-content"><Outlet /></main>
+      <main id="main-content" className={pathname === '/tinh-nguyen-vien' ? 'volunteer-dashboard-main' : undefined}><Outlet /></main>
       <footer className="site-footer"><span>V-Connect · Kết nối để sẻ chia.</span><Link to="/trang-thai">Trạng thái hệ thống</Link><span>Dự án C2SE.14</span></footer>
     </>
   )

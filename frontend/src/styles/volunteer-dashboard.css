@@ -1,0 +1,78 @@
+.vd-page { max-width: 1184px; margin: 0 auto; padding: 44px 24px 64px; color: #203e3b; }
+.vd-page h1, .vd-page h2, .vd-page h3, .vd-page p { margin: 0; }
+.vd-page h1 { font-size: clamp(28px, 3vw, 36px); line-height: 1.25; letter-spacing: -.8px; margin: 8px 0 10px; }
+.vd-page h2 { font-size: 18px; line-height: 1.4; letter-spacing: -.3px; }
+.vd-page p { color: #73817f; font-size: 14px; line-height: 1.65; }
+.vd-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+.vd-page .vd-eyebrow { font-size: 11px; letter-spacing: 1.8px; font-weight: 700; color: #69827d; }
+.vd-text-link { color: #257467; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.vd-text-link:hover { text-decoration: underline; }
+.vd-intro-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(250px, 1fr); gap: 22px; margin-bottom: 22px; }
+.vd-welcome { background: linear-gradient(120deg, #edf5ef, #f0f5f9); border: 1px solid #e0eae4; border-radius: 14px; padding: 28px; }
+.vd-welcome-label { display: inline-block; color: #34786a; background: #dfede5; border-radius: 5px; font-size: 11px; font-weight: 600; padding: 4px 9px; margin-bottom: 19px; }
+.vd-person { display: flex; align-items: center; gap: 14px; }
+.vd-person > div { min-width: 0; }
+.vd-person h2 { font-size: clamp(20px, 2vw, 26px); overflow-wrap: anywhere; }
+.vd-avatar { display: grid; place-items: center; flex: 0 0 54px; height: 54px; border-radius: 50%; color: #568073; background: #dce9e2; overflow: hidden; }
+.vd-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.vd-page .vd-bio { margin: 18px 0 22px; overflow-wrap: anywhere; white-space: pre-line; }
+.vd-profile-facts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 12px; }
+.vd-profile-facts > div { padding: 13px 15px; border-radius: 8px; background: #ffffffa6; min-width: 0; }
+.vd-profile-facts span { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #7e8b86; margin-bottom: 6px; }
+.vd-profile-facts strong { display: block; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.vd-panel { background: white; border: 1px solid #e5eae7; border-radius: 12px; margin-bottom: 22px; overflow: hidden; scroll-margin-top: 100px; }
+.vd-actions { padding: 22px; margin: 0; }
+.vd-actions > p { font-size: 12px; margin: 5px 0 15px; }
+.vd-action { display: flex; justify-content: center; align-items: center; gap: 9px; padding: 10px 12px; border: 1px solid #e3e9e5; border-radius: 7px; background: #f8faf9; font-size: 13px; font-weight: 500; margin-top: 8px; text-align: center; }
+.vd-action:hover { background: #edf4ef; border-color: #a9c7ba; }
+.vd-action.vd-primary { background: #235d50; color: white; border-color: #235d50; }
+.vd-action.vd-primary:hover { background: #184b40; }
+.vd-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 24px; }
+.vd-stat { background: white; border: 1px solid #e5eae7; border-radius: 10px; padding: 21px 18px; display: flex; align-items: center; gap: 14px; }
+.vd-stat:hover { border-color: #a9c7ba; box-shadow: 0 3px 12px #234b3810; }
+.vd-stat > div { min-width: 0; }
+.vd-stat div > span { display: block; color: #71817b; font-size: 10px; font-weight: 600; letter-spacing: .4px; }
+.vd-stat strong { display: block; font-size: 25px; line-height: 1.4; }
+.vd-row-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0; }
+.vd-row-icon.purple { color: #8460ad; background: #f1eafa; }
+.vd-row-icon.blue { color: #5486c3; background: #eaf2fc; }
+.vd-row-icon.green { color: #4a9c73; background: #e8f5ee; }
+.vd-panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 24px; border-bottom: 1px solid #f0f3f1; }
+.vd-panel-heading p { font-size: 12px; margin-top: 4px; }
+.vd-list { list-style: none; padding: 0 24px; margin: 0; }
+.vd-activity-row { display: flex; align-items: center; gap: 15px; padding: 21px 0; border-bottom: 1px solid #eef2ef; }
+.vd-activity-row:last-child { border: 0; }
+.vd-row-content { flex: 1; min-width: 0; }
+.vd-row-content > a { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.vd-row-content > a:hover { text-decoration: underline; color: #257467; }
+.vd-row-content p { font-size: 12px; overflow-wrap: anywhere; }
+.vd-badge { font-size: 11px; padding: 4px 9px; border-radius: 5px; white-space: nowrap; }
+.vd-badge.blue { color: #4778ac; background: #eef4fc; }
+.vd-badge.green { color: #408761; background: #edf7f0; }
+.vd-badge.muted { color: #797674; background: #f2efec; }
+.vd-empty { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 24px; gap: 8px; color: #8ba297; }
+.vd-empty h3 { font-size: 14px; color: #577568; font-weight: 600; }
+.vd-empty p { font-size: 13px; max-width: 480px; }
+.vd-empty .vd-text-link { margin-top: 5px; }
+.vd-bottom { display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: 12px; color: #83918b; }
+.volunteer-dashboard-main { background: #f6f8f7; min-height: calc(100vh - 160px); }
+@media (max-width: 760px) {
+  .vd-heading { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .vd-intro-grid { grid-template-columns: 1fr; }
+  .vd-metrics { gap: 10px; }
+  .vd-stat { padding: 15px 10px; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .vd-panel-heading { align-items: flex-start; flex-direction: column; gap: 12px; padding: 20px; }
+  .vd-activity-row { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 8px 15px; }
+  .vd-activity-row .vd-row-icon { grid-column: 1; grid-row: 1 / span 2; align-self: start; }
+  .vd-activity-row .vd-row-content, .vd-activity-row .vd-badge { grid-column: 2; }
+  .vd-activity-row .vd-badge { justify-self: start; }
+}
+@media (max-width: 420px) {
+  .vd-page { padding: 28px 16px 40px; }
+  .vd-welcome { padding: 22px 18px; }
+  .vd-profile-facts { grid-template-columns: 1fr; }
+  .vd-stat div > span { font-size: 9px; letter-spacing: 0; }
+  .vd-stat strong { font-size: 22px; }
+  .vd-bottom { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .vd-list { padding: 0 18px; }
+}

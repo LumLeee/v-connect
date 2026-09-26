@@ -140,7 +140,7 @@ npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 99 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị, bao gồm thao tác đồng thời giữa các luồng. Có thêm 8 tests bảo vệ database và thời gian kiểm thử. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Hiện có 101 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi, dashboard và thống kê/quản trị, bao gồm thao tác đồng thời giữa các luồng. Có thêm 8 tests bảo vệ database và thời gian kiểm thử. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -163,7 +163,7 @@ Tests đi qua form React và API Django thật, dùng MySQL `DB_TEST_NAME` riên
 
 Email đặt lại mật khẩu được ghi ra file cục bộ, không gửi SMTP. Screenshot và email nằm trong `tmp/e2e-*/`; báo cáo HTML nằm trong `frontend/playwright-report/`. Các thư mục này bị Git bỏ qua. Không chia sẻ file email chứa liên kết reset.
 
-Playwright có 42 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
+Playwright có 44 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
 
 ## 7. Cấu hình môi trường
 
@@ -316,3 +316,7 @@ Chọn **Xem thống kê** trong tài khoản để xem số liệu theo vai tr�
 Admin có **Quản lý tài khoản** và **Nhật ký thao tác**. Khóa/mở khóa bắt buộc lý do, không áp dụng cho Admin và làm phiên cũ hết hiệu lực. Django Admin cung cấp màn hình chỉ đọc cho dữ liệu nghiệp vụ; trạng thái tài khoản được quản lý qua website để ghi lý do.
 
 Chạy migration bằng Python trong `.venv`: `python backend/manage.py migrate --noinput`. Bổ sung `accounts.0004_user_session_version` và `reports.0001_initial`. Quy tắc, API, giới hạn nhật ký và kiểm thử: [giai đoạn 8](document/GIAI_DOAN_8_KET_QUA.md).
+
+## 15. Không gian tình nguyện viên
+
+Trang `/tinh-nguyen-vien` dùng bố cục tham khảo Volunteer Dashboard trong báo cáo: thẻ chào mừng và hồ sơ, thao tác nhanh, ba ô thống kê, hoạt động sắp tới và lịch sử gần đây. Giữ màu sắc V-Connect, dùng dữ liệu thật và ẩn chức năng chưa triển khai. API riêng kiểm tra vai trò và chỉ trả dữ liệu của tài khoản trong phiên; không cần migration mới. Xem [chi tiết cập nhật dashboard](document/CAP_NHAT_VOLUNTEER_DASHBOARD.md).

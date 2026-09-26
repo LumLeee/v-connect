@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import Overview, ActivityList, ActivityResult, ParticipationList, AccountList, AccountStatus, AuditList
+from .views import Overview, ActivityList, ActivityResult, ParticipationList, AccountList, AccountStatus, AuditList, VolunteerDashboard
 
 urlpatterns = [
+    path('reports/volunteer-dashboard/', VolunteerDashboard.as_view()),
     path('reports/overview/', Overview.as_view()),
     path('reports/activities/', ActivityList.as_view()),
     path('reports/activities/<uuid:pk>/', ActivityResult.as_view()),

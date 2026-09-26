@@ -6,6 +6,7 @@ import StatusPage from './pages/StatusPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import AuthPage from './pages/AuthPage.jsx'
 import WorkspacePage from './pages/WorkspacePage.jsx'
+import VolunteerDashboard from './pages/VolunteerDashboard.jsx'
 import RequireRole from './auth/RequireRole.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import ActivitiesPage from './pages/ActivitiesPage.jsx'
@@ -53,7 +54,7 @@ export default function App() {
         <Route path="dang-ky" element={<AuthPage key="register" mode="register" />} />
         <Route path="quen-mat-khau" element={<AuthPage key="forgot" mode="forgot" />} />
         <Route path="dat-lai-mat-khau/:uid/:token" element={<AuthPage key="reset" mode="reset" />} />
-        <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<WorkspacePage role="volunteer" />} /></Route>
+        <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<VolunteerDashboard key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/dang-ky" element={<ParticipationsPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/lich-su" element={<ParticipationsPage key={`history-${user?.id}`} history />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/phan-hoi" element={<FeedbackPage key={user?.id} />} /></Route>

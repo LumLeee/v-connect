@@ -1,5 +1,6 @@
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework import generics
@@ -9,6 +10,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.accounts.models import User
+from apps.accounts.profile_serializers import ProfileSerializer
+from apps.participations.views import IsVolunteer, entries
 from apps.activities.serializers import ActivitySerializer
 from apps.activities.views import search
 from apps.feedback.views import IsAdmin
@@ -33,6 +36,25 @@ class Overview(APIView):
         if request.user.role == 'admin':
             data['accounts'] = User.objects.aggregate(total=Count('id'), active=Count('id', filter=Q(is_active=True)), locked=Count('id', filter=Q(is_active=False)))
         return Response(data)
+
+
+@method_decorator(never_cache, name='dispatch')
+class VolunteerDashboard(APIView):
+    permission_classes = [IsAuthenticated, IsVolunteer]
+
+    def get(self, request):
+        own = entries().filter(volunteer=request.user)
+        upcoming = own.filter(status='approved', activity__status='published',
+                              activity__starts_at__gt=timezone.now()).order_by('activity__starts_at', 'id')
+        history = own.filter(attendance__isnull=False).order_by('-attendance__confirmed_at', '-id')
+        return Response({
+            'profile': ProfileSerializer(request.user).data,
+            'member_since': request.user.date_joined,
+            'metrics': services.metrics_for(request.user),
+            'upcoming_count': upcoming.count(),
+            'upcoming': ParticipationSerializer(upcoming[:3], many=True).data,
+            'history': ParticipationSerializer(history[:3], many=True).data,
+        })
 
 
 @method_decorator(never_cache, name='dispatch')

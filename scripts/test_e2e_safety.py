@@ -4,6 +4,10 @@ import unittest
 from unittest.mock import Mock, patch
 
 import test_e2e as runner
+from datetime import timedelta
+from concurrent.futures import ThreadPoolExecutor
+from threading import Barrier
+from e2e_clock import TestClockWSGI, scoped_now, real_now, require_test_database
 
 
 class CleanupSafetyTests(unittest.TestCase):
@@ -35,6 +39,40 @@ class CleanupSafetyTests(unittest.TestCase):
 
     def test_allows_only_matching_disposable_database(self):
         self.check_case('test_v_connect', 'v_connect', 'test_v_connect', 'test_v_connect', allowed=True)
+
+
+class ClockSafetyTests(unittest.TestCase):
+    def test_refuses_application_database(self):
+        for values in [('test_v_connect', 'v_connect', 'v_connect', 'v_connect'),
+                       ('v_connect', 'v_connect', 'v_connect', 'v_connect'),
+                       ('test_v_connect', 'v_connect', 'test_v_connect', 'v_connect')]:
+            with self.assertRaises(RuntimeError):
+                require_test_database(*values)
+
+    def test_invalid_key_and_naive_time_do_not_call_application(self):
+        app = Mock()
+        wrapper = TestClockWSGI(app, 'test-secret', 'test_v_connect', 'v_connect', 'test_v_connect', 'test_v_connect')
+        for value, key in [(real_now().isoformat(), 'wrong'), ('2026-01-01T12:00:00', 'test-secret')]:
+            start = Mock()
+            wrapper({'HTTP_X_E2E_TIME': value, 'HTTP_X_E2E_CLOCK_KEY': key}, start)
+            self.assertEqual(start.call_args.args[0], '400 Bad Request')
+        app.assert_not_called()
+
+    def test_clock_is_isolated_per_request_and_resets_after_exception(self):
+        barrier = Barrier(2)
+        def app(environ, start):
+            barrier.wait(timeout=5)
+            return [scoped_now().isoformat().encode()]
+        wrapper = TestClockWSGI(app, 'test-secret', 'test_v_connect', 'v_connect', 'test_v_connect', 'test_v_connect')
+        moments = [real_now() + timedelta(hours=value) for value in [1, 2]]
+        def call(moment):
+            return wrapper({'HTTP_X_E2E_TIME': moment.isoformat(), 'HTTP_X_E2E_CLOCK_KEY': 'test-secret'}, Mock())[0]
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            self.assertEqual(list(pool.map(call, moments)), [moment.isoformat().encode() for moment in moments])
+        wrapper.application = Mock(side_effect=RuntimeError('expected'))
+        with self.assertRaises(RuntimeError):
+            call(moments[0])
+        self.assertLess(abs((scoped_now() - real_now()).total_seconds()), 1)
 
 
 if __name__ == '__main__':

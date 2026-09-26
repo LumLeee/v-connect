@@ -15,6 +15,7 @@ import time
 import urllib.request
 from socketserver import ThreadingMixIn
 from wsgiref.simple_server import WSGIServer, WSGIRequestHandler, make_server
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "backend"))
@@ -78,6 +79,7 @@ def main():
         "E2E_ARTIFACT_DIR": str(run_dir / "screenshots"),
         "E2E_ADMIN_USERNAME": "admin.e2e",
         "E2E_ADMIN_PASSWORD": secrets.token_urlsafe(24),
+        "E2E_CLOCK_KEY": secrets.token_urlsafe(32),
         "VITE_BACKEND_PROXY": "http://127.0.0.1:8001",
         "VITE_API_BASE_URL": "/api/v1",
     })
@@ -95,6 +97,7 @@ def main():
     server = frontend = None
     original_database = connection.settings_dict["NAME"]
     database_created = False
+    clock_patch = None
     try:
         overrides.enable()
         connection.creation.create_test_db(verbosity=0, autoclobber=False, keepdb=False)
@@ -104,8 +107,21 @@ def main():
         from e2e_attendance import seed_attendance
         seed_attendance(env, database, original_database)
         call_command("seed_data", verbosity=0)
+        from apps.core.models import Skill
+        from django.db.migrations.executor import MigrationExecutor
+        seed_before = list(Skill.objects.order_by('pk').values())
+        call_command('seed_data', verbosity=0)
+        assert list(Skill.objects.order_by('pk').values()) == seed_before, 'Seed data must be idempotent.'
+        executor = MigrationExecutor(connection)
+        assert not executor.migration_plan(executor.loader.graph.leaf_nodes()), 'Fresh database has pending migrations.'
+        print(f'Fresh MySQL database verified: {len(executor.loader.applied_migrations)} migrations applied; seed is idempotent.', flush=True)
         connections.close_all()
-        server = make_server("127.0.0.1", 8001, get_wsgi_application(), server_class=ThreadedServer, handler_class=QuietHandler)
+        from e2e_clock import TestClockWSGI, scoped_now
+        application = TestClockWSGI(get_wsgi_application(), env['E2E_CLOCK_KEY'], database, original_database,
+                                    connection.settings_dict['NAME'], settings.DATABASES['default']['NAME'])
+        clock_patch = patch('django.utils.timezone.now', scoped_now)
+        clock_patch.start()
+        server = make_server("127.0.0.1", 8001, application, server_class=ThreadedServer, handler_class=QuietHandler)
         threading.Thread(target=server.serve_forever, daemon=True).start()
         with (run_dir / "vite.log").open("w", encoding="utf-8") as log:
             frontend = subprocess.Popen([node, str(ROOT / "frontend/node_modules/vite/bin/vite.js"), "--host", "127.0.0.1", "--port", "5174"], cwd=ROOT / "frontend", env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -141,6 +157,8 @@ def main():
                     cleanup_test_database(database, original_database)
                     print("Disposable E2E database removed.", flush=True)
             finally:
+                if clock_patch:
+                    clock_patch.stop()
                 overrides.disable()
 
 

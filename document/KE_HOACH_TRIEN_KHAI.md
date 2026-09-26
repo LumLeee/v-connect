@@ -29,7 +29,8 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 5: đăng ký và xét duyệt | Đã đẩy lên `feature/participations`, commit `eb623f5`, ngày 25/09/2026 |
 | Giai đoạn 6: điểm danh cơ bản | Đã đẩy lên `feature/attendance`, commit `91c53e5`, ngày 25/09/2026 |
 | Giai đoạn 7: phản hồi cơ bản | Đã đẩy lên `feature/feedback`, commit `11f90b2` |
-| Giai đoạn 8: thống kê và quản trị cơ bản | Hoàn thành; bàn giao trên `feature/reports-admin` ngày 26/09/2026 |
+| Giai đoạn 8: thống kê và quản trị cơ bản | Đã đẩy lên `feature/reports-admin`, commit `f2a85f5`, ngày 26/09/2026 |
+| Giai đoạn 9: kiểm tra hoàn chỉnh nghiệp vụ chính | Hoàn thành; bàn giao trên `dev`, kế thừa giai đoạn 1–8 |
 | Chức năng phụ và AI | Xếp sau đợt nghiệp vụ chính |
 
 Bản giai đoạn 2 đạt 39 tests backend, 12 ca Playwright, 5 tests bảo vệ database và lint/build. Bản local gồm hồ sơ đạt 48 tests backend khi kiểm tra ngày 21/09/2026. Đây là kết quả các lượt trước, không phải kiểm chứng chức năng chưa triển khai.
@@ -137,14 +138,16 @@ Kiểm tra: 96 tests backend trên MySQL, 34 ca trình duyệt hồi quy và 4 c
 
 **Tiêu chí:** số liệu khớp danh sách chi tiết; kiểm tra quyền tại backend. Biểu đồ nâng cao, xuất PDF/Excel, mẫu báo cáo và chứng nhận làm sau.
 
-### Giai đoạn 9: Kiểm tra hoàn chỉnh đợt 1
+### Giai đoạn 9: Kiểm tra hoàn chỉnh đợt 1 — hoàn thành
 
-- [ ] Chạy xuyên suốt luồng chính với bốn nhóm người dùng trên React, Django và MySQL.
-- [ ] Kiểm tra tài khoản bị khóa, truy cập trái quyền, dữ liệu sai, đăng ký trùng, sức chứa và điểm danh lặp.
-- [ ] Kiểm tra hoạt động bị hủy, phản hồi không đủ điều kiện, trạng thái rỗng và lỗi kết nối.
-- [ ] Chạy backend tests, frontend lint/build và các luồng trình duyệt phù hợp.
-- [ ] Kiểm tra migration từ database mới; cập nhật hướng dẫn chạy và sao lưu dữ liệu.
-- [ ] Sửa lỗi chặn luồng chính và cập nhật tài liệu theo chức năng thực tế.
+- [x] Chạy xuyên suốt luồng chính với bốn nhóm người dùng trên React, Django và MySQL.
+- [x] Kiểm tra tài khoản bị khóa, truy cập trái quyền, dữ liệu sai, đăng ký trùng, sức chứa và điểm danh lặp.
+- [x] Kiểm tra hoạt động bị hủy, phản hồi không đủ điều kiện, trạng thái rỗng và lỗi kết nối.
+- [x] Chạy backend tests, frontend lint/build và các luồng trình duyệt phù hợp.
+- [x] Kiểm tra migration từ database mới; cập nhật hướng dẫn chạy và sao lưu dữ liệu.
+- [x] Sửa lỗi chặn luồng chính và cập nhật tài liệu theo chức năng thực tế.
+
+Kiểm tra ngày 26/09/2026: 99 tests backend, 8 tests bảo vệ runner, 42/42 ca Playwright, lint/build đạt; database mới áp dụng đủ 28 migration và seed lặp không đổi dữ liệu. Sửa việc hiển thị dữ liệu cũ trong lúc đổi bộ lọc/tải lại. Đã tạo snapshot và kiểm tra tính toàn vẹn, chưa thực hiện khôi phục database. Xem [kết quả giai đoạn 9](GIAI_DOAN_9_KET_QUA.md) và [hướng dẫn vận hành/sao lưu](VAN_HANH_VA_SAO_LUU.md).
 
 **Điều kiện chuyển sang đợt 2:** toàn bộ luồng chính dùng được qua giao diện với dữ liệu thật; kiểm tra bắt buộc đạt; không còn lỗi làm sai quyền, sai dữ liệu hoặc chặn thao tác chính. Chỉ có model/API chưa được tính là hoàn thành chức năng.
 
@@ -191,10 +194,9 @@ Không sửa báo cáo kết quả cũ thành công việc chưa thực hiện. 
 
 ## 6. Việc tiếp theo
 
-1. Bắt đầu giai đoạn 9: kiểm tra xuyên suốt đăng ký tài khoản → hồ sơ → hoạt động → đăng ký tham gia → xét duyệt → điểm danh → phản hồi → thống kê.
-2. Kiểm tra các tình huống hủy hoạt động, tài khoản bị khóa, quyền truy cập và thao tác lặp/đồng thời giữa các bước.
-3. Xác minh migration từ database mới, sao lưu và hướng dẫn chạy; sửa lỗi chặn nghiệp vụ nếu phát hiện.
-4. Cập nhật kết quả kiểm tra đợt 1 trước khi chuyển sang chức năng phụ/AI. Bản bàn giao giai đoạn 8 nằm trên nhánh `feature/reports-admin`.
+1. Bản nghiệp vụ chính đến giai đoạn 9 bàn giao trên nhánh `dev`; tiếp tục kiểm thử hồi quy khi thay đổi code.
+2. Chọn nhóm chức năng giai đoạn 10 theo nhu cầu; chốt quy tắc và dữ liệu đầu vào trước khi triển khai.
+3. Nếu triển khai sử dụng thật, xác minh SMTP, môi trường hosting/HTTPS và diễn tập khôi phục trên database riêng.
 
 Không tiếp tục chức năng phụ hoặc AI trước khi hoàn thành đợt 1, trừ khi người dùng đổi ưu tiên.
 

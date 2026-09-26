@@ -4,7 +4,7 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Đã có nền tảng, xác thực/phân quyền, hồ sơ, avatar, quản lý hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị cơ bản. Giai đoạn 7 đã đẩy lên `feature/feedback` tại commit `11f90b2`. Giai đoạn 8 bàn giao trên nhánh `feature/reports-admin`. **Chưa có báo cáo nâng cao hoặc AI.** Xem [kết quả giai đoạn 8](document/GIAI_DOAN_8_KET_QUA.md).
+Đã hoàn thành nghiệp vụ chính và kiểm tra tổng thể giai đoạn 9 trên nhánh `dev`, kế thừa giai đoạn 8 (`feature/reports-admin`, commit `f2a85f5`). Bao gồm xác thực/phân quyền, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị cơ bản. **Chưa có báo cáo nâng cao hoặc AI.** Xem [kết quả giai đoạn 9](document/GIAI_DOAN_9_KET_QUA.md) và [hướng dẫn vận hành, sao lưu](document/VAN_HANH_VA_SAO_LUU.md).
 
 Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
 
@@ -140,7 +140,7 @@ npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 96 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị, bao gồm thao tác đồng thời. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Hiện có 99 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị, bao gồm thao tác đồng thời giữa các luồng. Có thêm 8 tests bảo vệ database và thời gian kiểm thử. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -163,7 +163,7 @@ Tests đi qua form React và API Django thật, dùng MySQL `DB_TEST_NAME` riên
 
 Email đặt lại mật khẩu được ghi ra file cục bộ, không gửi SMTP. Screenshot và email nằm trong `tmp/e2e-*/`; báo cáo HTML nằm trong `frontend/playwright-report/`. Các thư mục này bị Git bỏ qua. Không chia sẻ file email chứa liên kết reset.
 
-Playwright kiểm tra desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Không giả lập phản hồi API và không tắt CSRF.
+Playwright có 42 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
 
 ## 7. Cấu hình môi trường
 
@@ -275,7 +275,7 @@ Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn
 
 Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
 
-Theo kế hoạch điều chỉnh ngày 22/09/2026, hoàn thành nghiệp vụ chính trước rồi mới bổ sung chức năng phụ và AI. Các chức năng chính đến thống kê/quản trị cơ bản đã có; việc tiếp theo là giai đoạn 9: kiểm tra hoàn chỉnh đợt nghiệp vụ chính. Kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chuyển sang đợt sau. Xem [kế hoạch mới](document/KE_HOACH_TRIEN_KHAI.md).
+Theo kế hoạch điều chỉnh ngày 22/09/2026, nghiệp vụ chính đã hoàn thành kiểm tra tổng thể ở giai đoạn 9. Tiếp theo là chọn nhóm chức năng giai đoạn 10: kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI. Các nhóm này chưa triển khai. Xem [kế hoạch](document/KE_HOACH_TRIEN_KHAI.md).
 
 Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).
 

@@ -32,6 +32,7 @@ function ActivityDetail({ activity, managed, refresh }) {
       <Link className="button primary" to={`/nha-to-chuc/hoat-dong/${activity.id}/dang-ky`}>Xem danh sách đăng ký</Link>
       <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/diem-danh`}>Điểm danh người tham gia</Link>
       <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/phan-hoi`}>Xem phản hồi hoạt động</Link>
+      <Link className="button secondary" to={`/bao-cao/hoat-dong/${activity.id}`}>Xem kết quả hoạt động</Link>
       {editable && <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/sua`}>Chỉnh sửa hoạt động</Link>}
       {activity.status === 'draft' && <button className="button primary" onClick={() => { setPending('published'); setError('') }}>Công khai hoạt động</button>}
       {activity.status === 'published' && <button className="button primary" disabled={new Date(activity.ends_at) > new Date()} onClick={() => { setPending('completed'); setError('') }}>Hoàn thành hoạt động</button>}

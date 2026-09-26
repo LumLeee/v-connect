@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from apps.activities.models import Activity
+from apps.reports.models import AuditEvent
 from .models import Attendance, Participation
 
 
@@ -68,6 +69,8 @@ def review(activity_id, entry_id, organizer, target):
     entry.reviewed_by = organizer
     entry.reviewed_at = timezone.now()
     entry.save(update_fields=['status', 'reviewed_by', 'reviewed_at', 'updated_at'])
+    AuditEvent.objects.create(actor=organizer, subject=entry.volunteer, activity=activity, object_id=entry.pk,
+                              action='review_approved' if target == 'approved' else 'review_rejected')
     return entry
 
 
@@ -83,4 +86,7 @@ def confirm_attendance(activity_id, entry_id, organizer):
         raise ValidationError('Chỉ điểm danh người đã được duyệt và chưa hủy đăng ký.')
     # An identical retry returns the original record, without changing its audit data.
     attendance, created = Attendance.objects.get_or_create(participation=entry, defaults={'confirmed_by': organizer})
+    if created:
+        AuditEvent.objects.create(actor=organizer, subject=entry.volunteer, activity=activity,
+                                  object_id=attendance.pk, action='attendance_confirmed')
     return attendance, created

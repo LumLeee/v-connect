@@ -16,12 +16,25 @@ import ParticipationsPage from './pages/ParticipationsPage.jsx'
 import AttendancePage from './pages/AttendancePage.jsx'
 import FeedbackPage from './pages/FeedbackPage.jsx'
 import FeedbackListPage from './pages/FeedbackListPage.jsx'
+import ReportsPage from './pages/ReportsPage.jsx'
+import AdminAccountsPage from './pages/AdminAccountsPage.jsx'
+import AuditPage from './pages/AuditPage.jsx'
 
 export default function App() {
   const { user } = useAuth()
   return (
     <Routes>
       <Route element={<SiteLayout />}>
+        <Route element={<RequireRole />}>
+          <Route path="bao-cao" element={<ReportsPage key={`overview-${user?.id}`} />} />
+          <Route path="bao-cao/hoat-dong" element={<ReportsPage key={`activities-${user?.id}`} mode="activities" />} />
+          <Route path="bao-cao/hoat-dong/:id" element={<ReportsPage key={`result-${user?.id}`} mode="result" />} />
+          <Route path="bao-cao/dang-ky" element={<ReportsPage key={`participations-${user?.id}`} mode="participations" />} />
+        </Route>
+        <Route element={<RequireRole role="admin" />}>
+          <Route path="quan-tri/tai-khoan" element={<AdminAccountsPage key={user?.id} />} />
+          <Route path="quan-tri/nhat-ky" element={<AuditPage key={user?.id} />} />
+        </Route>
         <Route index element={<HomePage />} />
         <Route path="gioi-thieu" element={<AboutPage />} />
         <Route path="trang-thai" element={<StatusPage />} />

@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from apps.activities.models import Activity
+from apps.reports.models import AuditEvent
 from apps.participations.models import Attendance
 from .models import Feedback
 
@@ -50,4 +51,6 @@ def hide(feedback_id, admin, reason):
         entry.hidden_at = timezone.now()
         entry.hidden_reason = reason
         entry.save(update_fields=['is_hidden', 'hidden_by', 'hidden_at', 'hidden_reason'])
+        AuditEvent.objects.create(actor=admin, subject=entry.attendance.participation.volunteer,
+            activity=entry.attendance.participation.activity, object_id=entry.pk, action='feedback_hidden', reason=reason)
     return entry

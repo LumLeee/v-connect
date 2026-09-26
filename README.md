@@ -4,7 +4,7 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Đã có nền tảng, xác thực/phân quyền, hồ sơ, avatar, quản lý hoạt động, đăng ký/xét duyệt, điểm danh thủ công và phản hồi cơ bản. Giai đoạn 6 đã đẩy lên `feature/attendance` tại commit `91c53e5`. Giai đoạn 7 bàn giao trên nhánh `feature/feedback`. **Chưa có dashboard thống kê/quản trị đầy đủ hoặc AI.** Xem [kết quả giai đoạn 7](document/GIAI_DOAN_7_KET_QUA.md).
+Đã có nền tảng, xác thực/phân quyền, hồ sơ, avatar, quản lý hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị cơ bản. Giai đoạn 7 đã đẩy lên `feature/feedback` tại commit `11f90b2`. Giai đoạn 8 bàn giao trên nhánh `feature/reports-admin`. **Chưa có báo cáo nâng cao hoặc AI.** Xem [kết quả giai đoạn 8](document/GIAI_DOAN_8_KET_QUA.md).
 
 Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
 
@@ -133,14 +133,14 @@ Hoặc chạy từng bước:
 ```powershell
 .\.venv\Scripts\python.exe backend/manage.py check
 .\.venv\Scripts\python.exe backend/manage.py makemigrations --check --dry-run
-.\.venv\Scripts\python.exe backend/manage.py test apps.core apps.accounts apps.activities apps.participations apps.feedback --noinput
+.\.venv\Scripts\python.exe backend/manage.py test apps.core apps.accounts apps.activities apps.participations apps.feedback apps.reports --noinput
 cd frontend
 npm.cmd run lint
 npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 87 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh và phản hồi, bao gồm thao tác đồng thời. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Hiện có 96 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị, bao gồm thao tác đồng thời. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -275,7 +275,7 @@ Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn
 
 Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
 
-Theo kế hoạch điều chỉnh ngày 22/09/2026, hoàn thành nghiệp vụ chính trước rồi mới bổ sung chức năng phụ và AI. Hồ sơ, quản lý hoạt động, đăng ký/xét duyệt, điểm danh thủ công và phản hồi cơ bản đã có; việc tiếp theo là giai đoạn 8: thống kê/quản trị cơ bản. Kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chuyển sang đợt sau. Xem [kế hoạch mới](document/KE_HOACH_TRIEN_KHAI.md).
+Theo kế hoạch điều chỉnh ngày 22/09/2026, hoàn thành nghiệp vụ chính trước rồi mới bổ sung chức năng phụ và AI. Các chức năng chính đến thống kê/quản trị cơ bản đã có; việc tiếp theo là giai đoạn 9: kiểm tra hoàn chỉnh đợt nghiệp vụ chính. Kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chuyển sang đợt sau. Xem [kế hoạch mới](document/KE_HOACH_TRIEN_KHAI.md).
 
 Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).
 
@@ -308,3 +308,11 @@ Chạy migration khi cập nhật bằng Python trong `.venv`: `python backend/m
 Volunteer đã có mặt mở **Lịch sử tham gia** → hoạt động Hoàn thành → **Gửi hoặc xem phản hồi của tôi**. Điểm 1–5 và nội dung tối đa 2.000 ký tự, chỉ gửi một lần, chưa sửa/xóa. Organizer chọn **Xem phản hồi hoạt động** để xem danh sách và điểm trung bình. Admin mở **Quản lý phản hồi** trong tài khoản để ẩn nội dung không phù hợp, bắt buộc nhập lý do.
 
 Phản hồi bị ẩn vẫn được lưu để đối chiếu nhưng không hiển thị cho Organizer và không tính vào điểm trung bình. Người gửi xem được lý do xử lý. Migration bổ sung `feedback.0001_initial`; chạy `python backend/manage.py migrate --noinput` bằng Python trong `.venv` khi cập nhật. API và kiểm thử: [giai đoạn 7](document/GIAI_DOAN_7_KET_QUA.md).
+
+## 14. Thống kê và quản trị
+
+Chọn **Xem thống kê** trong tài khoản để xem số liệu theo vai trò và mở danh sách đối chiếu. Organizer mở **Xem kết quả hoạt động** để xem số liệu riêng. “Đã tham gia” chỉ tính hoạt động Hoàn thành có điểm danh; lượt có mặt ở hoạt động chưa hoàn thành/bị hủy hiển thị riêng.
+
+Admin có **Quản lý tài khoản** và **Nhật ký thao tác**. Khóa/mở khóa bắt buộc lý do, không áp dụng cho Admin và làm phiên cũ hết hiệu lực. Django Admin cung cấp màn hình chỉ đọc cho dữ liệu nghiệp vụ; trạng thái tài khoản được quản lý qua website để ghi lý do.
+
+Chạy migration bằng Python trong `.venv`: `python backend/manage.py migrate --noinput`. Bổ sung `accounts.0004_user_session_version` và `reports.0001_initial`. Quy tắc, API, giới hạn nhật ký và kiểm thử: [giai đoạn 8](document/GIAI_DOAN_8_KET_QUA.md).

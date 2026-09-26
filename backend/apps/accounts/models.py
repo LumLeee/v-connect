@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.crypto import salted_hmac
 
 
 class UserManager(BaseUserManager):
@@ -48,6 +49,14 @@ class User(AbstractUser):
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
     objects = UserManager()
+    session_version = models.PositiveIntegerField(default=0, editable=False)
+
+    def _get_session_auth_hash(self, secret=None):
+        original = super()._get_session_auth_hash(secret=secret)
+        if self.session_version == 0:
+            return original
+        return salted_hmac('vconnect.account.session_version', f'{original}:{self.session_version}',
+                           secret=secret, algorithm='sha256').hexdigest()
 
     class Meta:
         constraints = [

@@ -7,6 +7,11 @@ from .forms import AccountChangeForm, AccountCreationForm
 
 @admin.register(User)
 class AccountAdmin(UserAdmin):
+    readonly_fields = ['is_active']
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     form = AccountChangeForm
     add_form = AccountCreationForm
     ordering = ["role", "username", "email"]

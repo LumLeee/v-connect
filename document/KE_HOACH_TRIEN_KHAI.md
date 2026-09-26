@@ -1,6 +1,6 @@
 # Kế hoạch triển khai V-Connect
 
-Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 25/09/2026.
+Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 26/09/2026.
 
 ## 1. Hướng thực hiện đã thống nhất
 
@@ -28,8 +28,8 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 4: quản lý và xem hoạt động | Đã đẩy lên `feature/activities`, commit `11cfc7c` |
 | Giai đoạn 5: đăng ký và xét duyệt | Đã đẩy lên `feature/participations`, commit `eb623f5`, ngày 25/09/2026 |
 | Giai đoạn 6: điểm danh cơ bản | Đã đẩy lên `feature/attendance`, commit `91c53e5`, ngày 25/09/2026 |
-| Giai đoạn 7: phản hồi cơ bản | Hoàn thành; bàn giao trên `feature/feedback` ngày 25/09/2026 |
-| Thống kê và quản trị nghiệp vụ | Chưa triển khai; Django Admin và trang workspace đã có chưa thay thế dashboard nghiệp vụ |
+| Giai đoạn 7: phản hồi cơ bản | Đã đẩy lên `feature/feedback`, commit `11f90b2` |
+| Giai đoạn 8: thống kê và quản trị cơ bản | Hoàn thành; bàn giao trên `feature/reports-admin` ngày 26/09/2026 |
 | Chức năng phụ và AI | Xếp sau đợt nghiệp vụ chính |
 
 Bản giai đoạn 2 đạt 39 tests backend, 12 ca Playwright, 5 tests bảo vệ database và lint/build. Bản local gồm hồ sơ đạt 48 tests backend khi kiểm tra ngày 21/09/2026. Đây là kết quả các lượt trước, không phải kiểm chứng chức năng chưa triển khai.
@@ -122,14 +122,18 @@ Kiểm tra ngày 25/09/2026: 87 tests backend trên MySQL, 34 ca Playwright, 5 t
 
 **Tiêu chí:** người tham gia thực tế gửi được phản hồi, không đánh giá trùng hoặc truy cập ngoài quyền. Chưa phân loại cảm xúc, phát hiện spam/sự cố hoặc tóm tắt bằng AI.
 
-### Giai đoạn 8: Thống kê và quản trị cơ bản
+### Giai đoạn 8: Thống kê và quản trị cơ bản — hoàn thành
 
-- [ ] Volunteer xem số hoạt động đăng ký, được duyệt và đã tham gia.
-- [ ] Organizer xem số đơn, người được duyệt, đã điểm danh và phản hồi theo hoạt động.
-- [ ] Hiển thị kết quả hoạt động gồm số liệu tham gia và đánh giá từ dữ liệu thật.
-- [ ] Admin quản lý trạng thái tài khoản, khóa/mở khóa và giám sát hoạt động, đăng ký, phản hồi.
-- [ ] Tận dụng Django Admin cho thao tác đã đáp ứng được; bổ sung màn hình cần thiết cho luồng sử dụng.
-- [ ] Ghi nhận thao tác nhạy cảm: khóa tài khoản, xét duyệt, điểm danh và ẩn phản hồi.
+Quy tắc đã chốt ngày 26/09/2026: “Đã tham gia” chỉ tính hoạt động Hoàn thành có điểm danh; có mặt ở hoạt động chưa hoàn thành/bị hủy hiển thị riêng. Khóa/mở khóa Volunteer và Organizer bắt buộc lý do, không áp dụng cho Admin. Chi tiết: [kết quả giai đoạn 8](GIAI_DOAN_8_KET_QUA.md).
+
+- [x] Volunteer xem số hoạt động đăng ký, được duyệt và đã tham gia.
+- [x] Organizer xem số đơn, người được duyệt, đã điểm danh và phản hồi theo hoạt động.
+- [x] Hiển thị kết quả hoạt động gồm số liệu tham gia và đánh giá từ dữ liệu thật.
+- [x] Admin quản lý trạng thái tài khoản, khóa/mở khóa và giám sát hoạt động, đăng ký, phản hồi.
+- [x] Tận dụng Django Admin cho thao tác đã đáp ứng được; bổ sung màn hình cần thiết cho luồng sử dụng.
+- [x] Ghi nhận thao tác nhạy cảm: khóa tài khoản, xét duyệt, điểm danh và ẩn phản hồi.
+
+Kiểm tra: 96 tests backend trên MySQL, 34 ca trình duyệt hồi quy và 4 ca thống kê/quản trị đạt sau khi sửa lỗi chờ dữ liệu trong bài test; 5 tests bảo vệ database và lint/build đạt. Migration đã áp dụng sau sao lưu, giữ nguyên dữ liệu cũ. Nhật ký riêng bắt đầu từ giai đoạn 8; không dựng lại những thao tác trước đây không còn dữ liệu nguồn.
 
 **Tiêu chí:** số liệu khớp danh sách chi tiết; kiểm tra quyền tại backend. Biểu đồ nâng cao, xuất PDF/Excel, mẫu báo cáo và chứng nhận làm sau.
 
@@ -187,10 +191,10 @@ Không sửa báo cáo kết quả cũ thành công việc chưa thực hiện. 
 
 ## 6. Việc tiếp theo
 
-1. Bắt đầu giai đoạn 8: thống kê cơ bản theo vai trò Volunteer, Organizer và Admin.
-2. Đối chiếu số đăng ký, được duyệt, tham gia và phản hồi với danh sách chi tiết; phân biệt hoạt động bị hủy.
-3. Hoàn thiện quản trị tài khoản, khóa/mở khóa và giám sát nghiệp vụ; tận dụng Django Admin khi phù hợp.
-4. Kiểm tra quyền, tính chính xác của số liệu và truy vết thao tác. Bản bàn giao giai đoạn 7 nằm trên nhánh `feature/feedback`.
+1. Bắt đầu giai đoạn 9: kiểm tra xuyên suốt đăng ký tài khoản → hồ sơ → hoạt động → đăng ký tham gia → xét duyệt → điểm danh → phản hồi → thống kê.
+2. Kiểm tra các tình huống hủy hoạt động, tài khoản bị khóa, quyền truy cập và thao tác lặp/đồng thời giữa các bước.
+3. Xác minh migration từ database mới, sao lưu và hướng dẫn chạy; sửa lỗi chặn nghiệp vụ nếu phát hiện.
+4. Cập nhật kết quả kiểm tra đợt 1 trước khi chuyển sang chức năng phụ/AI. Bản bàn giao giai đoạn 8 nằm trên nhánh `feature/reports-admin`.
 
 Không tiếp tục chức năng phụ hoặc AI trước khi hoàn thành đợt 1, trừ khi người dùng đổi ưu tiên.
 

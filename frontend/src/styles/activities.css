@@ -21,5 +21,6 @@
 .activity-editor { max-width: 800px; }.activity-editor fieldset { border: 0; padding: 0; min-width: 0; }
 .activity-field { margin: 1.4rem 0; }.activity-field textarea { resize: vertical; }
 .activity-page button:disabled { opacity: .55; cursor: not-allowed; }
+.activity-search select, .activity-field select { display: block; width: 100%; min-width: 0; padding: .85rem; border: 1px solid #cbd8d1; border-radius: 8px; font: inherit; background: white; color: inherit; margin: .6rem 0; }
 @media(max-width: 850px) { .activity-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media(max-width: 560px) { .activity-grid, .activity-facts { grid-template-columns: 1fr; }.activity-search > div { flex-direction: column; }.activity-editor { padding: 1rem; }.activity-actions > * { width: 100%; text-align: center; } }

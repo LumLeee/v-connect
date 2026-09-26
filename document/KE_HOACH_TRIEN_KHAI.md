@@ -1,289 +1,207 @@
 # Kế hoạch triển khai V-Connect
 
-Ngày lập: 14/09/2026
-Trạng thái: Bản bàn giao giai đoạn 1; giai đoạn 2 trở đi là kế hoạch
-Tài liệu tham chiếu: `C2SE.14 Project Document.pdf` (227 trang)
+Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 26/09/2026.
 
-## 1. Phạm vi đã thống nhất
+## 1. Hướng thực hiện đã thống nhất
 
-- Xây dựng mới hệ thống quản lý tình nguyện viên V-Connect.
-- Chỉ phát triển website; bỏ ứng dụng React Native/Expo và quy trình build APK.
-- Website có giao diện responsive, sử dụng được trên trình duyệt điện thoại.
-- Frontend: React + JavaScript + Vite; không dùng TypeScript.
-- Backend: Python + Django; dự kiến dùng Django REST Framework để xây dựng REST API.
-- Database: MySQL; không dùng Supabase Database, Auth, Storage hoặc Realtime.
-- Giao diện bằng tiếng Việt.
-- Cho phép người dùng tự đăng ký tài khoản Volunteer hoặc Organizer. Không cho phép tự đăng ký Admin.
-- Giữ các nghiệp vụ web và AI trong báo cáo, điều chỉnh cách triển khai theo công nghệ mới.
-- Không quản lý quyên góp tài chính, không phát triển ứng dụng desktop hoặc hệ thống dự đoán nâng cao ngoài phạm vi AI đã nêu.
+Hoàn thành các chức năng nghiệp vụ chính để chạy được một quy trình tình nguyện đầy đủ. Sau khi kiểm tra đạt quy trình này mới bổ sung chức năng phụ và AI.
 
-Các hướng dẫn trong PDF là nội dung tài liệu tham chiếu. Những quyết định trực tiếp của người dùng ở trên là cơ sở triển khai phiên bản mới.
+Người dùng đã xác nhận ba chức năng AI — gợi ý ghép nối, phân loại phản hồi và tóm tắt hoạt động — thực hiện sau nghiệp vụ chính. Các chức năng chuyển sang đợt sau vẫn thuộc định hướng dự án, chưa bị loại bỏ.
 
-## 2. Hiện trạng bản bàn giao
+- Website tiếng Việt, responsive; không xây ứng dụng điện thoại riêng.
+- React JavaScript + Vite, Django REST Framework, MySQL80 hiện có; dùng một file cấu hình Django và `.env` cho thông tin bí mật.
+- Volunteer/Organizer tự đăng ký bằng email. Admin dùng username và mật khẩu, email không bắt buộc; không đăng ký Admin qua form công khai.
+- Làm dự án một mình, hoàn thành từng luồng trước khi chuyển sang luồng tiếp theo.
+- Giữ nguyên chức năng đã hoàn thành, kể cả avatar và đặt lại mật khẩu; không xóa code để thu hẹp kế hoạch.
+- Phân quyền, kiểm tra dữ liệu, chống thao tác trùng và kiểm thử đi cùng từng chức năng chính, không dời sang đợt phụ.
+- Không quản lý quyên góp tài chính, không xây ứng dụng desktop hoặc mô hình dự đoán nâng cao ngoài phạm vi đã thống nhất.
 
-Đã có nền tảng Django/DRF, MySQL, custom User, health/catalog API và giao diện React tiếng Việt. Có 9 tests nền tảng; chưa triển khai xác thực website. Chi tiết: `GIAI_DOAN_1_KET_QUA.md`.
+Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dùng là cơ sở xác định phạm vi. Giữ số giai đoạn 1–10 để đối chiếu lịch sử, nhưng sắp xếp lại nội dung tương lai theo hai đợt bên dưới.
 
-## 3. Kiến trúc dự kiến
+## 2. Tiến độ hiện tại
 
-```text
-Trình duyệt
-    |
-React + JavaScript + Vite
-    |
-REST API
-    |
-Django + Django REST Framework
-    |-- Tài khoản và phân quyền
-    |-- Hồ sơ và danh mục kỹ năng
-    |-- Hoạt động và timeline
-    |-- Đăng ký, xét duyệt và điểm danh
-    |-- Phản hồi, thông báo và báo cáo
-    |-- Điều phối AI và phương án dự phòng
-    |
-    |-- MySQL
-    |-- Nơi lưu ảnh/file
-    |-- Dịch vụ email
-    `-- Dịch vụ AI bên ngoài nếu được cấu hình
-```
-
-Backend được tổ chức thành các Django app theo nghiệp vụ, triển khai chung trong một ứng dụng trước. Frontend chỉ truy cập dữ liệu qua API; không kết nối trực tiếp MySQL. Bắt đầu với thông báo lấy qua API, chỉ bổ sung cập nhật trực tiếp khi có nhu cầu cụ thể.
-
-### Cấu trúc thư mục mục tiêu
-
-```text
-V-connect/
-|-- backend/
-|   |-- config/
-|   |-- apps/
-|   |   |-- accounts/
-|   |   |-- activities/
-|   |   |-- participations/
-|   |   |-- feedback/
-|   |   |-- notifications/
-|   |   |-- reports/
-|   |   `-- recommendations/
-|   |-- manage.py
-|   `-- requirements.txt
-|-- frontend/
-|   |-- src/
-|   |   |-- api/
-|   |   |-- components/
-|   |   |-- layouts/
-|   |   |-- pages/
-|   |   |-- hooks/
-|   |   `-- styles/
-|   `-- package.json
-|-- document/
-`-- README.md
-```
-
-## 4. Các giai đoạn thực hiện
-
-Thực hiện theo thứ tự dưới đây. Chỉ đánh dấu hoàn thành khi có sản phẩm chạy được và kết quả kiểm tra tương ứng. Chưa chốt lịch theo ngày vì chưa có thời hạn bàn giao hoặc số người triển khai.
-
-### Giai đoạn 1: Nền tảng dự án và môi trường
-
-- [x] Kiểm tra lại thư viện đã cài và tạo lockfile để tái lập môi trường.
-- [x] Khởi tạo Django project và các app nền tảng.
-- [x] Khởi tạo React JavaScript với Vite, routing, bố cục và stylesheet chung.
-- [x] Chuẩn bị `.env.example`, cấu hình chung `backend/config/settings.py` và tách thông tin bí mật khỏi mã nguồn.
-- [x] Xác nhận cách chạy MySQL: dịch vụ MySQL80 hiện có, theo lựa chọn người dùng.
-- [x] Tạo database, tài khoản ứng dụng và cấu hình kết nối; dùng UTF-8 phù hợp cho tiếng Việt.
-- [x] Thiết lập migration, dữ liệu mẫu (danh mục kỹ năng) và lệnh khởi động.
-- [x] Thiết lập API health check, cấu trúc lỗi, phân trang, proxy development và logging cơ bản.
-- [x] Viết README hướng dẫn cài đặt và chạy trên Windows.
-
-**Tiêu chí hoàn thành:** frontend gọi được API backend; backend kết nối MySQL; migration chạy thành công trên database mới; không có dependency Supabase hoặc TypeScript trong ứng dụng.
-
-### Giai đoạn 2: Tài khoản, xác thực và phân quyền
-
-- [ ] Tạo custom User model trước migration đầu tiên, dùng email làm định danh.
-- [ ] Cho phép đăng ký Volunteer/Organizer; backend chỉ chấp nhận hai vai trò này từ luồng đăng ký công khai.
-- [ ] Xây dựng đăng nhập, đăng xuất, thông tin người dùng hiện tại và quản lý phiên.
-- [ ] Dùng cơ chế hash mật khẩu và kiểm tra độ mạnh mật khẩu của Django.
-- [ ] Xây dựng quên/đặt lại mật khẩu qua liên kết có thời hạn.
-- [ ] Cấu hình gửi email; dùng console email khi chưa có SMTP; kiểm thử gửi email trong bộ nhớ.
-- [ ] Hỗ trợ và kiểm thử lệnh tạo Admin; không tạo tài khoản/mật khẩu mặc định và không cấp quyền quản trị từ đăng ký công khai.
-- [ ] Kiểm tra quyền tại API: vai trò, trạng thái tài khoản và `/me` chỉ trả dữ liệu của phiên hiện tại. Quyền sở hữu hoạt động/hồ sơ chi tiết sẽ triển khai cùng các tài nguyên đó.
-- [ ] Xây dựng màn hình xác thực tiếng Việt và điều hướng theo vai trò; lint/build đạt.
-- [ ] Kiểm thử đăng nhập sai, email trùng, phiên hết hạn, tài khoản bị khóa và truy cập trái quyền.
-
-**Tiêu chí hoàn thành:** người dùng tự đăng ký hai vai trò đã chốt và vào đúng khu vực; sửa request hoặc URL không vượt được quyền truy cập.
-
-**Định hướng:** session Django qua cookie HttpOnly và CSRF; frontend gọi API cùng origin.
-
-### Giai đoạn 3: Hồ sơ và dữ liệu nền
-
-- [ ] Quản lý thông tin cơ bản, avatar và hồ sơ Organizer.
-- [ ] Xây dựng danh mục kỹ năng, sở thích và quan hệ với tình nguyện viên.
-- [ ] Quản lý lịch rảnh và dữ liệu cần thiết cho ghép nối.
-- [ ] Upload ảnh với giới hạn kích thước, kiểm tra định dạng và phân quyền.
-- [ ] Xác định nơi lưu file development/production; database lưu đường dẫn và metadata.
-- [ ] Chuẩn bị danh mục địa điểm và dữ liệu mẫu có nguồn gốc rõ ràng.
-- [ ] Tạo API và giao diện chỉnh sửa hồ sơ.
-
-**Tiêu chí hoàn thành:** hồ sơ lưu và tải lại đúng; người dùng không sửa được hồ sơ người khác; kỹ năng và lịch rảnh sẵn sàng cho đề xuất.
-
-### Giai đoạn 4: Hoạt động, trang công khai và timeline
-
-- [ ] Tạo trang chủ, giới thiệu, danh sách và chi tiết hoạt động công khai.
-- [ ] Tìm kiếm, lọc và phân trang hoạt động.
-- [ ] Organizer tạo/sửa hoạt động với tên, mô tả, thời gian, địa điểm, sức chứa và kỹ năng yêu cầu.
-- [ ] Quản lý vòng đời nháp, công khai, hoàn thành, hủy; quy định rõ chuyển trạng thái hợp lệ.
-- [ ] Quản lý các mốc timeline và hiển thị timeline cho người tham gia.
-- [ ] Lưu địa chỉ, tọa độ, hiển thị bản đồ và liên kết chỉ đường; xử lý khi dịch vụ địa lý không hoạt động.
-- [ ] Guest chỉ xem nội dung công khai; yêu cầu đăng nhập khi thực hiện hành động riêng tư.
-- [ ] Kiểm tra ngày kết thúc sau ngày bắt đầu, sức chứa hợp lệ và quyền sở hữu hoạt động.
-
-**Tiêu chí hoàn thành:** Organizer tạo và công khai được hoạt động; Guest/Volunteer tìm và xem được; hoạt động nháp không lộ qua API công khai.
-
-### Giai đoạn 5: Đăng ký, xét duyệt và lịch sử tham gia
-
-- [ ] Volunteer đăng ký/hủy đăng ký theo điều kiện của hoạt động.
-- [ ] Organizer xem danh sách đăng ký và duyệt/từ chối người tham gia.
-- [ ] Xác định và thực thi sơ đồ chuyển trạng thái đăng ký.
-- [ ] Chống đăng ký trùng và vượt sức chứa, kể cả khi có yêu cầu đồng thời.
-- [ ] Kiểm tra lịch trùng và điều kiện tham gia theo quy tắc đã chốt.
-- [ ] Hiển thị hoạt động của tôi, trạng thái xét duyệt và lịch sử đóng góp.
-- [ ] Tạo thông báo khi trạng thái đăng ký hoặc hoạt động thay đổi.
-
-**Tiêu chí hoàn thành:** chạy được luồng đăng ký → xét duyệt → xem trạng thái; Organizer không duyệt được đơn thuộc hoạt động của người khác.
-
-### Giai đoạn 6: Điểm danh trên web
-
-- [ ] Chốt hướng quét QR: Organizer quét mã của Volunteer hoặc Volunteer quét mã hoạt động.
-- [ ] Xây dựng mã điểm danh có thời hạn và luồng nhập mã dự phòng.
-- [ ] Kiểm tra người tham gia đã được duyệt, đúng hoạt động và đúng khoảng thời gian.
-- [ ] Chống điểm danh trùng và xử lý mã hết hạn/không hợp lệ.
-- [ ] Lưu thời điểm điểm danh; bổ sung check-out nếu được chọn làm cơ sở tính giờ tham gia.
-- [ ] Cho phép Organizer xác nhận thủ công theo quyền và ghi nhận người thực hiện.
-- [ ] Hiển thị trạng thái điểm danh và cập nhật lịch sử tham gia.
-
-**Tiêu chí hoàn thành:** điểm danh thực hiện được qua website; mã sai/hết hạn và người chưa đủ điều kiện bị từ chối; thao tác lặp không tạo thêm lượt tham gia.
-
-### Giai đoạn 7: Phản hồi và thông báo
-
-- [ ] Volunteer gửi đánh giá và phản hồi khi đủ điều kiện sau hoạt động.
-- [ ] Ràng buộc phản hồi với bản ghi tham gia, hạn chế phản hồi trùng.
-- [ ] Organizer xem phản hồi của hoạt động mình quản lý; Admin kiểm duyệt trên toàn hệ thống.
-- [ ] Chuẩn hóa bộ nhãn cảm xúc và cách ghi nhận sự cố, tránh mâu thuẫn giữa các phần báo cáo cũ.
-- [ ] Cho phép đánh dấu spam, loại spam khỏi thống kê và ghi nhận chỉnh sửa của người kiểm duyệt.
-- [ ] Xây dựng danh sách thông báo, trạng thái đã đọc và liên kết đến đối tượng liên quan.
-- [ ] Không cho phép đọc/xóa thông báo của người khác.
-
-**Tiêu chí hoàn thành:** phản hồi hợp lệ được lưu; thống kê bỏ qua spam; thông báo đúng người và điều hướng đúng nội dung.
-
-### Giai đoạn 8: Đề xuất và xử lý AI
-
-- [ ] Xây dựng bộ lọc điều kiện tham gia trước khi xếp hạng.
-- [ ] Làm baseline đề xuất theo kỹ năng, lịch rảnh, sở thích và lịch sử; trả điểm và lý do đề xuất.
-- [ ] Hỗ trợ hai chiều: đề xuất hoạt động cho Volunteer và tình nguyện viên cho Organizer.
-- [ ] Lưu lần hiển thị đề xuất, dữ liệu đặc trưng và sự kiện tương tác phục vụ đánh giá.
-- [ ] Bổ sung embedding hoặc mô hình ML sau khi có dữ liệu đánh giá phù hợp.
-- [ ] Phân loại phản hồi và hỗ trợ phát hiện sự cố/spam theo bộ nhãn đã thống nhất.
-- [ ] Tóm tắt hoạt động dựa trên dữ liệu tham gia và phản hồi hợp lệ.
-- [ ] Tách điều phối AI khỏi nghiệp vụ; bổ sung dịch vụ AI bên ngoài khi đã có cấu hình.
-- [ ] Thiết lập timeout, giới hạn gọi, cache và xử lý dự phòng khi AI bên ngoài lỗi.
-- [ ] Ghi rõ nguồn kết quả: quy tắc, mô hình nội bộ hoặc dịch vụ bên ngoài; không gọi baseline quy tắc là mô hình đã huấn luyện.
-- [ ] Tạo bộ dữ liệu đánh giá và đo chất lượng, thời gian đáp ứng; không ghi mục tiêu thành kết quả thực nghiệm.
-
-**Tiêu chí hoàn thành:** đề xuất có giải thích và tuân thủ điều kiện tham gia; dữ liệu ít hoặc dịch vụ AI lỗi không làm hỏng nghiệp vụ; có kết quả đánh giá thực tế.
-
-### Giai đoạn 9: Dashboard, báo cáo và quản trị
-
-- [ ] Dashboard riêng cho Volunteer, Organizer và Admin.
-- [ ] Tổng hợp số hoạt động, đăng ký, người đã điểm danh và phản hồi từ database.
-- [ ] Báo cáo sau hoạt động gồm thống kê và nội dung tổng hợp AI có thể rà soát.
-- [ ] Xuất/in báo cáo và xuất dữ liệu theo quyền truy cập.
-- [ ] Admin quản lý người dùng, vai trò, trạng thái tài khoản và giám sát hoạt động/đăng ký/phản hồi.
-- [ ] Ghi lịch sử các thao tác nhạy cảm: thay vai trò, khóa tài khoản, xét duyệt và điểm danh thủ công.
-- [ ] Đối chiếu các yêu cầu phụ trong User Story như quyền chi tiết, mẫu báo cáo/chứng nhận và câu chuyện tác động để xác định phần cần triển khai tiếp.
-
-**Tiêu chí hoàn thành:** dashboard dùng dữ liệu thật, số liệu thống nhất với danh sách chi tiết; dữ liệu xuất đúng phạm vi quyền của người dùng.
-
-### Giai đoạn 10: Kiểm thử, triển khai và đồng bộ tài liệu
-
-- [ ] Chạy kiểm thử backend trên MySQL, bao gồm transaction và ràng buộc dữ liệu.
-- [ ] Kiểm thử các luồng xuyên suốt Guest, Volunteer, Organizer và Admin.
-- [ ] Kiểm thử phân quyền, CSRF/session, upload, mật khẩu và khả năng truy cập dữ liệu qua ID đoán được.
-- [ ] Kiểm tra các trường hợp cạnh tranh như duyệt chỗ cuối và điểm danh lặp.
-- [ ] Chạy frontend lint/build và kiểm tra giao diện trên desktop/trình duyệt điện thoại.
-- [ ] Kiểm tra lỗi mạng, database hoặc AI; bổ sung thông báo lỗi và trạng thái rỗng/loading rõ ràng.
-- [ ] Cấu hình production: HTTPS, cookie, static/media, email, logging và biến môi trường.
-- [ ] Chuẩn bị backup/restore MySQL và hướng dẫn vận hành.
-- [ ] Chạy migration từ database rỗng và kiểm tra khả năng tái lập dự án theo README.
-- [ ] Ghi kết quả kiểm thử mới, các lỗi còn lại và giới hạn thực tế.
-- [ ] Cập nhật báo cáo theo stack mới và phạm vi web-only.
-
-**Tiêu chí hoàn thành:** người khác có thể dựng hệ thống theo tài liệu; các luồng chính chạy được; kết quả kiểm thử phản ánh đúng phiên bản mới.
-
-## 5. Thiết kế dữ liệu cần thực hiện
-
-| Nhóm dữ liệu | Hướng triển khai |
+| Phần | Trạng thái thực tế |
 |---|---|
-| Tài khoản | Custom Django User, email duy nhất, vai trò và trạng thái tài khoản |
-| Hồ sơ | Thông tin tình nguyện viên/Organizer, avatar, kỹ năng, sở thích và lịch rảnh |
-| Kỹ năng/sở thích | Bảng danh mục và bảng liên kết thay cho `TEXT[]` trong PostgreSQL |
-| Hoạt động | Organizer, nội dung, thời gian, địa điểm, sức chứa và trạng thái |
-| Timeline | Các mốc thuộc hoạt động, thời gian và mô tả |
-| Tham gia | Cặp hoạt động/tình nguyện viên duy nhất, trạng thái xét duyệt và điểm danh |
-| Phản hồi | Liên kết tham gia, điểm đánh giá, nội dung và trạng thái kiểm duyệt |
-| Báo cáo | Số liệu và bản tổng hợp theo hoạt động, thời điểm tạo/cập nhật |
-| Thông báo | Người nhận, nội dung, đối tượng liên quan và thời điểm đọc |
-| Đề xuất AI | Kết quả xếp hạng, lý do, phiên bản thuật toán và lịch sử tương tác |
-| Audit log | Người thực hiện, hành động, đối tượng và thời điểm |
+| Giai đoạn 1: nền tảng | Hoàn thành, đã có trên GitHub |
+| Giai đoạn 2: tài khoản và phân quyền | Đã đẩy lên `feature/auth`, commit `0efe855`, ngày 21/09/2026; gồm Admin dùng username |
+| Giai đoạn 3: hồ sơ cơ bản, avatar và hồ sơ Organizer | Hoàn thành theo phạm vi mới; bàn giao trên `feature/profile`, kế thừa giai đoạn 2 |
+| Giai đoạn 4: quản lý và xem hoạt động | Đã đẩy lên `feature/activities`, commit `11cfc7c` |
+| Giai đoạn 5: đăng ký và xét duyệt | Đã đẩy lên `feature/participations`, commit `eb623f5`, ngày 25/09/2026 |
+| Giai đoạn 6: điểm danh cơ bản | Đã đẩy lên `feature/attendance`, commit `91c53e5`, ngày 25/09/2026 |
+| Giai đoạn 7: phản hồi cơ bản | Đã đẩy lên `feature/feedback`, commit `11f90b2` |
+| Giai đoạn 8: thống kê và quản trị cơ bản | Hoàn thành; bàn giao trên `feature/reports-admin` ngày 26/09/2026 |
+| Chức năng phụ và AI | Xếp sau đợt nghiệp vụ chính |
 
-Các trường `JSONB` cũ được đánh giá để chuyển thành `JSONField` hoặc bảng quan hệ; không sao chép nguyên schema PostgreSQL. Dùng Django migrations để quản lý schema. Chuẩn hóa lưu thời gian và hiển thị theo `Asia/Ho_Chi_Minh`. Vì xây mới từ đầu, chưa có yêu cầu chuyển dữ liệu hoặc tài khoản từ Supabase.
+Bản giai đoạn 2 đạt 39 tests backend, 12 ca Playwright, 5 tests bảo vệ database và lint/build. Bản local gồm hồ sơ đạt 48 tests backend khi kiểm tra ngày 21/09/2026. Đây là kết quả các lượt trước, không phải kiểm chứng chức năng chưa triển khai.
 
-## 6. Các mốc bàn giao
+Giữ nguyên tài liệu lịch sử: [giai đoạn 1](GIAI_DOAN_1_KET_QUA.md), [giai đoạn 2](GIAI_DOAN_2_KET_QUA.md), [hồ sơ cơ bản](GIAI_DOAN_3_CONG_VIEC_1_KET_QUA.md), [username Admin](CAP_NHAT_ADMIN_USERNAME.md).
 
-| Mốc | Nội dung | Phụ thuộc |
+## 3. Đợt 1 — Chức năng chính
+
+Luồng cần hoàn thành:
+
+**Đăng ký/đăng nhập → cập nhật hồ sơ → Organizer tạo và công khai hoạt động → Volunteer xem và đăng ký → Organizer xét duyệt → điểm danh → phản hồi → xem kết quả hoạt động.**
+
+Admin quản lý tài khoản và giám sát dữ liệu theo quyền. Guest chỉ xem hoạt động công khai.
+
+### Giai đoạn 1: Nền tảng — đã hoàn thành
+
+- [x] Dựng frontend, backend và kết nối MySQL.
+- [x] Chuẩn bị cấu hình, migration, danh mục kỹ năng ban đầu và hướng dẫn chạy.
+- [x] Có API kiểm tra kết nối, cấu trúc lỗi và phân trang.
+
+### Giai đoạn 2: Tài khoản và phân quyền — đã hoàn thành
+
+- [x] Đăng ký Volunteer/Organizer; đăng nhập, đăng xuất và quản lý phiên.
+- [x] Admin dùng username, không bắt buộc email.
+- [x] Thông tin tài khoản hiện tại và khu vực đúng vai trò.
+- [x] Quên/đặt lại mật khẩu cho tài khoản công khai; giữ chức năng đã làm.
+- [x] Kiểm tra mật khẩu, CSRF, tài khoản bị khóa và truy cập trái quyền.
+
+Email được kiểm thử cục bộ; chưa xác minh SMTP thật. Không coi việc đã có chức năng đặt lại mật khẩu là đã cấu hình gửi email thật.
+
+### Giai đoạn 3: Hồ sơ tối thiểu — hoàn thành theo phạm vi mới
+
+- [x] Xem/sửa họ tên, số điện thoại và giới thiệu của chính mình.
+- [x] Organizer cập nhật tên tổ chức, mô tả, website và địa chỉ liên hệ.
+- [x] Giữ chức năng tải lên, xem và xóa avatar đã làm.
+- [x] Kiểm tra quyền sở hữu, dữ liệu đầu vào và lưu/tải lại qua API và giao diện.
+
+**Tiêu chí:** tài khoản có thông tin liên hệ cần thiết và chỉ sửa được hồ sơ của mình.
+
+Kỹ năng, sở thích, lịch rảnh, địa điểm và mở rộng lưu trữ chuyển sang đợt 2. Danh mục kỹ năng đã seed được giữ; chưa có liên kết kỹ năng với hồ sơ. Thu hẹp phạm vi không có nghĩa các công việc chuyển đi đã hoàn thành.
+
+### Giai đoạn 4: Quản lý và xem hoạt động — đã đẩy GitHub
+
+- [x] Organizer tạo/sửa hoạt động: tên, mô tả, thời gian bắt đầu/kết thúc, địa chỉ dạng văn bản và sức chứa.
+- [x] Quản lý trạng thái nháp, công khai, hoàn thành, hủy; chỉ chuyển trạng thái hợp lệ.
+- [x] Organizer xem danh sách và chi tiết hoạt động của mình.
+- [x] Guest/Volunteer xem hoạt động công khai; tìm kiếm theo tên và phân trang.
+- [x] Kiểm tra thời gian, sức chứa và quyền sở hữu; không lộ hoạt động nháp.
+
+**Tiêu chí:** Organizer tạo và công khai được hoạt động; Volunteer tìm và xem được để đăng ký. Chưa phụ thuộc bản đồ, timeline, ảnh hoạt động hoặc ghép nối kỹ năng.
+
+### Giai đoạn 5: Đăng ký và xét duyệt tham gia — hoàn thành
+
+- [x] Volunteer đăng ký/hủy đăng ký theo trạng thái và thời hạn cho phép.
+- [x] Organizer xem và duyệt/từ chối đơn thuộc hoạt động của mình.
+- [x] Quản lý trạng thái chờ duyệt, được duyệt, bị từ chối, đã hủy và quy tắc chuyển trạng thái.
+- [x] Chống đăng ký trùng và duyệt vượt sức chứa, kể cả thao tác đồng thời.
+- [x] Volunteer xem hoạt động đã đăng ký và kết quả xét duyệt.
+- [x] Xử lý nhất quán khi hoạt động bị hủy hoặc thay đổi thông tin ảnh hưởng người đã đăng ký.
+
+Quy tắc đã chốt: dùng giờ bắt đầu làm hạn đăng ký, tự hủy và xét duyệt; tự hủy được gửi lại về chờ duyệt, bị từ chối không được gửi lại. Đã đạt 68 tests backend trên MySQL, 26 ca Playwright, 5 tests bảo vệ database kiểm thử và lint/build. Chi tiết: [kết quả giai đoạn 5](GIAI_DOAN_5_KET_QUA.md).
+
+**Tiêu chí:** chạy được đăng ký → xét duyệt → xem kết quả; không thao tác trên đơn ngoài quyền. Xem trạng thái trực tiếp trên trang tài khoản/hoạt động; trung tâm thông báo và tự động đối chiếu lịch làm sau.
+
+### Giai đoạn 6: Điểm danh cơ bản — hoàn thành
+
+Quy tắc người dùng đã chọn ngày 25/09/2026: chỉ điểm danh từ giờ bắt đầu đến giờ kết thúc, khi hoạt động còn Công khai. Gửi lại yêu cầu hợp lệ trả bản ghi cũ. Giữ lịch sử có mặt nếu hoạt động bị hủy sau khi điểm danh và hiển thị rõ tình trạng hủy. Chi tiết: [kết quả giai đoạn 6](GIAI_DOAN_6_KET_QUA.md).
+
+- [x] Organizer xem danh sách người đã được duyệt của hoạt động.
+- [x] Xác nhận có mặt thủ công trên website, đúng hoạt động và khoảng thời gian cho phép.
+- [x] Lưu người xác nhận và thời điểm; chống điểm danh trùng.
+- [x] Từ chối điểm danh người chưa được duyệt, đã hủy hoặc thuộc hoạt động ngoài quyền quản lý.
+- [x] Volunteer xem trạng thái điểm danh và lịch sử tham gia.
+
+Kiểm tra ngày 25/09/2026: 77 tests backend trên MySQL, 30 ca Playwright, 5 tests bảo vệ database và lint/build đạt. Migration điểm danh đã áp dụng sau khi sao lưu, giữ nguyên dữ liệu hiện có.
+
+**Tiêu chí:** ghi nhận được người thực sự tham gia và truy vết thao tác; thao tác lặp không tăng lượt tham gia. QR, mã có thời hạn và check-out làm sau. Đợt 1 thống kê lượt tham gia, chưa tự suy ra số giờ.
+
+### Giai đoạn 7: Đánh giá và phản hồi cơ bản — hoàn thành
+
+Quy tắc đã chốt: điểm 1–5, nội dung bắt buộc tối đa 2.000 ký tự, gửi một lần và chưa sửa/xóa. Admin ẩn cần lý do; phản hồi bị ẩn không hiển thị cho Organizer hoặc tính vào điểm trung bình. Chi tiết: [kết quả giai đoạn 7](GIAI_DOAN_7_KET_QUA.md).
+
+- [x] Người đã được xác nhận tham gia gửi điểm đánh giá và nội dung sau khi hoạt động hoàn thành.
+- [x] Ràng buộc với lượt tham gia; tối đa một phản hồi/người/hoạt động.
+- [x] Organizer xem phản hồi thuộc hoạt động mình quản lý.
+- [x] Admin xem và ẩn phản hồi không phù hợp; lưu người thực hiện và lý do.
+- [x] Thống kê chỉ tính phản hồi hợp lệ, không tính phản hồi đã bị ẩn.
+
+Kiểm tra ngày 25/09/2026: 87 tests backend trên MySQL, 34 ca Playwright, 5 tests bảo vệ database và lint/build đạt. Migration phản hồi đã áp dụng sau sao lưu, giữ nguyên dữ liệu hiện có.
+
+**Tiêu chí:** người tham gia thực tế gửi được phản hồi, không đánh giá trùng hoặc truy cập ngoài quyền. Chưa phân loại cảm xúc, phát hiện spam/sự cố hoặc tóm tắt bằng AI.
+
+### Giai đoạn 8: Thống kê và quản trị cơ bản — hoàn thành
+
+Quy tắc đã chốt ngày 26/09/2026: “Đã tham gia” chỉ tính hoạt động Hoàn thành có điểm danh; có mặt ở hoạt động chưa hoàn thành/bị hủy hiển thị riêng. Khóa/mở khóa Volunteer và Organizer bắt buộc lý do, không áp dụng cho Admin. Chi tiết: [kết quả giai đoạn 8](GIAI_DOAN_8_KET_QUA.md).
+
+- [x] Volunteer xem số hoạt động đăng ký, được duyệt và đã tham gia.
+- [x] Organizer xem số đơn, người được duyệt, đã điểm danh và phản hồi theo hoạt động.
+- [x] Hiển thị kết quả hoạt động gồm số liệu tham gia và đánh giá từ dữ liệu thật.
+- [x] Admin quản lý trạng thái tài khoản, khóa/mở khóa và giám sát hoạt động, đăng ký, phản hồi.
+- [x] Tận dụng Django Admin cho thao tác đã đáp ứng được; bổ sung màn hình cần thiết cho luồng sử dụng.
+- [x] Ghi nhận thao tác nhạy cảm: khóa tài khoản, xét duyệt, điểm danh và ẩn phản hồi.
+
+Kiểm tra: 96 tests backend trên MySQL, 34 ca trình duyệt hồi quy và 4 ca thống kê/quản trị đạt sau khi sửa lỗi chờ dữ liệu trong bài test; 5 tests bảo vệ database và lint/build đạt. Migration đã áp dụng sau sao lưu, giữ nguyên dữ liệu cũ. Nhật ký riêng bắt đầu từ giai đoạn 8; không dựng lại những thao tác trước đây không còn dữ liệu nguồn.
+
+**Tiêu chí:** số liệu khớp danh sách chi tiết; kiểm tra quyền tại backend. Biểu đồ nâng cao, xuất PDF/Excel, mẫu báo cáo và chứng nhận làm sau.
+
+### Giai đoạn 9: Kiểm tra hoàn chỉnh đợt 1
+
+- [ ] Chạy xuyên suốt luồng chính với bốn nhóm người dùng trên React, Django và MySQL.
+- [ ] Kiểm tra tài khoản bị khóa, truy cập trái quyền, dữ liệu sai, đăng ký trùng, sức chứa và điểm danh lặp.
+- [ ] Kiểm tra hoạt động bị hủy, phản hồi không đủ điều kiện, trạng thái rỗng và lỗi kết nối.
+- [ ] Chạy backend tests, frontend lint/build và các luồng trình duyệt phù hợp.
+- [ ] Kiểm tra migration từ database mới; cập nhật hướng dẫn chạy và sao lưu dữ liệu.
+- [ ] Sửa lỗi chặn luồng chính và cập nhật tài liệu theo chức năng thực tế.
+
+**Điều kiện chuyển sang đợt 2:** toàn bộ luồng chính dùng được qua giao diện với dữ liệu thật; kiểm tra bắt buộc đạt; không còn lỗi làm sai quyền, sai dữ liệu hoặc chặn thao tác chính. Chỉ có model/API chưa được tính là hoàn thành chức năng.
+
+Chưa cần chọn hosting để hoàn thành bản local. Nếu đưa lên Internet, phải cấu hình HTTPS, cookie an toàn, email/static/media và backup trước khi mở cho người dùng thật.
+
+## 4. Đợt 2 — Chức năng phụ và AI
+
+### Giai đoạn 10: Bổ sung sau khi đợt 1 đạt
+
+Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1. Chọn từng nhóm theo nhu cầu; không cần làm hết mọi tiện ích trước AI, nhưng phải có dữ liệu đầu vào và cách đánh giá tương ứng.
+
+| Nhóm | Công việc chờ | Phụ thuộc |
 |---|---|---|
-| M1 | Dự án chạy được với MySQL; đăng ký/đăng nhập và phân quyền | Giai đoạn 1–2 |
-| M2 | Hồ sơ, hoạt động công khai và quản lý hoạt động | M1, giai đoạn 3–4 |
-| M3 | Đăng ký, xét duyệt, điểm danh, phản hồi và thông báo | M2, giai đoạn 5–7 |
-| M4 | Đề xuất, phân tích phản hồi, dashboard và báo cáo | M3, giai đoạn 8–9 |
-| M5 | Bản kiểm thử, cấu hình triển khai và tài liệu bàn giao | M4, giai đoạn 10 |
+| Hồ sơ mở rộng | Kỹ năng, sở thích, lịch rảnh và liên kết tình nguyện viên | Hồ sơ cơ bản |
+| Hoạt động mở rộng | Kỹ năng yêu cầu, lọc nâng cao, timeline và ảnh | Quản lý hoạt động; danh mục kỹ năng khi sử dụng |
+| Địa điểm | Danh mục địa điểm, tọa độ, bản đồ, chỉ đường, dự phòng khi dịch vụ lỗi | Địa chỉ hoạt động |
+| Điểm danh nâng cao | QR, mã có thời hạn, nhập mã dự phòng, check-out | Điểm danh cơ bản; chốt hướng quét |
+| Đóng góp | Tính giờ và lịch sử đóng góp chi tiết | Quy tắc tính giờ và dữ liệu xác nhận phù hợp |
+| Thông báo | Danh sách, đã đọc, liên kết nội dung, nhắc lịch và email nghiệp vụ | Trạng thái hoạt động/đăng ký; SMTP nếu gửi email |
+| Ghép nối | Lọc điều kiện, đối chiếu lịch, baseline và đề xuất hai chiều có lý do | Kỹ năng, sở thích, lịch rảnh và hoạt động |
+| AI ghép nối | Embedding hoặc mô hình phù hợp, đo chất lượng | Baseline và dữ liệu đánh giá |
+| AI phản hồi | Chuẩn hóa nhãn, phân loại cảm xúc, hỗ trợ phát hiện spam/sự cố và rà soát | Phản hồi và dữ liệu đánh giá |
+| AI báo cáo | Tóm tắt từ số liệu, phản hồi hợp lệ; cho phép kiểm tra lại | Báo cáo cơ bản, không tự bịa kết quả |
+| Báo cáo mở rộng | Biểu đồ, lọc thống kê, xuất/in PDF/Excel | Thống kê và quyền xuất dữ liệu |
+| Quản trị mở rộng | Quyền chi tiết, giao diện audit log, mẫu báo cáo/chứng nhận, câu chuyện tác động | Nghiệp vụ chính; chốt yêu cầu từng mục |
+| Lưu trữ/vận hành | Lưu file bên ngoài, hosting/domain, cache chung và tối ưu theo tải | Nhu cầu triển khai thực tế |
 
-## 7. Các điểm cần hỏi trước khi triển khai phần phụ thuộc
+AI phải phân biệt kết quả quy tắc với mô hình, có timeout và dự phòng khi dịch vụ lỗi, ghi rõ nguồn kết quả và chất lượng đã đo. Không dùng kết quả kiểm thử của báo cáo cũ làm kết quả hệ thống mới.
 
-Không cần hỏi lại các quyết định đã chốt ở mục 1. Những điểm dưới đây chỉ cần làm rõ khi đến chức năng tương ứng; vẫn tiếp tục công việc độc lập trong lúc chờ.
+## 5. Đối chiếu kế hoạch cũ và mới
 
-| Điểm chưa chốt | Đề xuất ban đầu | Khi cần xác nhận |
-|---|---|---|
-| Kết nối MySQL (đã chốt) | Dùng MySQL80 hiện có; đã provision `v_connect` và xác minh kết nối | Hoàn tất ở giai đoạn 1 |
-| Điểm danh QR | Có nhập mã dự phòng; cần chọn hướng quét phù hợp vận hành | Trước giai đoạn 6 |
-| Cách tính giờ đóng góp | Chọn tính theo check-in/out hoặc thời lượng được Organizer xác nhận | Trước khi xây thống kê giờ |
-| Nhãn phản hồi | Cảm xúc: tích cực/trung tính/tiêu cực; spam và sự cố là thuộc tính riêng | Trước giai đoạn 7–8 |
-| Dịch vụ email và AI | Chạy local với console email và baseline nội bộ trước | Khi cần gửi email thật hoặc gọi AI bên ngoài |
-| Yêu cầu quản trị nâng cao | Làm rõ quyền chi tiết, mẫu chứng nhận/báo cáo và nội dung tác động trong User Story | Trước khi chốt phạm vi M4 |
-| Hosting, domain, hạn bàn giao | Chưa giả định nhà cung cấp hoặc ngày hoàn thành | Trước triển khai production/lập lịch cụ thể |
+| Nội dung cũ | Thứ tự mới |
+|---|---|
+| Giai đoạn 3: hồ sơ, kỹ năng, lịch rảnh, upload, địa điểm | Đợt 1 giữ hồ sơ đã làm; mở rộng sang đợt 2 |
+| Giai đoạn 4: hoạt động, timeline, bản đồ | Đợt 1 quản lý/xem hoạt động; timeline/bản đồ làm sau |
+| Giai đoạn 5 kèm thông báo và đối chiếu lịch | Đợt 1 đăng ký/xét duyệt; phần hỗ trợ làm sau |
+| Giai đoạn 6 triển khai QR | Đợt 1 điểm danh thủ công có kiểm soát; QR làm sau |
+| Giai đoạn 7: phản hồi và thông báo | Đợt 1 phản hồi cơ bản; thông báo/AI làm sau |
+| Giai đoạn 8: AI | AI sang đợt 2; giai đoạn 8 mới là thống kê/quản trị cơ bản |
+| Giai đoạn 9: dashboard và quản trị mở rộng | Phần cơ bản sang giai đoạn 8; nâng cao sang đợt 2 |
+| Giai đoạn 10: kiểm thử cuối dự án | Kiểm thử từng chức năng và tổng thể ở giai đoạn 9; giai đoạn 10 mới là phụ/AI |
 
-Không đưa mật khẩu database hoặc API key vào file kế hoạch; dùng biến môi trường cục bộ.
+Không sửa báo cáo kết quả cũ thành công việc chưa thực hiện. Kế hoạch mới thay đổi ưu tiên, không thay đổi lịch sử.
 
-## 8. Đồng bộ với báo cáo gốc
+## 6. Việc tiếp theo
 
-- [ ] Proposal/phạm vi: thay web + mobile bằng website responsive.
-- [ ] Technology stack: React JavaScript + Vite, Django và MySQL.
-- [ ] Kiến trúc: bỏ Mobile App và Supabase; thể hiện auth, file, email và AI trong hệ thống mới.
-- [ ] Database Design: cập nhật bảng, kiểu dữ liệu, khóa và quan hệ.
-- [ ] User Story/Product Backlog/Sprint Backlog: chuyển nghiệp vụ mobile cần giữ sang web, bỏ công việc Expo/APK.
-- [ ] UI Design: chỉ giữ màn hình web và bổ sung bố cục responsive.
-- [ ] Code Standard: JavaScript/React và Python/Django.
-- [ ] Test Plan/Test Report: lập và chạy lại cho hệ thống mới; không sử dụng tỷ lệ 98,55% cũ làm kết quả mới.
-- [ ] Tài liệu AI: phân biệt mục tiêu, baseline và kết quả đo; thống nhất bộ nhãn phản hồi.
-- [ ] Reflection/biên bản cũ: giữ đúng lịch sử; ghi thay đổi mới riêng, không sửa lịch sử thành công việc chưa thực hiện.
+1. Bắt đầu giai đoạn 9: kiểm tra xuyên suốt đăng ký tài khoản → hồ sơ → hoạt động → đăng ký tham gia → xét duyệt → điểm danh → phản hồi → thống kê.
+2. Kiểm tra các tình huống hủy hoạt động, tài khoản bị khóa, quyền truy cập và thao tác lặp/đồng thời giữa các bước.
+3. Xác minh migration từ database mới, sao lưu và hướng dẫn chạy; sửa lỗi chặn nghiệp vụ nếu phát hiện.
+4. Cập nhật kết quả kiểm tra đợt 1 trước khi chuyển sang chức năng phụ/AI. Bản bàn giao giai đoạn 8 nằm trên nhánh `feature/reports-admin`.
 
-## 9. Việc ưu tiên ở lượt viết code tiếp theo
+Không tiếp tục chức năng phụ hoặc AI trước khi hoàn thành đợt 1, trừ khi người dùng đổi ưu tiên.
 
-1. Triển khai giai đoạn 2: API đăng ký Volunteer/Organizer, đăng nhập và đăng xuất.
-2. Bổ sung session, CSRF, phân quyền và đặt lại mật khẩu.
-3. Xây giao diện xác thực tiếng Việt và khu vực theo vai trò.
-4. Kiểm thử backend, các luồng giao diện và cập nhật kết quả M1.
+## 7. Quy tắc cập nhật
 
-## 10. Quy tắc cập nhật tiến độ
-
-- Đánh dấu `[x]` khi đã triển khai và xác minh; không đánh dấu chỉ vì đã tạo file hoặc mô tả thiết kế.
-- Mỗi mốc bàn giao ghi ngắn gọn: chức năng chạy được, kiểm thử đã chạy, lỗi/giới hạn và việc còn lại.
-- Khi có thay đổi phạm vi, cập nhật mục 1 và các checklist bị ảnh hưởng.
-- Nếu thiếu thông tin nghiệp vụ hoặc lựa chọn ảnh hưởng lớn, hỏi người dùng trước khi thực hiện phần phụ thuộc.
+- Chỉ đánh dấu hoàn thành khi đã triển khai và kiểm tra; mỗi chức năng gồm dữ liệu, API, giao diện, phân quyền và kiểm thử cần thiết.
+- Hỏi khi thiếu quy tắc nghiệp vụ ảnh hưởng phần đang làm; không hỏi lại công nghệ/vai trò đã chốt.
+- Chốt hướng QR, cách tính giờ, nhãn AI, dịch vụ ngoài và chứng nhận khi đến nhóm tương ứng ở đợt 2.
+- Ghi rõ phần ở local và phần đã commit/push. Sửa kế hoạch không đồng nghĩa triển khai code hoặc đẩy GitHub.
+- Đồng bộ kế hoạch, README và thiết kế khi đổi phạm vi; giữ nguyên báo cáo kết quả lịch sử.

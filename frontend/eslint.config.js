@@ -4,7 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'playwright-report', 'test-results'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: { ecmaVersion: 'latest', sourceType: 'module', globals: globals.browser, parserOptions: { ecmaFeatures: { jsx: true } } },
@@ -17,4 +17,5 @@ export default [
     },
   },
   { files: ['*.config.js'], languageOptions: { globals: globals.node } },
+  { files: ['e2e/**/*.js'], languageOptions: { globals: globals.node } },
 ]

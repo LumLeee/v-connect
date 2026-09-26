@@ -18,7 +18,7 @@ export default function HomePage() {
           <div className="eyebrow"><span />BẮT ĐẦU TỪ MỘT ĐIỀU TỬ TẾ</div>
           <h1>Một chút thời gian.<br />Một <em>đổi thay</em><br />cho cộng đồng.</h1>
           <p>Mỗi người đều có điều gì đó để sẻ chia. V-Connect giúp bạn tìm nơi để những kỹ năng và tấm lòng của mình trở nên có ích.</p>
-          <a className="button primary" href="#hanh-trinh">Khám phá V-Connect <ArrowRight size={18} /></a>
+          <Link className="button primary" to="/hoat-dong">Khám phá hoạt động <ArrowRight size={18} /></Link>
           <div className="hero-note"><Heart size={17} />Kết nối tình nguyện viên và nhà tổ chức</div>
         </div>
         <div className="hero-art" role="img" aria-label="Minh họa những bàn tay cùng nuôi dưỡng một mầm cây">
@@ -43,7 +43,7 @@ export default function HomePage() {
         {data && <div className="skill-tags">{data.results.map((skill) => <span key={skill.id}>{skill.name}</span>)}</div>}
         {data?.count === 0 && <p className="muted">Danh mục kỹ năng đang được chuẩn bị.</p>}
       </section>
-      <section className="page-width project-note"><div><p className="eyebrow">V-CONNECT ĐANG ĐƯỢC XÂY DỰNG</p><h2>Cùng chuẩn bị cho hành trình sắp tới.</h2><p>Đây là phiên bản nền tảng. Tài khoản, hồ sơ và đăng ký hoạt động sẽ được bổ sung ở các giai đoạn tiếp theo.</p></div><Link to="/gioi-thieu" className="button secondary">Tìm hiểu thêm <ArrowRight size={18} /></Link></section>
+      <section className="page-width project-note"><div><p className="eyebrow">CÙNG TẠO NÊN THAY ĐỔI</p><h2>Tìm một hoạt động để bắt đầu.</h2><p>Hoàn thiện hồ sơ, khám phá hoạt động và đăng ký tham gia. Bạn có thể theo dõi kết quả xét duyệt trong danh sách đăng ký của mình. Nhà tổ chức quản lý hoạt động và xét duyệt người tham gia.</p></div><Link to="/hoat-dong" className="button secondary">Xem hoạt động <ArrowRight size={18} /></Link></section>
     </>
   )
 }

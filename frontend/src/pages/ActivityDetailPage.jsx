@@ -5,6 +5,33 @@ import RequestState from '../components/RequestState.jsx'
 import { apiPost } from '../api/client.js'
 import { activityStatuses, activityTime } from '../api/activityFormat.js'
 import ParticipationPanel from '../components/ParticipationPanel.jsx'
+import ActivityVisual from '../components/ActivityVisual.jsx'
+import { CalendarDays, MapPin, Users, UserRound } from 'lucide-react'
+import '../styles/activities.css'
+
+function PublicActivityDetail({ activity, refresh }) {
+  return <>
+    <div className="activity-detail-heading"><h1>{activity.title}</h1><p>{activity.organizer_name} · {activityTime(activity.starts_at)} (giờ Việt Nam)</p></div>
+    <div className="activity-detail-layout">
+      <div className="activity-main-column">
+        <ActivityVisual id={activity.id} large />
+        <section className="activity-info-card"><span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span>
+          <div className="activity-organizer-block"><span><UserRound size={22} aria-hidden="true" /></span><div><small>NHÀ TỔ CHỨC</small><p>{activity.organizer_name}</p></div></div>
+          <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
+          {activity.status === 'cancelled' && <p className="activity-empty" role="status">Hoạt động này đã bị hủy.</p>}
+        </section>
+      </div>
+      <aside className="activity-side-column" aria-label="Thông tin và đăng ký tham gia">
+        <section className="activity-logistics"><h2>Thông tin tham gia</h2>
+          <div className="activity-logistic-item"><CalendarDays size={20} aria-hidden="true" /><div><h3>Thời gian</h3><dl><dt>Bắt đầu</dt><dd>{activityTime(activity.starts_at)}</dd><dt>Kết thúc</dt><dd>{activityTime(activity.ends_at)}</dd></dl><p>Giờ Việt Nam (UTC+7)</p></div></div>
+          <div className="activity-logistic-item"><MapPin size={20} aria-hidden="true" /><div><h3>Địa điểm</h3><p>{activity.address}</p></div></div>
+          <div className="activity-logistic-item"><Users size={20} aria-hidden="true" /><div><h3>Người tham gia</h3><p>Đã được duyệt: {activity.approved_count}/{activity.capacity} người.</p><p>Sức chứa: {activity.capacity} người</p></div></div>
+        </section>
+        <ParticipationPanel activity={activity} refresh={refresh} />
+      </aside>
+    </div>
+  </>
+}
 
 function ActivityDetail({ activity, managed, refresh }) {
   const [pending, setPending] = useState(null)
@@ -17,6 +44,7 @@ function ActivityDetail({ activity, managed, refresh }) {
     finally { setBusy(false) }
   }
   const editable = ['draft', 'published'].includes(activity.status)
+  if (!managed) return <PublicActivityDetail activity={activity} refresh={refresh} />
   return <>
     <span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span>
     <h1>{activity.title}</h1>
@@ -51,7 +79,7 @@ function ActivityDetail({ activity, managed, refresh }) {
 export default function ActivityDetailPage({ managed = false }) {
   const { id } = useParams()
   const { data, loading, error, retry } = useApi(`${managed ? '/organizer' : ''}/activities/${id}/`)
-  return <section className="page-width section interior activity-page">
+  return <section className={`page-width section interior activity-page${managed ? '' : ' activity-public-detail'}`}>
     <Link className="activity-back" to={managed ? '/nha-to-chuc/hoat-dong' : '/hoat-dong'}>← Danh sách hoạt động</Link>
     <RequestState loading={loading} error={error} retry={retry} />
     {data && <ActivityDetail key={`${id}-${data.status}`} activity={data} managed={managed} refresh={retry} />}

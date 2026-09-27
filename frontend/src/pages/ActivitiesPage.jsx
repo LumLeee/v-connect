@@ -1,34 +1,47 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { ArrowRight, CalendarDays, MapPin, Search, Users } from 'lucide-react'
+import { useAuth } from '../auth/context.js'
+import ActivityVisual from '../components/ActivityVisual.jsx'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
 import '../styles/activities.css'
 import { activityStatuses, activityTime } from '../api/activityFormat.js'
 
 export default function ActivitiesPage({ managed = false }) {
+  const { user } = useAuth()
   const [params, setParams] = useSearchParams()
   const query = params.get('search') || ''
   const page = Math.max(1, Number(params.get('page')) || 1)
   const [search, setSearch] = useState(query)
   const { data, loading, error, retry } = useApi(`${managed ? '/organizer' : ''}/activities/?${new URLSearchParams({ search: query, page: String(page), page_size: '12' })}`)
   function submit(event) { event.preventDefault(); setParams({ search: search.trim(), page: '1' }) }
-  return <section className="page-width section interior activity-page">
+  return <section className="page-width section interior activity-page activity-browser">
     <p className="eyebrow">CÙNG ĐÓNG GÓP CHO CỘNG ĐỒNG</p>
     <div className="activity-heading"><h1>{managed ? 'Hoạt động của tôi' : 'Khám phá hoạt động'}</h1>
-      {managed && <Link className="button primary" to="/nha-to-chuc/hoat-dong/tao">Tạo hoạt động</Link>}</div>
+      {managed ? <Link className="button primary" to="/nha-to-chuc/hoat-dong/tao">Tạo hoạt động</Link> : user?.role === 'volunteer' && <Link className="button secondary" to="/tinh-nguyen-vien/dang-ky">Đăng ký của tôi</Link>}</div>
+    <p className="activity-intro">{managed ? 'Theo dõi và quản lý những hoạt động bạn tổ chức cho cộng đồng.' : 'Tìm một hoạt động ý nghĩa, khám phá thông tin và bắt đầu hành trình tình nguyện của bạn.'}</p>
     <form className="activity-search" onSubmit={submit}>
+      <h2>Tìm cơ hội đóng góp của bạn</h2>
+      <p>Tìm kiếm hoạt động theo tên và xem thông tin trước khi đăng ký.</p>
       <label htmlFor="activity-search">Tìm theo tên hoạt động</label>
-      <div><input id="activity-search" maxLength={200} value={search} onChange={event => setSearch(event.target.value)} /><button className="button primary" type="submit">Tìm kiếm</button></div>
+      <div><div className="activity-search-input"><Search size={19} aria-hidden="true" /><input id="activity-search" placeholder="Bạn muốn tham gia hoạt động nào?" maxLength={200} value={search} onChange={event => setSearch(event.target.value)} /></div><button className="button primary" type="submit">Tìm kiếm</button>
+        {(query || search) && <button className="button secondary" type="button" onClick={() => { setSearch(''); setParams({ page: '1' }) }}>Xóa tìm kiếm</button>}</div>
     </form>
     <RequestState loading={loading} error={error} retry={retry} />
     {data && <>
       <p className="muted">{data.count} hoạt động{query && ` phù hợp với “${query}”`}.</p>
       {!data.count && <p className="activity-empty">{managed ? 'Chưa có hoạt động phù hợp. Bạn có thể tạo hoạt động mới hoặc đổi từ khóa.' : 'Chưa có hoạt động phù hợp. Hãy thử từ khóa khác hoặc quay lại sau.'}</p>}
       <div className="activity-grid">{data.results.map(activity => <article className="activity-card" key={activity.id}>
-        <span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span>
+        <ActivityVisual id={activity.id}><span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span></ActivityVisual>
+        <div className="activity-card-content">
+        <p className="activity-card-date"><CalendarDays size={16} aria-hidden="true" />{activityTime(activity.starts_at)} (giờ Việt Nam)</p>
         <h2><Link to={`${managed ? '/nha-to-chuc' : ''}/hoat-dong/${activity.id}`}>{activity.title}</Link></h2>
-        <p>{activity.organizer_name}</p><p>{activityTime(activity.starts_at)} (giờ Việt Nam)</p><p>{activity.address}</p>
-        <p>Sức chứa: {activity.capacity} người</p>
+        <p className="activity-card-location"><MapPin size={16} aria-hidden="true" />{activity.address}</p>
+        <p className="activity-card-organizer">{activity.organizer_name}</p>
+        <div className="activity-card-footer"><span><Users size={16} aria-hidden="true" />{activity.approved_count}/{activity.capacity} người được duyệt</span>
+          <Link className="activity-card-link" to={`${managed ? '/nha-to-chuc' : ''}/hoat-dong/${activity.id}`}>Xem chi tiết <ArrowRight size={16} aria-hidden="true" /></Link></div>
+        </div>
       </article>)}</div>
       {(data.previous || data.next) && <nav className="activity-pagination" aria-label="Phân trang hoạt động">
         <button className="button secondary" disabled={!data.previous} onClick={() => setParams({ search: query, page: String(page - 1) })}>Trang trước</button>

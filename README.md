@@ -163,7 +163,7 @@ Tests đi qua form React và API Django thật, dùng MySQL `DB_TEST_NAME` riên
 
 Email đặt lại mật khẩu được ghi ra file cục bộ, không gửi SMTP. Screenshot và email nằm trong `tmp/e2e-*/`; báo cáo HTML nằm trong `frontend/playwright-report/`. Các thư mục này bị Git bỏ qua. Không chia sẻ file email chứa liên kết reset.
 
-Playwright có 46 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
+Playwright có 48 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
 
 ## 7. Cấu hình môi trường
 
@@ -282,6 +282,8 @@ Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.
 ## 10. Hoạt động
 
 Chạy migration khi cập nhật: `python backend/manage.py migrate --noinput`. Mở `/hoat-dong` để tìm và xem hoạt động công khai; Organizer mở `/nha-to-chuc/hoat-dong` để tạo và quản lý. Quy tắc, API và kết quả kiểm thử: [giai đoạn 4](document/GIAI_DOAN_4_KET_QUA.md).
+
+Danh sách dùng lưới thẻ với khối tìm kiếm riêng; chi tiết công khai chia nội dung và thông tin tham gia thành hai cột trên desktop, một cột trên màn hình nhỏ. Chi tiết: [cập nhật giao diện hoạt động](document/CAP_NHAT_GIAO_DIEN_HOAT_DONG.md).
 
 ## 11. Đăng ký và xét duyệt
 

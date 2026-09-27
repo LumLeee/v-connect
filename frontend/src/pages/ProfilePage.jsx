@@ -5,9 +5,11 @@ import { apiMutation } from '../api/client.js'
 import { useAuth, roleLabels, workspacePaths } from '../auth/context.js'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
+import VolunteerProfileFields from '../components/VolunteerProfileFields.jsx'
 import '../styles/profile.css'
 
 const emptyOrganization = { organization_name: '', description: '', website: '', contact_address: '' }
+const volunteerForm = profile => ({ skills: profile?.skills || [], interestsText: (profile?.interests || []).join('\n'), availability: profile?.availability || [] })
 
 function Field({ name, label, value, onChange, error, multiline = false, ...props }) {
   const Control = multiline ? 'textarea' : 'input'
@@ -23,6 +25,7 @@ function ProfileEditor({ initial }) {
   const { acceptUser } = useAuth()
   const [form, setForm] = useState({ full_name: initial.full_name, phone: initial.phone, bio: initial.bio,
     organizer: { ...emptyOrganization, ...initial.organizer } })
+  const [volunteer, setVolunteer] = useState(() => volunteerForm(initial.volunteer))
   const [avatar, setAvatar] = useState(initial.avatar_url)
   const [avatarVersion, setAvatarVersion] = useState(0)
   const [avatarFailed, setAvatarFailed] = useState(false)
@@ -44,10 +47,14 @@ function ProfileEditor({ initial }) {
     setSaving(true); setErrors({}); setMessage(''); setSaveError('')
     const payload = { full_name: form.full_name, phone: form.phone, bio: form.bio }
     if (isOrganizer) payload.organizer = form.organizer
+    if (initial.role === 'volunteer') payload.volunteer = {
+      skills: volunteer.skills, interests: volunteer.interestsText.split('\n').map(value => value.trim()).filter(Boolean), availability: volunteer.availability,
+    }
     try {
       const { profile } = await apiMutation('/auth/profile/', payload)
       setForm({ full_name: profile.full_name, phone: profile.phone, bio: profile.bio,
         organizer: { ...emptyOrganization, ...profile.organizer } })
+      setVolunteer(volunteerForm(profile.volunteer))
       acceptUser({ id: profile.id, full_name: profile.full_name, email: profile.email, username: profile.username, role: profile.role })
       setMessage('Đã lưu hồ sơ của bạn.')
     } catch (failure) {
@@ -107,6 +114,7 @@ function ProfileEditor({ initial }) {
         <Field name="website" label="Website" value={form.organizer.website} onChange={value => updateOrganization('website', value)} error={errors.organizer?.website} maxLength={300} type="url" placeholder="https://example.org" />
         <Field name="contact_address" label="Địa chỉ liên hệ" value={form.organizer.contact_address} onChange={value => updateOrganization('contact_address', value)} error={errors.organizer?.contact_address} maxLength={300} autoComplete="street-address" />
       </fieldset>}
+      {initial.role === 'volunteer' && <VolunteerProfileFields value={volunteer} onChange={value => { setVolunteer(value); setMessage('') }} errors={errors.volunteer} disabled={saving} />}
       {saveError && <p className="request-error" role="alert">{saveError}</p>}
       {message && <p className="success profile-feedback" role="status">{message}</p>}
       <div className="profile-actions"><button className="button primary" disabled={saving} type="submit">{saving ? 'Đang lưu…' : 'Lưu hồ sơ'}</button>

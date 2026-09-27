@@ -140,7 +140,7 @@ npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 101 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi, dashboard và thống kê/quản trị, bao gồm thao tác đồng thời giữa các luồng. Có thêm 8 tests bảo vệ database và thời gian kiểm thử. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Hiện có 107 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ cơ bản/mở rộng, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi, dashboard và thống kê/quản trị, bao gồm thao tác đồng thời giữa các luồng. Có thêm 8 tests bảo vệ database và thời gian kiểm thử. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -163,7 +163,7 @@ Tests đi qua form React và API Django thật, dùng MySQL `DB_TEST_NAME` riên
 
 Email đặt lại mật khẩu được ghi ra file cục bộ, không gửi SMTP. Screenshot và email nằm trong `tmp/e2e-*/`; báo cáo HTML nằm trong `frontend/playwright-report/`. Các thư mục này bị Git bỏ qua. Không chia sẻ file email chứa liên kết reset.
 
-Playwright có 44 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
+Playwright có 46 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
 
 ## 7. Cấu hình môi trường
 
@@ -275,7 +275,7 @@ Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn
 
 Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
 
-Theo kế hoạch điều chỉnh ngày 22/09/2026, nghiệp vụ chính đã hoàn thành kiểm tra tổng thể ở giai đoạn 9. Tiếp theo là chọn nhóm chức năng giai đoạn 10: kỹ năng, sở thích, lịch rảnh, QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI. Các nhóm này chưa triển khai. Xem [kế hoạch](document/KE_HOACH_TRIEN_KHAI.md).
+Theo kế hoạch điều chỉnh ngày 22/09/2026, nghiệp vụ chính đã hoàn thành kiểm tra tổng thể ở giai đoạn 9. Giai đoạn 10 đã bổ sung kỹ năng, sở thích và lịch rảnh vào hồ sơ Tình nguyện viên. QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chưa triển khai. Xem [kế hoạch](document/KE_HOACH_TRIEN_KHAI.md).
 
 Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).
 
@@ -320,3 +320,9 @@ Chạy migration bằng Python trong `.venv`: `python backend/manage.py migrate 
 ## 15. Không gian tình nguyện viên
 
 Trang `/tinh-nguyen-vien` dùng bố cục tham khảo Volunteer Dashboard trong báo cáo: thẻ chào mừng và hồ sơ, thao tác nhanh, ba ô thống kê, hoạt động sắp tới và lịch sử gần đây. Giữ màu sắc V-Connect, dùng dữ liệu thật và ẩn chức năng chưa triển khai. API riêng kiểm tra vai trò và chỉ trả dữ liệu của tài khoản trong phiên; không cần migration mới. Xem [chi tiết cập nhật dashboard](document/CAP_NHAT_VOLUNTEER_DASHBOARD.md).
+
+## 16. Hồ sơ tình nguyện viên mở rộng
+
+Trong `/ho-so`, Volunteer chọn kỹ năng, nhập sở thích (mỗi dòng một mục) và thêm lịch rảnh lặp hằng tuần theo giờ Việt Nam. Các mục đều tùy chọn và được lưu bằng nút **Lưu hồ sơ**. API kiểm tra giới hạn, dữ liệu trùng và lịch chồng lấn, chỉ cho chủ tài khoản cập nhật. Chưa có ghép nối tự động hoặc AI.
+
+Khi cập nhật bản cài, sao lưu rồi chạy `python backend/manage.py migrate --noinput` bằng Python trong `.venv`; migration `accounts.0005_volunteerprofile_availabilityslot` bổ sung bảng mới. Xem [quy tắc, API và kết quả hồ sơ mở rộng](document/HO_SO_MO_RONG.md).

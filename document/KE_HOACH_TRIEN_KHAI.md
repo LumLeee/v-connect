@@ -1,6 +1,6 @@
 # Kế hoạch triển khai V-Connect
 
-Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 26/09/2026.
+Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 27/09/2026.
 
 ## 1. Hướng thực hiện đã thống nhất
 
@@ -31,7 +31,8 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 7: phản hồi cơ bản | Đã đẩy lên `feature/feedback`, commit `11f90b2` |
 | Giai đoạn 8: thống kê và quản trị cơ bản | Đã đẩy lên `feature/reports-admin`, commit `f2a85f5`, ngày 26/09/2026 |
 | Giai đoạn 9: kiểm tra hoàn chỉnh nghiệp vụ chính | Hoàn thành; bàn giao trên `dev`, kế thừa giai đoạn 1–8 |
-| Chức năng phụ và AI | Xếp sau đợt nghiệp vụ chính |
+| Giai đoạn 10: hồ sơ mở rộng | Đã bổ sung kỹ năng, sở thích và lịch rảnh; xem [chi tiết](HO_SO_MO_RONG.md) |
+| Chức năng phụ khác và AI | Chưa triển khai |
 
 Bản giai đoạn 2 đạt 39 tests backend, 12 ca Playwright, 5 tests bảo vệ database và lint/build. Bản local gồm hồ sơ đạt 48 tests backend khi kiểm tra ngày 21/09/2026. Đây là kết quả các lượt trước, không phải kiểm chứng chức năng chưa triển khai.
 
@@ -70,7 +71,7 @@ Email được kiểm thử cục bộ; chưa xác minh SMTP thật. Không coi 
 
 **Tiêu chí:** tài khoản có thông tin liên hệ cần thiết và chỉ sửa được hồ sơ của mình.
 
-Kỹ năng, sở thích, lịch rảnh, địa điểm và mở rộng lưu trữ chuyển sang đợt 2. Danh mục kỹ năng đã seed được giữ; chưa có liên kết kỹ năng với hồ sơ. Thu hẹp phạm vi không có nghĩa các công việc chuyển đi đã hoàn thành.
+Kỹ năng, sở thích, lịch rảnh, địa điểm và mở rộng lưu trữ chuyển sang đợt 2. Ngày 27/09/2026 đã bổ sung liên kết kỹ năng với hồ sơ Volunteer, sở thích và lịch rảnh hằng tuần ở giai đoạn 10; địa điểm và mở rộng lưu trữ chưa triển khai.
 
 ### Giai đoạn 4: Quản lý và xem hoạt động — đã đẩy GitHub
 
@@ -161,7 +162,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 
 | Nhóm | Công việc chờ | Phụ thuộc |
 |---|---|---|
-| Hồ sơ mở rộng | Kỹ năng, sở thích, lịch rảnh và liên kết tình nguyện viên | Hồ sơ cơ bản |
+| Hồ sơ mở rộng | Đã có kỹ năng liên kết với Volunteer, sở thích, lịch rảnh hằng tuần; chức năng kết nối giữa các tình nguyện viên chưa triển khai | Hồ sơ cơ bản; xem [kết quả](HO_SO_MO_RONG.md) |
 | Hoạt động mở rộng | Kỹ năng yêu cầu, lọc nâng cao, timeline và ảnh | Quản lý hoạt động; danh mục kỹ năng khi sử dụng |
 | Địa điểm | Danh mục địa điểm, tọa độ, bản đồ, chỉ đường, dự phòng khi dịch vụ lỗi | Địa chỉ hoạt động |
 | Điểm danh nâng cao | QR, mã có thời hạn, nhập mã dự phòng, check-out | Điểm danh cơ bản; chốt hướng quét |

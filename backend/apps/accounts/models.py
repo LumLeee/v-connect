@@ -91,3 +91,24 @@ class OrganizerProfile(models.Model):
     description = models.TextField("Mô tả tổ chức", max_length=4000, blank=True)
     website = models.URLField("Website", max_length=300, blank=True)
     contact_address = models.CharField("Địa chỉ liên hệ", max_length=300, blank=True)
+
+
+class VolunteerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='volunteer_profile')
+    skills = models.ManyToManyField('core.Skill', blank=True, related_name='volunteer_profiles')
+    interests = models.JSONField('Sở thích', default=list, blank=True)
+
+
+class AvailabilitySlot(models.Model):
+    profile = models.ForeignKey(VolunteerProfile, on_delete=models.CASCADE, related_name='availability')
+    weekday = models.PositiveSmallIntegerField('Ngày trong tuần')
+    starts_at = models.TimeField('Giờ bắt đầu')
+    ends_at = models.TimeField('Giờ kết thúc')
+
+    class Meta:
+        ordering = ['weekday', 'starts_at', 'id']
+        constraints = [
+            models.CheckConstraint(condition=models.Q(weekday__gte=0, weekday__lte=6), name='accounts_availability_weekday'),
+            models.CheckConstraint(condition=models.Q(ends_at__gt=models.F('starts_at')), name='accounts_availability_time_order'),
+            models.UniqueConstraint(fields=['profile', 'weekday', 'starts_at', 'ends_at'], name='accounts_availability_unique_slot'),
+        ]

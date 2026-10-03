@@ -1,6 +1,6 @@
 # Kế hoạch triển khai V-Connect
 
-Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 27/09/2026.
+Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 28/09/2026.
 
 ## 1. Hướng thực hiện đã thống nhất
 
@@ -32,6 +32,7 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 8: thống kê và quản trị cơ bản | Đã đẩy lên `feature/reports-admin`, commit `f2a85f5`, ngày 26/09/2026 |
 | Giai đoạn 9: kiểm tra hoàn chỉnh nghiệp vụ chính | Hoàn thành; bàn giao trên `dev`, kế thừa giai đoạn 1–8 |
 | Giai đoạn 10: hồ sơ mở rộng | Đã bổ sung kỹ năng, sở thích và lịch rảnh; xem [chi tiết](HO_SO_MO_RONG.md) |
+| Giai đoạn 10: hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, bộ lọc và ảnh bìa; timeline để sau; xem [chi tiết](HOAT_DONG_MO_RONG.md) |
 | Chức năng phụ khác và AI | Chưa triển khai |
 
 Bản giai đoạn 2 đạt 39 tests backend, 12 ca Playwright, 5 tests bảo vệ database và lint/build. Bản local gồm hồ sơ đạt 48 tests backend khi kiểm tra ngày 21/09/2026. Đây là kết quả các lượt trước, không phải kiểm chứng chức năng chưa triển khai.
@@ -163,7 +164,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | Nhóm | Công việc chờ | Phụ thuộc |
 |---|---|---|
 | Hồ sơ mở rộng | Đã có kỹ năng liên kết với Volunteer, sở thích, lịch rảnh hằng tuần; chức năng kết nối giữa các tình nguyện viên chưa triển khai | Hồ sơ cơ bản; xem [kết quả](HO_SO_MO_RONG.md) |
-| Hoạt động mở rộng | Kỹ năng yêu cầu, lọc nâng cao, timeline và ảnh | Quản lý hoạt động; danh mục kỹ năng khi sử dụng |
+| Hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, lọc trạng thái/ngày/địa điểm/kỹ năng và ảnh bìa; timeline để sau | Quản lý hoạt động; xem [chi tiết](HOAT_DONG_MO_RONG.md) |
 | Địa điểm | Danh mục địa điểm, tọa độ, bản đồ, chỉ đường, dự phòng khi dịch vụ lỗi | Địa chỉ hoạt động |
 | Điểm danh nâng cao | QR, mã có thời hạn, nhập mã dự phòng, check-out | Điểm danh cơ bản; chốt hướng quét |
 | Đóng góp | Tính giờ và lịch sử đóng góp chi tiết | Quy tắc tính giờ và dữ liệu xác nhận phù hợp |

@@ -8,15 +8,21 @@ import ParticipationPanel from '../components/ParticipationPanel.jsx'
 import ActivityVisual from '../components/ActivityVisual.jsx'
 import { CalendarDays, MapPin, Users, UserRound } from 'lucide-react'
 import '../styles/activities.css'
+import ActivityCoverEditor from '../components/ActivityCoverEditor.jsx'
+
+function RequiredSkills({ activity }) {
+  return activity.skill_details?.length ? <section className="activity-required-skills"><h2>Kỹ năng yêu cầu</h2><div className="activity-skill-tags">{activity.skill_details.map(skill => <span key={skill.id}>{skill.name}</span>)}</div><p className="muted">Nhà tổ chức xét duyệt từng đơn; kỹ năng không tự động giới hạn quyền đăng ký.</p></section> : null
+}
 
 function PublicActivityDetail({ activity, refresh }) {
   return <>
     <div className="activity-detail-heading"><h1>{activity.title}</h1><p>{activity.organizer_name} · {activityTime(activity.starts_at)} (giờ Việt Nam)</p></div>
     <div className="activity-detail-layout">
       <div className="activity-main-column">
-        <ActivityVisual id={activity.id} large />
+        <ActivityVisual id={activity.id} coverUrl={activity.cover_url} large />
         <section className="activity-info-card"><span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span>
           <div className="activity-organizer-block"><span><UserRound size={22} aria-hidden="true" /></span><div><small>NHÀ TỔ CHỨC</small><p>{activity.organizer_name}</p></div></div>
+          <RequiredSkills activity={activity} />
           <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
           {activity.status === 'cancelled' && <p className="activity-empty" role="status">Hoạt động này đã bị hủy.</p>}
         </section>
@@ -49,6 +55,8 @@ function ActivityDetail({ activity, managed, refresh }) {
     <span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span>
     <h1>{activity.title}</h1>
     <p className="lead">Nhà tổ chức: {activity.organizer_name}</p>
+    <ActivityCoverEditor activity={activity} refresh={refresh} />
+    <RequiredSkills activity={activity} />
     <dl className="activity-facts"><div><dt>Bắt đầu</dt><dd>{activityTime(activity.starts_at)}</dd></div><div><dt>Kết thúc</dt><dd>{activityTime(activity.ends_at)}</dd></div>
       <div><dt>Địa điểm</dt><dd>{activity.address}</dd></div><div><dt>Sức chứa</dt><dd>{activity.capacity} người</dd></div></dl>
     <p className="muted">Thời gian hiển thị theo giờ Việt Nam (UTC+7).</p>

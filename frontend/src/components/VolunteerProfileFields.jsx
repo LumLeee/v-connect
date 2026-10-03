@@ -5,7 +5,7 @@ import RequestState from './RequestState.jsx'
 const weekdays = ['Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Chủ nhật']
 const errorText = error => !error ? '' : typeof error === 'string' ? error : Object.values(error).map(errorText).filter(Boolean).join(' ')
 
-function SkillPicker({ selected, onChange }) {
+export function SkillPicker({ selected, onChange }) {
   const [page, setPage] = useState(1)
   const { data, loading, error, retry } = useApi(`/skills/?page_size=100&page=${page}`)
   return <div className="profile-skills">

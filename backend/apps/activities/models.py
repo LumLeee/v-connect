@@ -19,6 +19,8 @@ class Activity(models.Model):
     starts_at = models.DateTimeField('Bắt đầu')
     ends_at = models.DateTimeField('Kết thúc')
     capacity = models.PositiveIntegerField('Sức chứa')
+    required_skills = models.ManyToManyField('core.Skill', blank=True, related_name='activities')
+    cover = models.ImageField('Ảnh bìa', upload_to='activities/covers/', blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
     published_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

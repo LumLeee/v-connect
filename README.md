@@ -4,7 +4,7 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Đã hoàn thành nghiệp vụ chính và kiểm tra tổng thể giai đoạn 9 trên nhánh `dev`, kế thừa giai đoạn 8 (`feature/reports-admin`, commit `f2a85f5`). Bao gồm xác thực/phân quyền, hồ sơ, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị cơ bản. **Chưa có báo cáo nâng cao hoặc AI.** Xem [kết quả giai đoạn 9](document/GIAI_DOAN_9_KET_QUA.md) và [hướng dẫn vận hành, sao lưu](document/VAN_HANH_VA_SAO_LUU.md).
+Đã hoàn thành nghiệp vụ chính và kiểm tra tổng thể giai đoạn 9 trên nhánh `dev`, kế thừa giai đoạn 8 (`feature/reports-admin`, commit `f2a85f5`). Bao gồm xác thực/phân quyền, hồ sơ, avatar, hoạt động cơ bản/mở rộng, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị cơ bản. **Chưa có báo cáo nâng cao hoặc AI.** Xem [kết quả giai đoạn 9](document/GIAI_DOAN_9_KET_QUA.md) và [hướng dẫn vận hành, sao lưu](document/VAN_HANH_VA_SAO_LUU.md).
 
 Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
 
@@ -140,7 +140,7 @@ npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 107 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ cơ bản/mở rộng, avatar, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi, dashboard và thống kê/quản trị, bao gồm thao tác đồng thời giữa các luồng. Có thêm 8 tests bảo vệ database và thời gian kiểm thử. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng. Hiện có 115 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ cơ bản/mở rộng, avatar, hoạt động cơ bản/mở rộng, đăng ký/xét duyệt, điểm danh, phản hồi, dashboard và thống kê/quản trị, bao gồm thao tác đồng thời giữa các luồng. Có thêm 8 tests bảo vệ database và thời gian kiểm thử. Không dùng SQLite làm kết quả thay thế cho MySQL.
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -163,7 +163,7 @@ Tests đi qua form React và API Django thật, dùng MySQL `DB_TEST_NAME` riên
 
 Email đặt lại mật khẩu được ghi ra file cục bộ, không gửi SMTP. Screenshot và email nằm trong `tmp/e2e-*/`; báo cáo HTML nằm trong `frontend/playwright-report/`. Các thư mục này bị Git bỏ qua. Không chia sẻ file email chứa liên kết reset.
 
-Playwright có 48 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
+Playwright có 50 ca trên desktop 1280px và màn hình hẹp 390px, đồng thời kiểm tra tràn ngang của các form ở 320, 390, 640, 768 và 1280px. Giới hạn tần suất được tăng riêng trong tiến trình E2E vì nhiều test dùng chung IP loopback; các giới hạn thực tế vẫn được kiểm tra trong backend tests. Nghiệp vụ dùng API thật và không tắt CSRF; bài kiểm tra mất kết nối chủ động chặn request rồi bỏ chặn để thử lại. Luồng xuyên suốt mô phỏng thời gian riêng trong máy chủ kiểm thử để đi qua mốc điểm danh/hoàn thành, không đổi giờ hệ thống hoặc dữ liệu ứng dụng thật.
 
 ## 7. Cấu hình môi trường
 
@@ -275,7 +275,7 @@ Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn
 
 Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
 
-Theo kế hoạch điều chỉnh ngày 22/09/2026, nghiệp vụ chính đã hoàn thành kiểm tra tổng thể ở giai đoạn 9. Giai đoạn 10 đã bổ sung kỹ năng, sở thích và lịch rảnh vào hồ sơ Tình nguyện viên. QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chưa triển khai. Xem [kế hoạch](document/KE_HOACH_TRIEN_KHAI.md).
+Theo kế hoạch điều chỉnh ngày 22/09/2026, nghiệp vụ chính đã hoàn thành kiểm tra tổng thể ở giai đoạn 9. Giai đoạn 10 đã bổ sung hồ sơ Tình nguyện viên mở rộng và kỹ năng yêu cầu, bộ lọc, ảnh bìa cho hoạt động. QR, bản đồ, timeline, thông báo, báo cáo nâng cao và ba chức năng AI chưa triển khai. Xem [kế hoạch](document/KE_HOACH_TRIEN_KHAI.md).
 
 Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).
 
@@ -284,6 +284,8 @@ Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.
 Chạy migration khi cập nhật: `python backend/manage.py migrate --noinput`. Mở `/hoat-dong` để tìm và xem hoạt động công khai; Organizer mở `/nha-to-chuc/hoat-dong` để tạo và quản lý. Quy tắc, API và kết quả kiểm thử: [giai đoạn 4](document/GIAI_DOAN_4_KET_QUA.md).
 
 Danh sách dùng lưới thẻ với khối tìm kiếm riêng; chi tiết công khai chia nội dung và thông tin tham gia thành hai cột trên desktop, một cột trên màn hình nhỏ. Chi tiết: [cập nhật giao diện hoạt động](document/CAP_NHAT_GIAO_DIEN_HOAT_DONG.md).
+
+Hoạt động có thể chọn tối đa 20 kỹ năng yêu cầu và một ảnh bìa. Bộ lọc kết hợp tên, trạng thái, khoảng ngày bắt đầu theo giờ Việt Nam, địa điểm và kỹ năng; điều kiện được giữ khi phân trang/tải lại. Kỹ năng không tự chặn người đăng ký. Chủ hoạt động tải/thay/xóa ảnh tại trang quản lý chi tiết khi còn Nháp/Công khai. Ảnh bản nháp chỉ chủ hoạt động xem được. Quy tắc, API và migration: [hoạt động mở rộng](document/HOAT_DONG_MO_RONG.md).
 
 ## 11. Đăng ký và xét duyệt
 

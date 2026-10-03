@@ -131,4 +131,5 @@ class ActivityTests(APITestCase):
         self.create()
         self.assertEqual(self.client.get(self.url + f'?organizer={self.owner.pk}').data['count'], 1)
         public = APIClient().get('/api/v1/activities/?status=draft')
-        self.assertEqual(public.data['count'], 3)
+        self.assertEqual(public.status_code, 400)
+        self.assertEqual(APIClient().get('/api/v1/activities/').data['count'], 3)

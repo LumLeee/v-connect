@@ -4,13 +4,15 @@ import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
 import { apiMutation } from '../api/client.js'
 import '../styles/activities.css'
+import { SkillPicker } from '../components/VolunteerProfileFields.jsx'
+import '../styles/profile.css'
 
 const vietnamInput = value => value ? new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(value)).replace(' ', 'T') : ''
 
 function Editor({ initial }) {
   const navigate = useNavigate()
   const [form, setForm] = useState({ title: initial?.title || '', description: initial?.description || '', address: initial?.address || '',
-    starts_at: vietnamInput(initial?.starts_at), ends_at: vietnamInput(initial?.ends_at), capacity: initial?.capacity || 1 })
+    starts_at: vietnamInput(initial?.starts_at), ends_at: vietnamInput(initial?.ends_at), capacity: initial?.capacity || 1, required_skills: initial?.required_skills || [] })
   const [busy, setBusy] = useState(false)
   const [errors, setErrors] = useState({})
   const [error, setError] = useState('')
@@ -42,6 +44,11 @@ function Editor({ initial }) {
           onChange={event => setForm(previous => ({ ...previous, [name]: event.target.value }))} />
         {errors[name] && <p id={`${name}-error`} className="field-error">{[].concat(errors[name]).join(' ')}</p>}
       </div> })}
+      <h2 className="profile-subtitle">Kỹ năng yêu cầu</h2>
+      <p className="muted">Chọn kỹ năng phù hợp với hoạt động. Người chưa có kỹ năng vẫn có thể đăng ký để bạn xét duyệt.</p>
+      <SkillPicker selected={form.required_skills} onChange={required_skills => setForm(previous => ({ ...previous, required_skills }))} />
+      {errors.required_skills && <p className="field-error" role="alert">{[].concat(errors.required_skills).join(' ')}</p>}
+      <p className="muted">Bạn có thể thêm hoặc thay ảnh bìa tại trang quản lý chi tiết sau khi lưu hoạt động.</p>
     </fieldset>
     {error && <p role="alert" className="request-error">{error}</p>}
     <div className="activity-actions"><button className="button primary" disabled={busy}>{busy ? 'Đang lưu…' : initial ? 'Lưu thay đổi' : 'Lưu bản nháp'}</button>

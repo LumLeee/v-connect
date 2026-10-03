@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 
 from .models import Activity
 from .serializers import ActivitySerializer, TransitionSerializer
+from .filters import filter_activities
 
 
 class IsOrganizer(BasePermission):
@@ -19,7 +20,7 @@ class IsOrganizer(BasePermission):
 
 
 def activities():
-    return Activity.objects.select_related('organizer', 'organizer__organizer_profile')
+    return Activity.objects.select_related('organizer', 'organizer__organizer_profile').prefetch_related('required_skills')
 
 
 def search(queryset, request):
@@ -34,7 +35,7 @@ class PublicList(generics.ListAPIView):
     serializer_class = ActivitySerializer
 
     def get_queryset(self):
-        return search(activities().filter(published_at__isnull=False, status__in=['published', 'completed', 'cancelled']), self.request)
+        return filter_activities(search(activities().filter(published_at__isnull=False, status__in=['published', 'completed', 'cancelled']), self.request), self.request)
 
 
 class PublicDetail(generics.RetrieveAPIView):
@@ -51,10 +52,11 @@ class ManagedList(generics.ListCreateAPIView):
     serializer_class = ActivitySerializer
 
     def get_queryset(self):
-        return search(activities().filter(organizer=self.request.user), self.request)
+        return filter_activities(search(activities().filter(organizer=self.request.user), self.request), self.request, managed=True)
 
     def perform_create(self, serializer):
-        serializer.save(organizer=self.request.user)
+        with transaction.atomic():
+            serializer.save(organizer=self.request.user)
 
 
 @method_decorator(never_cache, name='dispatch')

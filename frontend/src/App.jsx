@@ -18,6 +18,7 @@ import AttendancePage from './pages/AttendancePage.jsx'
 import FeedbackPage from './pages/FeedbackPage.jsx'
 import FeedbackListPage from './pages/FeedbackListPage.jsx'
 import ReportsPage from './pages/ReportsPage.jsx'
+import AdvancedReportsPage from './pages/AdvancedReportsPage.jsx'
 import AdminAccountsPage from './pages/AdminAccountsPage.jsx'
 import AuditPage from './pages/AuditPage.jsx'
 
@@ -27,6 +28,7 @@ export default function App() {
     <Routes>
       <Route element={<SiteLayout />}>
         <Route element={<RequireRole />}>
+          <Route path="bao-cao/mo-rong" element={<AdvancedReportsPage key={user?.id} />} />
           <Route path="bao-cao" element={<ReportsPage key={`overview-${user?.id}`} />} />
           <Route path="bao-cao/hoat-dong" element={<ReportsPage key={`activities-${user?.id}`} mode="activities" />} />
           <Route path="bao-cao/hoat-dong/:id" element={<ReportsPage key={`result-${user?.id}`} mode="result" />} />

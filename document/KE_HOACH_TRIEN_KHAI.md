@@ -1,6 +1,6 @@
 # Kế hoạch triển khai V-Connect
 
-Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 28/09/2026.
+Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 03/10/2026.
 
 ## 1. Hướng thực hiện đã thống nhất
 
@@ -33,6 +33,7 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 9: kiểm tra hoàn chỉnh nghiệp vụ chính | Hoàn thành; bàn giao trên `dev`, kế thừa giai đoạn 1–8 |
 | Giai đoạn 10: hồ sơ mở rộng | Đã bổ sung kỹ năng, sở thích và lịch rảnh; xem [chi tiết](HO_SO_MO_RONG.md) |
 | Giai đoạn 10: hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, bộ lọc và ảnh bìa; timeline để sau; xem [chi tiết](HOAT_DONG_MO_RONG.md) |
+| Giai đoạn 10: báo cáo mở rộng | Đã bổ sung biểu đồ, bộ lọc, Excel và in/lưu PDF cho Organizer/Admin; xem [chi tiết](BAO_CAO_MO_RONG.md) |
 | Chức năng phụ khác và AI | Chưa triển khai |
 
 Bản giai đoạn 2 đạt 39 tests backend, 12 ca Playwright, 5 tests bảo vệ database và lint/build. Bản local gồm hồ sơ đạt 48 tests backend khi kiểm tra ngày 21/09/2026. Đây là kết quả các lượt trước, không phải kiểm chứng chức năng chưa triển khai.
@@ -173,7 +174,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | AI ghép nối | Embedding hoặc mô hình phù hợp, đo chất lượng | Baseline và dữ liệu đánh giá |
 | AI phản hồi | Chuẩn hóa nhãn, phân loại cảm xúc, hỗ trợ phát hiện spam/sự cố và rà soát | Phản hồi và dữ liệu đánh giá |
 | AI báo cáo | Tóm tắt từ số liệu, phản hồi hợp lệ; cho phép kiểm tra lại | Báo cáo cơ bản, không tự bịa kết quả |
-| Báo cáo mở rộng | Biểu đồ, lọc thống kê, xuất/in PDF/Excel | Thống kê và quyền xuất dữ liệu |
+| Báo cáo mở rộng | Đã có biểu đồ, lọc thống kê, Excel và in/lưu PDF; các mẫu chuyên biệt bổ sung khi có nhu cầu | Thống kê và quyền xuất dữ liệu; xem [chi tiết](BAO_CAO_MO_RONG.md) |
 | Quản trị mở rộng | Quyền chi tiết, giao diện audit log, mẫu báo cáo/chứng nhận, câu chuyện tác động | Nghiệp vụ chính; chốt yêu cầu từng mục |
 | Lưu trữ/vận hành | Lưu file bên ngoài, hosting/domain, cache chung và tối ưu theo tải | Nhu cầu triển khai thực tế |
 

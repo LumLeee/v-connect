@@ -9,7 +9,7 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiRequest(path, { signal, method = 'GET', body, headers = {}, notifyUnauthorized = true } = {}) {
+export async function apiRequest(path, { signal, method = 'GET', body, headers = {}, notifyUnauthorized = true, responseType = 'json' } = {}) {
   let response
   try {
     response = await fetch(`${API_BASE}${path}`, {
@@ -20,6 +20,7 @@ export async function apiRequest(path, { signal, method = 'GET', body, headers =
     if (error.name === 'AbortError') throw error
     throw new ApiError('Không kết nối được máy chủ. Vui lòng thử lại.', 0)
   }
+  if (response.ok && responseType === 'blob') return response.blob()
   let data
   try {
     data = await response.json()

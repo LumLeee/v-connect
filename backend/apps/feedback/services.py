@@ -8,6 +8,7 @@ from apps.activities.models import Activity
 from apps.reports.models import AuditEvent
 from apps.participations.models import Attendance
 from .models import Feedback
+from apps.notifications.services import notify
 
 
 def feedback_entries():
@@ -38,7 +39,11 @@ def submit(activity_id, volunteer, data):
         raise ValidationError('Bạn cần được xác nhận có mặt để gửi phản hồi cho hoạt động này.')
     if Feedback.objects.filter(attendance=attendance).exists():
         raise ValidationError('Bạn đã gửi phản hồi cho hoạt động này; không thể gửi thêm hoặc sửa lại.')
-    return Feedback.objects.create(attendance=attendance, **data)
+    entry = Feedback.objects.create(attendance=attendance, **data)
+    notify(activity.organizer, 'feedback_received', 'Có phản hồi mới',
+           f'{volunteer.full_name} đã gửi phản hồi cho “{activity.title}”.', activity,
+           href=f'/nha-to-chuc/hoat-dong/{activity.pk}/phan-hoi')
+    return entry
 
 
 @transaction.atomic
@@ -51,6 +56,10 @@ def hide(feedback_id, admin, reason):
         entry.hidden_at = timezone.now()
         entry.hidden_reason = reason
         entry.save(update_fields=['is_hidden', 'hidden_by', 'hidden_at', 'hidden_reason'])
+        notify(entry.attendance.participation.volunteer, 'feedback_hidden', 'Phản hồi đã được xử lý',
+               f'Phản hồi của bạn về “{entry.attendance.participation.activity.title}” đã bị ẩn. Lý do: {reason}',
+               entry.attendance.participation.activity,
+               href=f'/hoat-dong/{entry.attendance.participation.activity_id}/phan-hoi')
         AuditEvent.objects.create(actor=admin, subject=entry.attendance.participation.volunteer,
             activity=entry.attendance.participation.activity, object_id=entry.pk, action='feedback_hidden', reason=reason)
     return entry

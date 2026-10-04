@@ -33,6 +33,9 @@ from django.test import override_settings
 
 class ThreadedServer(ThreadingMixIn, WSGIServer):
     daemon_threads = True
+    # React development effects and notification refreshes can open a burst of
+    # connections. The stdlib default backlog (5) rejects these on Windows.
+    request_queue_size = 128
 
 
 class QuietHandler(WSGIRequestHandler):

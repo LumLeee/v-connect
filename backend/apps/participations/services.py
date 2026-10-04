@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 from apps.activities.models import Activity
 from apps.reports.models import AuditEvent
+from apps.notifications.services import notify
 from .models import Attendance, Participation
 
 
@@ -38,6 +39,9 @@ def register(activity_id, volunteer):
     entry.registered_ends_at = activity.ends_at
     entry.registered_address = activity.address
     entry.save()
+    notify(activity.organizer, 'registration', 'Có đơn đăng ký mới',
+           f'{volunteer.full_name} đăng ký tham gia “{activity.title}”.', activity,
+           href=f'/nha-to-chuc/hoat-dong/{activity.pk}/dang-ky')
     return entry
 
 
@@ -51,6 +55,9 @@ def cancel(activity_id, volunteer):
     entry.status = 'cancelled'
     entry.cancellation_reason = 'volunteer'
     entry.save(update_fields=['status', 'cancellation_reason', 'updated_at'])
+    notify(activity.organizer, 'registration_cancelled', 'Tình nguyện viên hủy đăng ký',
+           f'{volunteer.full_name} đã hủy đăng ký “{activity.title}”.', activity,
+           href=f'/nha-to-chuc/hoat-dong/{activity.pk}/dang-ky')
     return entry
 
 
@@ -71,6 +78,9 @@ def review(activity_id, entry_id, organizer, target):
     entry.save(update_fields=['status', 'reviewed_by', 'reviewed_at', 'updated_at'])
     AuditEvent.objects.create(actor=organizer, subject=entry.volunteer, activity=activity, object_id=entry.pk,
                               action='review_approved' if target == 'approved' else 'review_rejected')
+    notify(entry.volunteer, 'review_' + target, 'Kết quả xét duyệt đăng ký',
+           f'Đơn đăng ký “{activity.title}” đã được duyệt.' if target == 'approved'
+           else f'Đơn đăng ký “{activity.title}” đã bị từ chối.', activity)
     return entry
 
 
@@ -87,6 +97,9 @@ def confirm_attendance(activity_id, entry_id, organizer):
     # An identical retry returns the original record, without changing its audit data.
     attendance, created = Attendance.objects.get_or_create(participation=entry, defaults={'confirmed_by': organizer})
     if created:
+        notify(entry.volunteer, 'attendance', 'Đã xác nhận điểm danh',
+               f'Bạn đã được xác nhận có mặt tại “{activity.title}”.', activity,
+               href='/tinh-nguyen-vien/lich-su')
         AuditEvent.objects.create(actor=organizer, subject=entry.volunteer, activity=activity,
                                   object_id=attendance.pk, action='attendance_confirmed')
     return attendance, created

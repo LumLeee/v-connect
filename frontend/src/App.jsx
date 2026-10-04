@@ -21,6 +21,7 @@ import ReportsPage from './pages/ReportsPage.jsx'
 import AdvancedReportsPage from './pages/AdvancedReportsPage.jsx'
 import AdminAccountsPage from './pages/AdminAccountsPage.jsx'
 import AuditPage from './pages/AuditPage.jsx'
+import NotificationsPage from './pages/NotificationsPage.jsx'
 
 export default function App() {
   const { user } = useAuth()
@@ -28,6 +29,7 @@ export default function App() {
     <Routes>
       <Route element={<SiteLayout />}>
         <Route element={<RequireRole />}>
+          <Route path="thong-bao" element={<NotificationsPage key={user?.id} />} />
           <Route path="bao-cao/mo-rong" element={<AdvancedReportsPage key={user?.id} />} />
           <Route path="bao-cao" element={<ReportsPage key={`overview-${user?.id}`} />} />
           <Route path="bao-cao/hoat-dong" element={<ReportsPage key={`activities-${user?.id}`} mode="activities" />} />

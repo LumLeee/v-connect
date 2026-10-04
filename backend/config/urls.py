@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path("api/v1/", include("apps.notifications.urls")),
     path("api/v1/", include("apps.reports.urls")),
     path("api/v1/", include("apps.feedback.urls")),
     path("api/v1/", include("apps.participations.urls")),

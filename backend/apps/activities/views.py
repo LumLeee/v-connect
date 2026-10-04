@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 from .models import Activity
 from .serializers import ActivitySerializer, TransitionSerializer
 from .filters import filter_activities
+from apps.notifications.services import notify_participants
 
 
 class IsOrganizer(BasePermission):
@@ -80,7 +81,12 @@ class ManagedDetail(APIView):
                 for name in ['starts_at', 'ends_at']
             ):
                 raise ValidationError('Không thể đổi lịch sau giờ bắt đầu khi đã có đơn đăng ký.')
+            changed = any(name in serializer.validated_data and serializer.validated_data[name] != getattr(activity, name)
+                          for name in ['starts_at', 'ends_at', 'address'])
             serializer.save()
+            if changed:
+                notify_participants(activity, 'activity_changed', 'Hoạt động thay đổi lịch hoặc địa điểm',
+                                    f'“{activity.title}” vừa cập nhật lịch hoặc địa điểm. Hãy xem thông tin mới trước khi tham gia.')
         return Response(serializer.data)
 
 
@@ -107,6 +113,8 @@ class TransitionView(APIView):
             activity.status = target
             activity.save(update_fields=['status', 'published_at', 'updated_at'])
             if target == 'cancelled':
+                notify_participants(activity, 'activity_cancelled', 'Hoạt động đã bị hủy',
+                                    f'Nhà tổ chức đã hủy “{activity.title}”. Đăng ký của bạn được hủy cùng hoạt động.')
                 activity.participations.filter(status__in=['pending', 'approved']).update(
                     status='cancelled', cancellation_reason='activity_cancelled', updated_at=now)
         return Response(ActivitySerializer(activity).data)

@@ -2,6 +2,7 @@ import { HeartHandshake } from 'lucide-react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useAuth, workspacePaths } from '../auth/context.js'
+import NotificationBell from '../components/NotificationBell.jsx'
 
 export default function SiteLayout() {
   const { pathname } = useLocation()
@@ -24,7 +25,7 @@ export default function SiteLayout() {
           <NavLink to="/hoat-dong">Hoạt động</NavLink>
           <NavLink to="/gioi-thieu">Về V-Connect</NavLink>
         </nav>
-        <div className="header-auth">{loading ? <span role="status">Đang tải…</span> : user ? <><Link to={workspacePaths[user.role]}>Tài khoản của tôi</Link><button className="text-button" disabled={busy} onClick={logout}>Đăng xuất</button></> : <><Link to="/dang-nhap">Đăng nhập</Link><Link to="/dang-ky" className="button primary">Đăng ký</Link></>}</div>
+        <div className="header-auth">{loading ? <span role="status">Đang tải…</span> : user ? <><NotificationBell key={user.id} /><Link to={workspacePaths[user.role]}>Tài khoản của tôi</Link><button className="text-button" disabled={busy} onClick={logout}>Đăng xuất</button></> : <><Link to="/dang-nhap">Đăng nhập</Link><Link to="/dang-ky" className="button primary">Đăng ký</Link></>}</div>
       </header>
       {logoutError && <div className="page-width request-error" role="alert">{logoutError}</div>}
       <main id="main-content" className={pathname === '/tinh-nguyen-vien' ? 'volunteer-dashboard-main' : undefined}><Outlet /></main>

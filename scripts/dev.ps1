@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('backend', 'frontend')]
+    [ValidateSet('backend', 'frontend', 'notifications')]
     [string]$Target
 )
 $ErrorActionPreference = 'Stop'
@@ -9,6 +9,8 @@ Push-Location $ProjectRoot
 try {
     if ($Target -eq 'backend') {
         & "$ProjectRoot/.venv/Scripts/python.exe" backend/manage.py runserver 127.0.0.1:8000
+    } elseif ($Target -eq 'notifications') {
+        & "$ProjectRoot/.venv/Scripts/python.exe" backend/manage.py process_notifications --loop
     } else {
         Set-Location "$ProjectRoot/frontend"
         & npm.cmd run dev

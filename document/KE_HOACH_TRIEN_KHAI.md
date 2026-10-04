@@ -169,7 +169,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | Địa điểm | Danh mục địa điểm, tọa độ, bản đồ, chỉ đường, dự phòng khi dịch vụ lỗi | Địa chỉ hoạt động |
 | Điểm danh nâng cao | QR, mã có thời hạn, nhập mã dự phòng, check-out | Điểm danh cơ bản; chốt hướng quét |
 | Đóng góp | Tính giờ và lịch sử đóng góp chi tiết | Quy tắc tính giờ và dữ liệu xác nhận phù hợp |
-| Thông báo | Danh sách, đã đọc, liên kết nội dung, nhắc lịch và email nghiệp vụ | Trạng thái hoạt động/đăng ký; SMTP nếu gửi email |
+| Thông báo | Đã có chuông, danh sách, đã đọc, liên kết, nhắc trước 1 giờ và hàng đợi email toàn bộ nghiệp vụ; bật/tắt email theo tài khoản | Cần tiến trình xử lý chạy; SMTP thật chưa cấu hình. Xem [chi tiết](THONG_BAO.md) |
 | Ghép nối | Lọc điều kiện, đối chiếu lịch, baseline và đề xuất hai chiều có lý do | Kỹ năng, sở thích, lịch rảnh và hoạt động |
 | AI ghép nối | Embedding hoặc mô hình phù hợp, đo chất lượng | Baseline và dữ liệu đánh giá |
 | AI phản hồi | Chuẩn hóa nhãn, phân loại cảm xúc, hỗ trợ phát hiện spam/sự cố và rà soát | Phản hồi và dữ liệu đánh giá |

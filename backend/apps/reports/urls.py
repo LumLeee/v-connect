@@ -1,8 +1,10 @@
 from django.urls import path
 from .views import Overview, ActivityList, ActivityResult, ParticipationList, AccountList, AccountStatus, AuditList, VolunteerDashboard
 from .analytics_views import Analytics, ExportAnalytics, ReportOrganizers
+from .organizer_dashboard import OrganizerDashboard
 
 urlpatterns = [
+    path('reports/organizer-dashboard/', OrganizerDashboard.as_view()),
     path('reports/analytics/', Analytics.as_view()),
     path('reports/analytics/export/', ExportAnalytics.as_view()),
     path('reports/organizers/', ReportOrganizers.as_view()),

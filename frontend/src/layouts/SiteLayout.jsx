@@ -15,6 +15,10 @@ export default function SiteLayout() {
     finally { setBusy(false) }
   }
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  if (user?.role === 'organizer' && /^\/nha-to-chuc\/?$/.test(pathname)) return <>
+    <a href="#main-content" className="skip-link">Đến nội dung chính</a>
+    <main id="main-content"><Outlet /></main>
+  </>
   return (
     <>
       <a href="#main-content" className="skip-link">Đến nội dung chính</a>

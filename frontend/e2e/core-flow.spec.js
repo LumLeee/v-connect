@@ -93,7 +93,7 @@ test('Toàn bộ luồng chính qua giao diện với Guest, Volunteer, Organize
     await expect(page.locator('article').filter({ has: page.getByRole('heading', { name: 'Đã tham gia (hoàn thành)', exact: true }) }).locator('.lead')).toHaveText('1')
 
     await admin.goto('/dang-nhap')
-    await admin.getByLabel('Email hoặc username Admin', { exact: true }).fill(process.env.E2E_ADMIN_USERNAME)
+    await admin.getByLabel(/^Email hoặc username/).fill(process.env.E2E_ADMIN_USERNAME)
     await admin.getByLabel('Mật khẩu', { exact: true }).fill(process.env.E2E_ADMIN_PASSWORD)
     await admin.getByRole('button', { name: 'Đăng nhập', exact: true }).click()
     await admin.getByRole('link', { name: 'Quản lý phản hồi', exact: true }).click()

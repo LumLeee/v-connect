@@ -23,6 +23,7 @@ import AdminAccountsPage from './pages/AdminAccountsPage.jsx'
 import AuditPage from './pages/AuditPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
 import CheckInPage from './pages/CheckInPage.jsx'
+import OrganizerDashboard from './pages/OrganizerDashboard.jsx'
 
 export default function App() {
   const { user } = useAuth()
@@ -65,7 +66,7 @@ export default function App() {
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/lich-su" element={<ParticipationsPage key={`history-${user?.id}`} history />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/phan-hoi" element={<FeedbackPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="admin" />}><Route path="quan-tri/phan-hoi" element={<FeedbackListPage key={user?.id} admin />} /></Route>
-        <Route element={<RequireRole role="organizer" />}><Route path="nha-to-chuc" element={<WorkspacePage role="organizer" />} /></Route>
+        <Route element={<RequireRole role="organizer" />}><Route path="nha-to-chuc" element={<OrganizerDashboard key={user?.id} />} /></Route>
         <Route element={<RequireRole role="admin" />}><Route path="quan-tri" element={<WorkspacePage role="admin" />} /></Route>
         <Route element={<RequireRole />}><Route path="ho-so" element={<ProfilePage />} /></Route>
         <Route path="*" element={<NotFoundPage />} />

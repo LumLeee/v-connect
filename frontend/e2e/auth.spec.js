@@ -47,7 +47,7 @@ async function register(page, user, role = 'volunteer') {
 
 async function login(page, email, value = password, remember = false) {
   await page.goto('/dang-nhap')
-  await page.getByLabel('Email hoặc username Admin', { exact: true }).fill(email)
+  await page.getByLabel(/^Email hoặc username/).fill(email)
   await page.getByLabel('Mật khẩu', { exact: true }).fill(value)
   if (remember) await page.getByLabel('Ghi nhớ 14 ngày').check()
   await page.getByRole('button', { name: 'Đăng nhập', exact: true }).click()

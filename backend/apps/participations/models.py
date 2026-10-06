@@ -38,6 +38,17 @@ class Attendance(models.Model):
     participation = models.OneToOneField(Participation, on_delete=models.PROTECT, related_name='attendance')
     confirmed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='confirmed_attendances')
     confirmed_at = models.DateTimeField(auto_now_add=True)
+    method = models.CharField(max_length=10, default='manual', choices=[('manual', 'Thủ công'), ('qr', 'Quét QR'), ('code', 'Nhập mã')])
 
     class Meta:
         ordering = ['-confirmed_at', '-id']
+
+
+class AttendanceCode(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    activity = models.OneToOneField('activities.Activity', on_delete=models.CASCADE, related_name='attendance_code')
+    nonce = models.UUIDField(default=uuid.uuid4)
+    issued_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    issued_at = models.DateTimeField()
+    expires_at = models.DateTimeField()
+    revoked_at = models.DateTimeField(null=True, blank=True)

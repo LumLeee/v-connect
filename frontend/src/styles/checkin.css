@@ -1,0 +1,14 @@
+.attendance-code-panel { margin: 24px 0; padding: 24px; border: 1px solid #cedfd5; border-radius: 16px; background: #f3f9f5; }
+.active-attendance-code { display: flex; align-items: center; gap: 28px; margin: 20px 0; flex-wrap: wrap; }
+.active-attendance-code img { max-width: 100%; height: auto; border-radius: 8px; }
+.attendance-short-code { font-size: clamp(25px, 5vw, 36px); letter-spacing: .12em; font-variant-numeric: tabular-nums; color: #1c5840; }
+.checkin-page .checkin-form { max-width: 680px; margin-top: 24px; }
+.checkin-form .activity-field { margin: 24px 0; }
+.checkin-form .activity-field input { width: 100%; max-width: 300px; font-size: 24px; letter-spacing: .15em; padding: 12px; border: 1px solid #a9c2b4; border-radius: 8px; }
+.checkin-file { position: relative; cursor: pointer; }
+.checkin-file input { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; }
+.checkin-file:focus-within { outline: 3px solid #d89d37; outline-offset: 5px; }
+.checkin-file:has(input:disabled) { opacity: .55; cursor: wait; }
+.checkin-camera { margin: 20px 0; }
+.checkin-camera video { display: block; width: 100%; max-width: 500px; border-radius: 12px; margin-bottom: 12px; background: #152a20; }
+@media (max-width: 500px) { .attendance-code-panel { padding: 16px; } .active-attendance-code { gap: 16px; } }

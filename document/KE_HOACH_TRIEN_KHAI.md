@@ -167,7 +167,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | Hồ sơ mở rộng | Đã có kỹ năng liên kết với Volunteer, sở thích, lịch rảnh hằng tuần; chức năng kết nối giữa các tình nguyện viên chưa triển khai | Hồ sơ cơ bản; xem [kết quả](HO_SO_MO_RONG.md) |
 | Hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, lọc trạng thái/ngày/địa điểm/kỹ năng và ảnh bìa; timeline để sau | Quản lý hoạt động; xem [chi tiết](HOAT_DONG_MO_RONG.md) |
 | Địa điểm | Danh mục địa điểm, tọa độ, bản đồ, chỉ đường, dự phòng khi dịch vụ lỗi | Địa chỉ hoạt động |
-| Điểm danh nâng cao | QR, mã có thời hạn, nhập mã dự phòng, check-out | Điểm danh cơ bản; chốt hướng quét |
+| Điểm danh nâng cao | Đã có Nhà tổ chức cấp QR/mã 8 chữ số có hạn 5 phút; Volunteer tự check-in, thu hồi/thay mã và dự phòng thủ công. Check-out để sau theo phạm vi đã chọn | Điểm danh cơ bản; xem [chi tiết](DIEM_DANH_NANG_CAO.md) |
 | Đóng góp | Tính giờ và lịch sử đóng góp chi tiết | Quy tắc tính giờ và dữ liệu xác nhận phù hợp |
 | Thông báo | Đã có chuông, danh sách, đã đọc, liên kết, nhắc trước 1 giờ và hàng đợi email toàn bộ nghiệp vụ; bật/tắt email theo tài khoản | Cần tiến trình xử lý chạy; SMTP thật chưa cấu hình. Xem [chi tiết](THONG_BAO.md) |
 | Ghép nối | Lọc điều kiện, đối chiếu lịch, baseline và đề xuất hai chiều có lý do | Kỹ năng, sở thích, lịch rảnh và hoạt động |

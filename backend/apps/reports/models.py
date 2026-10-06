@@ -11,6 +11,7 @@ class AuditEvent(models.Model):
         ('account_locked', 'Khóa tài khoản'), ('account_unlocked', 'Mở khóa tài khoản'),
         ('review_approved', 'Duyệt đăng ký'), ('review_rejected', 'Từ chối đăng ký'),
         ('attendance_confirmed', 'Xác nhận có mặt'), ('feedback_hidden', 'Ẩn phản hồi'),
+        ('attendance_code_issued', 'Tạo mã điểm danh'), ('attendance_code_revoked', 'Thu hồi mã điểm danh'),
     ])
     object_id = models.UUIDField()
     activity = models.ForeignKey('activities.Activity', on_delete=models.PROTECT, null=True, blank=True)

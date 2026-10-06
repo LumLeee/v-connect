@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
+import useNow from '../hooks/useNow.js'
 import RequestState from '../components/RequestState.jsx'
 import AttendanceStatus from '../components/AttendanceStatus.jsx'
+import AttendanceCodePanel from '../components/AttendanceCodePanel.jsx'
 import { apiPost } from '../api/client.js'
 import { activityTime } from '../api/activityFormat.js'
 import '../styles/activities.css'
@@ -16,7 +18,7 @@ function AttendanceList({ id }) {
   const [busy, setBusy] = useState(false)
   const [failure, setFailure] = useState('')
   const [message, setMessage] = useState('')
-  const now = new Date()
+  const now = useNow()
   const open = activity.data?.status === 'published' && new Date(activity.data.starts_at) <= now && now <= new Date(activity.data.ends_at)
   function refresh() { setPending(null); activity.retry(); list.retry() }
   async function confirm() {
@@ -36,6 +38,7 @@ function AttendanceList({ id }) {
     {activity.data && <><h2>{activity.data.title}</h2>
       <p>Thời gian điểm danh: {activityTime(activity.data.starts_at)} đến {activityTime(activity.data.ends_at)} (giờ Việt Nam).</p>
       <p>{open ? 'Đang mở điểm danh cho người đã được duyệt.' : 'Chưa mở hoặc đã đóng điểm danh. Hoạt động phải còn công khai và đang trong thời gian diễn ra.'}</p></>}
+    {activity.data && <AttendanceCodePanel id={id} open={open} />}
     <button className="text-button" disabled={busy} onClick={refresh}>Cập nhật danh sách điểm danh</button>
     <RequestState loading={list.loading} error={list.error} retry={list.retry} />
     {message && <p role="status">{message}</p>}

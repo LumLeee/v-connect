@@ -5,7 +5,7 @@ import { ReportPagination } from '../components/ReportMetrics.jsx'
 import { activityTime } from '../api/activityFormat.js'
 import '../styles/activities.css'
 
-const actions = { account_locked: 'Khóa tài khoản', account_unlocked: 'Mở khóa tài khoản', review_approved: 'Duyệt đăng ký', review_rejected: 'Từ chối đăng ký', attendance_confirmed: 'Xác nhận có mặt', feedback_hidden: 'Ẩn phản hồi' }
+const actions = { account_locked: 'Khóa tài khoản', account_unlocked: 'Mở khóa tài khoản', review_approved: 'Duyệt đăng ký', review_rejected: 'Từ chối đăng ký', attendance_confirmed: 'Xác nhận có mặt', attendance_code_issued: 'Tạo mã điểm danh', attendance_code_revoked: 'Thu hồi mã điểm danh', feedback_hidden: 'Ẩn phản hồi' }
 
 export default function AuditPage() {
   const [params, setParams] = useSearchParams()

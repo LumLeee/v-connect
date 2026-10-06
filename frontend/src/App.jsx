@@ -22,6 +22,7 @@ import AdvancedReportsPage from './pages/AdvancedReportsPage.jsx'
 import AdminAccountsPage from './pages/AdminAccountsPage.jsx'
 import AuditPage from './pages/AuditPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
+import CheckInPage from './pages/CheckInPage.jsx'
 
 export default function App() {
   const { user } = useAuth()
@@ -58,6 +59,7 @@ export default function App() {
         <Route path="dang-ky" element={<AuthPage key="register" mode="register" />} />
         <Route path="quen-mat-khau" element={<AuthPage key="forgot" mode="forgot" />} />
         <Route path="dat-lai-mat-khau/:uid/:token" element={<AuthPage key="reset" mode="reset" />} />
+        <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/check-in" element={<CheckInPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<VolunteerDashboard key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/dang-ky" element={<ParticipationsPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/lich-su" element={<ParticipationsPage key={`history-${user?.id}`} history />} /></Route>

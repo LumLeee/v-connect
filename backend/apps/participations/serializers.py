@@ -10,7 +10,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-        fields = ['id', 'confirmed_at', 'confirmed_by_name']
+        fields = ['id', 'confirmed_at', 'confirmed_by_name', 'method']
         read_only_fields = fields
 
 

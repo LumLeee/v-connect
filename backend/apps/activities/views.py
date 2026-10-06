@@ -13,6 +13,7 @@ from .models import Activity
 from .serializers import ActivitySerializer, TransitionSerializer
 from .filters import filter_activities
 from apps.notifications.services import notify_participants
+from apps.participations.models import AttendanceCode
 
 
 class IsOrganizer(BasePermission):
@@ -85,6 +86,7 @@ class ManagedDetail(APIView):
                           for name in ['starts_at', 'ends_at', 'address'])
             serializer.save()
             if changed:
+                AttendanceCode.objects.filter(activity=activity, revoked_at__isnull=True).update(revoked_at=timezone.now())
                 notify_participants(activity, 'activity_changed', 'Hoạt động thay đổi lịch hoặc địa điểm',
                                     f'“{activity.title}” vừa cập nhật lịch hoặc địa điểm. Hãy xem thông tin mới trước khi tham gia.')
         return Response(serializer.data)

@@ -94,12 +94,17 @@ def confirm_attendance(activity_id, entry_id, organizer):
         raise ValidationError('Chỉ điểm danh từ giờ bắt đầu đến giờ kết thúc khi hoạt động còn công khai.')
     if entry.status != 'approved':
         raise ValidationError('Chỉ điểm danh người đã được duyệt và chưa hủy đăng ký.')
-    # An identical retry returns the original record, without changing its audit data.
-    attendance, created = Attendance.objects.get_or_create(participation=entry, defaults={'confirmed_by': organizer})
+    return record_attendance(activity, entry, organizer, 'manual')
+
+
+def record_attendance(activity, entry, actor, method):
+    # Call only while holding the activity lock in an atomic transaction.
+    # Manual and self check-in share this path and keep the first evidence.
+    attendance, created = Attendance.objects.get_or_create(participation=entry, defaults={'confirmed_by': actor, 'method': method})
     if created:
         notify(entry.volunteer, 'attendance', 'Đã xác nhận điểm danh',
                f'Bạn đã được xác nhận có mặt tại “{activity.title}”.', activity,
                href='/tinh-nguyen-vien/lich-su')
-        AuditEvent.objects.create(actor=organizer, subject=entry.volunteer, activity=activity,
+        AuditEvent.objects.create(actor=actor, subject=entry.volunteer, activity=activity,
                                   object_id=attendance.pk, action='attendance_confirmed')
     return attendance, created

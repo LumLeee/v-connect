@@ -18,10 +18,10 @@ export default function AuditPage() {
       <option value="">Tất cả</option>{Object.entries(actions).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></div>
     <button className="text-button" onClick={retry}>Cập nhật nhật ký</button><RequestState loading={loading} error={error} retry={retry} />
     {data && <><p>{data.count} thao tác.</p>{!data.count && <p className="activity-empty">Chưa có thao tác phù hợp.</p>}
-      <div className="activity-grid">{data.results.map(entry => <article className="activity-card" key={entry.id}>
+      <div className="activity-grid">{data.results.map(entry => <article className="activity-card ad-audit-row" key={entry.id}>
         <h2>{entry.action_label}</h2><p>Người thực hiện: {entry.actor_name}</p>{entry.subject_name && <p>Tài khoản liên quan: {entry.subject_name}</p>}
         {entry.activity_title && <p>Hoạt động: {entry.activity_title}</p>}{entry.reason && <p className="activity-description">Lý do: {entry.reason}</p>}
-        <p>{activityTime(entry.created_at)} (giờ Việt Nam)</p>
+        <time dateTime={entry.created_at}>{activityTime(entry.created_at)} (giờ Việt Nam)</time>
       </article>)}</div><ReportPagination data={data} page={page} onPage={value => setParams({ action: params.get('action') || '', page: String(value) })} /></>}
   </section>
 }

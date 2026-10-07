@@ -44,8 +44,8 @@ export default function AdminAccountsPage() {
       <button className="button secondary" type="button" disabled={busy} onClick={() => setPending(null)}>Quay lại</button>
     </form>}
     {data && <><p>{data.count} tài khoản.</p>{!data.count && <p className="activity-empty">Chưa có tài khoản phù hợp.</p>}
-      <div className="activity-grid">{data.results.map(entry => <article className="activity-card" key={entry.id}>
-        <h2>{entry.full_name}</h2><p>{entry.email || entry.username}</p><p>{roleLabels[entry.role]}</p><p>Trạng thái: {entry.is_active ? 'Hoạt động' : 'Bị khóa'}</p>
+      <div className="activity-grid">{data.results.map(entry => <article className="activity-card ad-account-row" key={entry.id}>
+        <div><h2>{entry.full_name}</h2><p>{entry.email || entry.username}</p></div><div><p>{roleLabels[entry.role]}</p><span className={`ad-account-state${entry.is_active ? '' : ' locked'}`}>Trạng thái: {entry.is_active ? 'Hoạt động' : 'Bị khóa'}</span>{entry.role === 'admin' && <p>Tài khoản được bảo vệ</p>}</div>
         {entry.role !== 'admin' && <button className="button secondary" disabled={busy} onClick={() => { setPending(entry); setReason(''); setFailure(''); setMessage('') }}>{entry.is_active ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}</button>}
       </article>)}</div><ReportPagination data={data} page={page} busy={busy} onPage={movePage} /></>}
     <p><Link to="/quan-tri/nhat-ky">Xem nhật ký thao tác</Link></p>

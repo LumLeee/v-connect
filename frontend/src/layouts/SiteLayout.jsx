@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useAuth, workspacePaths } from '../auth/context.js'
 import NotificationBell from '../components/NotificationBell.jsx'
+import AdminLayout from './AdminLayout.jsx'
 import OrganizerLayout from './OrganizerLayout.jsx'
 import VolunteerLayout from './VolunteerLayout.jsx'
 
@@ -17,6 +18,9 @@ export default function SiteLayout() {
     finally { setBusy(false) }
   }
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  if (user?.role === 'admin' && /^(\/quan-tri|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+    return <AdminLayout key={user.id}><Outlet /></AdminLayout>
+  }
   if (user?.role === 'volunteer' && /^(\/tinh-nguyen-vien|\/hoat-dong|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
     return <VolunteerLayout key={user.id}><Outlet /></VolunteerLayout>
   }

@@ -5,7 +5,7 @@ import AboutPage from './pages/AboutPage.jsx'
 import StatusPage from './pages/StatusPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import AuthPage from './pages/AuthPage.jsx'
-import WorkspacePage from './pages/WorkspacePage.jsx'
+import AdminDashboard from './pages/AdminDashboard.jsx'
 import VolunteerDashboard from './pages/VolunteerDashboard.jsx'
 import RequireRole from './auth/RequireRole.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
@@ -75,7 +75,7 @@ export default function App() {
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/phan-hoi" element={<FeedbackPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="admin" />}><Route path="quan-tri/phan-hoi" element={<FeedbackListPage key={user?.id} admin />} /></Route>
         <Route element={<RequireRole role="organizer" />}><Route path="nha-to-chuc" element={<OrganizerDashboard key={user?.id} />} /></Route>
-        <Route element={<RequireRole role="admin" />}><Route path="quan-tri" element={<WorkspacePage role="admin" />} /></Route>
+        <Route element={<RequireRole role="admin" />}><Route path="quan-tri" element={<AdminDashboard key={user?.id} />} /></Route>
         <Route element={<RequireRole />}><Route path="ho-so" element={<ProfilePage />} /></Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>

@@ -52,7 +52,7 @@ export default function ReportsPage({ mode = 'overview' }) {
         <h2>{entry.activity.title}</h2>{entry.volunteer_name && <p>Người đăng ký: {entry.volunteer_name}</p>}
         <p>Đơn: {participationLabels[entry.status]}</p><p>Hoạt động: {activityStatuses[entry.activity.status]}</p>
         <AttendanceStatus entry={entry} />
-        <Link to={user.role === 'volunteer' ? `/hoat-dong/${entry.activity.id}` : `/bao-cao/hoat-dong/${entry.activity.id}`}>Xem hoạt động</Link>
+        {(user.role !== 'volunteer' || entry.activity.status === 'published') && <Link to={user.role === 'volunteer' ? `/hoat-dong/${entry.activity.id}` : `/bao-cao/hoat-dong/${entry.activity.id}`}>Xem hoạt động</Link>}
       </article>)}</div>
       <ReportPagination data={data} page={page} onPage={changePage} />
     </>}

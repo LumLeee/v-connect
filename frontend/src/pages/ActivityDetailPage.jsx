@@ -92,7 +92,7 @@ export default function ActivityDetailPage({ managed = false }) {
   const { data, loading, error, retry } = useApi(`${managed ? '/organizer' : ''}/activities/${id}/`)
   return <section className={`page-width section interior activity-page${managed ? '' : ' activity-public-detail'}`}>
     <Link className="activity-back" to={managed ? '/nha-to-chuc/hoat-dong' : '/hoat-dong'}>← Danh sách hoạt động</Link>
-    <RequestState loading={loading} error={error} retry={retry} />
+    {!managed && error?.status === 404 ? <p className="activity-empty" role="alert">Hoạt động không tồn tại hoặc không còn công khai.</p> : <RequestState loading={loading} error={error} retry={retry} />}
     {data && <ActivityDetail key={`${id}-${data.status}`} activity={data} managed={managed} refresh={retry} />}
   </section>
 }

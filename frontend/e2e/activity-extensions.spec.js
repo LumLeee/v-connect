@@ -48,7 +48,7 @@ test('Kỹ năng, ảnh bìa và bộ lọc kết hợp hoạt động', async (
     const publicPage = await guest.newPage()
     await publicPage.goto('/hoat-dong')
     await publicPage.getByLabel('Tìm theo tên hoạt động').fill(title)
-    await publicPage.getByLabel('Trạng thái hoạt động').selectOption('published')
+    await expect(publicPage.getByLabel('Trạng thái hoạt động')).toHaveCount(0)
     await publicPage.getByLabel('Ngày bắt đầu từ').fill(day)
     await publicPage.getByLabel('Ngày bắt đầu đến').fill(day)
     await publicPage.getByLabel('Địa điểm', { exact: true }).fill('Huế')

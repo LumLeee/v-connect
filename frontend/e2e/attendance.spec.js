@@ -35,7 +35,7 @@ test('Điểm danh một lần, Volunteer xem lịch sử và giữ bản ghi kh
     volunteer.on('pageerror', error => { throw error })
     await volunteer.goto('/tinh-nguyen-vien')
     await volunteer.getByRole('link', { name: 'Lịch sử tham gia', exact: true }).click()
-    const card = volunteer.locator('article').filter({ has: volunteer.getByRole('link', { name: `Hoạt động điểm danh ongoing ${info.project.name}`, exact: true }) })
+    const card = volunteer.locator('article').filter({ has: volunteer.getByRole('heading', { name: `Hoạt động điểm danh ongoing ${info.project.name}`, exact: true }) })
     await expect(card.getByText('Đã xác nhận có mặt', { exact: true })).toBeVisible()
     await expect(card.getByText('Người xác nhận: Nhà tổ chức điểm danh', { exact: true })).toBeVisible()
     for (const target of [page, volunteer]) {

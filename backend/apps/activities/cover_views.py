@@ -63,7 +63,7 @@ class ActivityCover(APIView):
         return [AllowAny()] if self.request.method in ['GET', 'HEAD', 'OPTIONS'] else [IsAuthenticated(), IsOrganizer()]
 
     def get(self, request, pk):
-        visible = Q(published_at__isnull=False, status__in=['published', 'completed', 'cancelled'])
+        visible = Q(published_at__isnull=False, status='published')
         if request.user.is_authenticated and request.user.role == 'organizer':
             visible |= Q(organizer=request.user)
         activity = get_object_or_404(Activity.objects.filter(visible), pk=pk)

@@ -17,7 +17,7 @@ test('Gửi phản hồi, Organizer xem điểm và Admin ẩn có lý do', asyn
   const content = `Trải nghiệm ${info.project.name} rất hữu ích. <script>window.feedbackInjected = true</script>`
   await login(page.request, process.env.E2E_ATTENDANCE_VOLUNTEER)
   await page.goto('/tinh-nguyen-vien/lich-su')
-  await page.locator('article').filter({ has: page.getByRole('link', { name: title, exact: true }) }).getByRole('link', { name: 'Gửi hoặc xem phản hồi của tôi' }).click()
+  await page.locator('article').filter({ has: page.getByRole('heading', { name: title, exact: true }) }).getByRole('link', { name: 'Gửi hoặc xem phản hồi của tôi' }).click()
   await page.getByLabel('Điểm đánh giá (1–5)', { exact: true }).fill('5')
   await page.getByLabel('Nội dung phản hồi', { exact: true }).fill(content)
   await page.getByRole('button', { name: 'Gửi phản hồi', exact: true }).click()

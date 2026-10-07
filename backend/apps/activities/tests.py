@@ -125,9 +125,9 @@ class ActivityTests(APITestCase):
             self.assertEqual(self.change(activity, 'completed').status_code, 200)
         self.assertEqual(self.change(activity, 'cancelled').status_code, 400)
         self.assertEqual(self.mutate('patch', f'{self.url}{activity.pk}/', {'title': 'Sai'}).status_code, 400)
-        self.assertEqual(APIClient().get(f'/api/v1/activities/{activity.pk}/').data['status'], 'completed')
+        self.assertEqual(APIClient().get(f'/api/v1/activities/{activity.pk}/').status_code, 404)
 
-    def test_cancelled_draft_stays_private_and_published_cancellation_stays_visible(self):
+    def test_cancelled_activities_are_not_public(self):
         draft = self.create()
         self.assertEqual(self.change(draft, 'cancelled').status_code, 200)
         self.assertEqual(APIClient().get(f'/api/v1/activities/{draft.pk}/').status_code, 404)
@@ -135,7 +135,25 @@ class ActivityTests(APITestCase):
         published = self.create()
         self.change(published, 'published')
         self.assertEqual(self.change(published, 'cancelled').status_code, 200)
-        self.assertEqual(APIClient().get(f'/api/v1/activities/{published.pk}/').data['status'], 'cancelled')
+        self.assertEqual(APIClient().get(f'/api/v1/activities/{published.pk}/').status_code, 404)
+
+    def test_guest_and_volunteer_can_only_browse_published_activities(self):
+        records = {}
+        for status in ['draft', 'published', 'completed', 'cancelled']:
+            records[status] = Activity.objects.create(organizer=self.owner, **self.payload,
+                status=status, published_at=timezone.now() if status != 'draft' else None)
+        client = APIClient()
+        for user in [None, self.volunteer]:
+            if user:
+                client.force_login(user)
+            result = client.get('/api/v1/activities/')
+            self.assertEqual(result.data['count'], 1)
+            self.assertEqual(result.data['results'][0]['id'], str(records['published'].pk))
+            for status, activity in records.items():
+                self.assertEqual(client.get(f'/api/v1/activities/{activity.pk}/').status_code, 200 if status == 'published' else 404)
+            for status in ['completed', 'cancelled']:
+                self.assertEqual(client.get('/api/v1/activities/', {'status': status}).data['count'], 0)
+        self.assertEqual(self.client.get(self.url).data['count'], 4)
 
     def test_expired_draft_cannot_publish_and_database_constraints_hold(self):
         activity = self.create()

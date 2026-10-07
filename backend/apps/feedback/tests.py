@@ -47,6 +47,8 @@ class FeedbackTests(APITestCase):
                                 format='json', HTTP_X_CSRFTOKEN=token)
 
     def test_submit_once_read_own_and_no_edit_delete(self):
+        self.assertEqual(self.client.get(f'/api/v1/activities/{self.activity.pk}/').status_code, 404)
+        self.assertEqual(self.client.get(self.url).data['activity']['title'], self.activity.title)
         self.assertTrue(self.client.get(self.url).data['can_submit'])
         self.assertEqual(self.post().status_code, 201)
         self.assertEqual(self.post().status_code, 400)

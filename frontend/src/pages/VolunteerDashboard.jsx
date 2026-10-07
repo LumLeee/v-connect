@@ -18,7 +18,7 @@ function Avatar({ profile }) {
 function ActivityRow({ entry, history = false }) {
   return <li className="vd-activity-row">
     <span className={`vd-row-icon ${history ? 'green' : 'blue'}`}>{history ? <CheckCircle2 size={20} /> : <CalendarDays size={20} />}</span>
-    <div className="vd-row-content"><Link to={`/hoat-dong/${entry.activity.id}`}>{entry.activity.title}</Link>
+    <div className="vd-row-content">{entry.activity.status === 'published' ? <Link to={`/hoat-dong/${entry.activity.id}`}>{entry.activity.title}</Link> : <strong>{entry.activity.title}</strong>}
       <p>{entry.activity.organizer_name}</p>
       <p>{activityTime(history ? entry.attendance.confirmed_at : entry.activity.starts_at)} (giờ Việt Nam)</p>
     </div>

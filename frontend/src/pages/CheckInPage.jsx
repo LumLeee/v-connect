@@ -69,7 +69,7 @@ export default function CheckInPage() {
   const { id } = useParams()
   const { data, loading, error, retry } = useApi(`/activities/${id}/participation/`)
   return <section className="page-width section interior checkin-page">
-    <Link to={`/hoat-dong/${id}`}>← Về hoạt động</Link><h1>Check-in hoạt động</h1>
+    <Link to="/tinh-nguyen-vien/check-in">← Điểm danh của tôi</Link><h1>Check-in hoạt động</h1>
     <RequestState loading={loading} error={error} retry={retry} />
     {data?.participation ? <><h2>{data.participation.activity.title}</h2><CheckInForm key={id} entry={data.participation} /></>
       : data && <p>Bạn chưa đăng ký hoạt động này.</p>}

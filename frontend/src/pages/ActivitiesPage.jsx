@@ -23,12 +23,12 @@ function ActivityFilters({ params, setParams, managed, skills }) {
   }
   return <form className="activity-search" onSubmit={submit}>
     <h2>{managed ? 'Tìm và lọc hoạt động' : 'Tìm cơ hội đóng góp của bạn'}</h2>
-    <p>Kết hợp tên, trạng thái, ngày bắt đầu, địa điểm và kỹ năng để tìm hoạt động phù hợp. Ngày được tính theo giờ Việt Nam.</p>
+    <p>{managed ? 'Kết hợp tên, trạng thái, ngày bắt đầu, địa điểm và kỹ năng để tìm hoạt động phù hợp.' : 'Chỉ hiển thị hoạt động Công khai. Tìm theo tên, ngày bắt đầu, địa điểm và kỹ năng.'} Ngày được tính theo giờ Việt Nam.</p>
     <label htmlFor="activity-search">Tìm theo tên hoạt động</label>
     <div><div className="activity-search-input"><Search size={19} aria-hidden="true" /><input id="activity-search" name="search" placeholder={managed ? 'Nhập tên hoạt động cần quản lý' : 'Bạn muốn tham gia hoạt động nào?'} maxLength={200} value={search} onChange={event => setSearch(event.target.value)} /></div><button className="button primary" type="submit">Tìm kiếm</button>
       {(filterNames.some(name => params.get(name)) || search) && <button className="button secondary" type="button" onClick={() => { setSearch(''); setParams({ page: '1' }) }}>Xóa tìm kiếm</button>}</div>
     <div className="activity-filter-grid">
-      <label>Trạng thái hoạt động<select aria-label="Trạng thái hoạt động" name="status" defaultValue={params.get('status') || ''}><option value="">Tất cả trạng thái</option>{Object.entries(activityStatuses).filter(([key]) => managed || key !== 'draft').map(([key, name]) => <option key={key} value={key}>{name}</option>)}</select></label>
+      {managed && <label>Trạng thái hoạt động<select aria-label="Trạng thái hoạt động" name="status" defaultValue={params.get('status') || ''}><option value="">Tất cả trạng thái</option>{Object.entries(activityStatuses).filter(([key]) => managed || key !== 'draft').map(([key, name]) => <option key={key} value={key}>{name}</option>)}</select></label>}
       <label>Ngày bắt đầu từ<input type="date" name="date_from" defaultValue={params.get('date_from') || ''} /></label>
       <label>Ngày bắt đầu đến<input type="date" name="date_to" defaultValue={params.get('date_to') || ''} /></label>
       <label>Địa điểm<input name="location" maxLength={200} placeholder="Thành phố hoặc địa chỉ" defaultValue={params.get('location') || ''} /></label>

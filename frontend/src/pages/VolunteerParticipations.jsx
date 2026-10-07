@@ -35,12 +35,12 @@ export default function VolunteerParticipations({ mode = 'registrations' }) {
       {!data.count && <div className="activity-empty"><p>{history ? 'Chưa có hoạt động được xác nhận có mặt.' : 'Chưa có đơn đăng ký.'}</p><Link to="/hoat-dong">Khám phá cơ hội tình nguyện →</Link></div>}
       {!!data.count && <div className="vs-row-labels" aria-hidden="true"><span>HOẠT ĐỘNG / NHÀ TỔ CHỨC</span><span>THỜI GIAN / TRẠNG THÁI</span><span>THAO TÁC</span></div>}
       <div className="vs-participation-list">{data.results.map(entry => <article className="vs-participation-row" key={entry.id}>
-        <div><span className={`activity-status status-${entry.activity.status}`}>{activityStatuses[entry.activity.status]}</span><h2><Link to={`/hoat-dong/${entry.activity.id}`}>{entry.activity.title}</Link></h2><p>{entry.activity.organizer_name}</p><p>{entry.activity.address}</p></div>
+        <div><span className={`activity-status status-${entry.activity.status}`}>{activityStatuses[entry.activity.status]}</span><h2>{entry.activity.status === 'published' ? <Link to={`/hoat-dong/${entry.activity.id}`}>{entry.activity.title}</Link> : entry.activity.title}</h2><p>{entry.activity.organizer_name}</p><p>{entry.activity.address}</p></div>
         <div><p>{activityTime(entry.activity.starts_at)} (giờ Việt Nam)</p><p>Trạng thái đơn: <strong>{participationLabels[entry.status]}</strong></p><AttendanceStatus entry={entry} />
           {entry.activity_changed && <p className="vs-change-note">Lịch hoặc địa điểm đã thay đổi từ lúc đăng ký. Thông tin trên là mới nhất.</p>}
           {entry.cancellation_reason === 'activity_cancelled' && <p>Đơn bị hủy do hoạt động bị hủy.</p>}
           {entry.status === 'pending' && new Date(entry.activity.starts_at) <= new Date() && <p>Đã hết hạn xét duyệt.</p>}</div>
-        <div className="vs-row-actions"><Link to={`/hoat-dong/${entry.activity.id}`}>Xem hoạt động và quản lý đăng ký</Link>
+        <div className="vs-row-actions">{entry.activity.status === 'published' ? <Link to={`/hoat-dong/${entry.activity.id}`}>Xem hoạt động và quản lý đăng ký</Link> : <p>Hoạt động không còn công khai. Thông tin tham gia của bạn được giữ trong lịch sử.</p>}
           {entry.status === 'approved' && entry.activity.status === 'published' && !entry.attendance && <Link className="button secondary" to={`/hoat-dong/${entry.activity.id}/check-in`}>Check-in hoạt động</Link>}
           {entry.attendance && entry.activity.status === 'completed' && <Link className="button secondary" to={`/hoat-dong/${entry.activity.id}/phan-hoi`}>Gửi hoặc xem phản hồi của tôi</Link>}
           {mode === 'feedback' && entry.activity.status !== 'completed' && <p>Hoạt động chưa Hoàn thành nên chưa thể gửi phản hồi.</p>}

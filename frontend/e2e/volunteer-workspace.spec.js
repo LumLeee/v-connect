@@ -26,6 +26,8 @@ test('Không gian Tình nguyện viên: các trang, lịch sử thật và gửi
       description: 'Cùng chăm sóc cây xanh và kết nối với những người bạn mới.', address: 'Công viên bên sông, Huế', capacity: 20,
       starts_at: new Date(start).toISOString(), ends_at: new Date(start + 3600000).toISOString() })
     await post(organizer.request, `/api/v1/organizer/activities/${activity.id}/status/`, { status: 'published' })
+    await page.goto(`/hoat-dong/${activity.id}`)
+    await expect(page.getByRole('heading', { name: activity.title, exact: true })).toBeVisible()
     const entry = await post(page.request, `/api/v1/activities/${activity.id}/participation/`, {})
     await post(organizer.request, `/api/v1/organizer/activities/${activity.id}/applicants/${entry.participation.id}/review/`, { status: 'approved' })
     const headers = instant => ({ 'X-E2E-Time': new Date(instant).toISOString(), 'X-E2E-Clock-Key': process.env.E2E_CLOCK_KEY })
@@ -35,10 +37,11 @@ test('Không gian Tình nguyện viên: các trang, lịch sử thật và gửi
     await post(organizer.request, `/api/v1/organizer/activities/${activity.id}/status/`, { status: 'completed' })
     await page.context().setExtraHTTPHeaders(headers(start + 3660000))
     await page.clock.setFixedTime(new Date(start + 3660000))
+    await page.goto(`/hoat-dong/${activity.id}`)
+    await expect(page.getByRole('alert')).toHaveText('Hoạt động không tồn tại hoặc không còn công khai.')
     const pages = [
       ['/tinh-nguyen-vien', 'Tổng quan', 'Tổng quan', 'dashboard'],
       ['/hoat-dong', 'Khám phá hoạt động', 'Khám phá', 'activities'],
-      [`/hoat-dong/${activity.id}`, activity.title, 'Khám phá', 'detail'],
       ['/tinh-nguyen-vien/dang-ky', 'Đăng ký của tôi', 'Quản lý đăng ký', 'registrations'],
       ['/tinh-nguyen-vien/lich-su', 'Lịch sử tham gia', 'Lịch sử hoạt động', 'history'],
       ['/tinh-nguyen-vien/check-in', 'Điểm danh của tôi', 'Điểm danh của tôi', 'checkin-hub'],
@@ -71,6 +74,7 @@ test('Không gian Tình nguyện viên: các trang, lịch sử thật và gửi
     await expect(page.getByText('Bạn đã gửi phản hồi cho hoạt động này.', { exact: true })).toBeVisible()
     await page.goto('/tinh-nguyen-vien/lich-su')
     await expect(page.getByText('Đã xác nhận có mặt', { exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: activity.title, exact: true })).toHaveCount(0)
     await page.goto('/')
     await expect(page.locator('.site-header')).toBeVisible()
     await expect(page.locator('.vs-shell')).toHaveCount(0)

@@ -8,7 +8,6 @@ import '../styles/activities.css'
 import { Star } from 'lucide-react'
 
 function FeedbackForm({ id }) {
-  const activity = useApi(`/activities/${id}/`)
   const { data, loading, error, retry } = useApi(`/activities/${id}/feedback/`)
   const [rating, setRating] = useState('')
   const [content, setContent] = useState('')
@@ -28,9 +27,8 @@ function FeedbackForm({ id }) {
   return <section className="page-width section interior activity-page">
     <Link className="activity-back" to="/tinh-nguyen-vien/lich-su">← Lịch sử tham gia</Link>
     <h1>Phản hồi của tôi</h1>
-    <RequestState loading={activity.loading} error={activity.error} retry={activity.retry} />
-    {activity.data && <h2>{activity.data.title}</h2>}
-    {activity.data && <p className="vs-feedback-context">{activityTime(activity.data.starts_at)} · {activity.data.address}</p>}
+    {data?.activity && <h2>{data.activity.title}</h2>}
+    {data?.activity && <p className="vs-feedback-context">{activityTime(data.activity.starts_at)} · {data.activity.address}</p>}
     <RequestState loading={loading} error={error} retry={retry} />
     {failure && <p role="alert" className="request-error">{failure}</p>}
     {data?.feedback ? <article className="activity-editor">
@@ -52,7 +50,7 @@ function FeedbackForm({ id }) {
         <button className="button primary" disabled={busy || !content.trim()}>{busy ? 'Đang gửi…' : 'Gửi phản hồi'}</button>
       </fieldset>
     </form> : data && <p className="activity-empty">Bạn chỉ có thể gửi phản hồi khi đã được xác nhận có mặt và hoạt động đã Hoàn thành.</p>}
-    <p><Link to={`/hoat-dong/${id}`}>Xem hoạt động</Link></p>
+    {data?.activity?.status === 'published' && <p><Link to={`/hoat-dong/${id}`}>Xem hoạt động</Link></p>}
   </section>
 }
 

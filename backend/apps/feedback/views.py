@@ -32,7 +32,10 @@ class MyFeedback(APIView):
         attended = Attendance.objects.filter(participation__activity=activity, participation__volunteer=request.user,
                                              participation__status='approved').exists()
         eligible = not entry and attended and activity.status == 'completed' and activity.ends_at <= timezone.now()
-        return Response({'feedback': OwnFeedbackSerializer(entry).data if entry else None, 'can_submit': bool(eligible)})
+        context = {'id': str(activity.pk), 'title': activity.title, 'starts_at': activity.starts_at,
+                   'address': activity.address, 'status': activity.status} if attended or entry else None
+        return Response({'feedback': OwnFeedbackSerializer(entry).data if entry else None,
+                         'can_submit': bool(eligible), 'activity': context})
 
     def post(self, request, pk):
         serializer = SubmitSerializer(data=request.data)

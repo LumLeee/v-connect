@@ -39,7 +39,7 @@ class PublicList(generics.ListAPIView):
     serializer_class = ActivitySerializer
 
     def get_queryset(self):
-        return filter_activities(search(activities().filter(published_at__isnull=False, status__in=['published', 'completed', 'cancelled']), self.request), self.request)
+        return filter_activities(search(activities().filter(published_at__isnull=False, status='published'), self.request), self.request)
 
 
 class PublicDetail(generics.RetrieveAPIView):
@@ -47,7 +47,7 @@ class PublicDetail(generics.RetrieveAPIView):
     serializer_class = ActivitySerializer
 
     def get_queryset(self):
-        return activities().filter(published_at__isnull=False, status__in=['published', 'completed', 'cancelled'])
+        return activities().filter(published_at__isnull=False, status='published')
 
 
 @method_decorator(never_cache, name='dispatch')

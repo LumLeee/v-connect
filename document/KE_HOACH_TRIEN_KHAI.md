@@ -81,7 +81,7 @@ Kỹ năng, sở thích, lịch rảnh, địa điểm và mở rộng lưu tr�
 - [x] Quy tắc cập nhật ngày 07/10/2026: khi tạo, đổi giờ bắt đầu hoặc công khai, giờ bắt đầu phải cách thời điểm thực hiện ít nhất 24 giờ. Sửa nội dung mà giữ nguyên lịch không bị áp lại mốc này; các giới hạn sửa hoạt động đang diễn ra, đã hoàn thành hoặc hủy vẫn giữ nguyên.
 - [x] Quản lý trạng thái nháp, công khai, hoàn thành, hủy; chỉ chuyển trạng thái hợp lệ.
 - [x] Organizer xem danh sách và chi tiết hoạt động của mình.
-- [x] Guest/Volunteer xem hoạt động công khai; tìm kiếm theo tên và phân trang.
+- [x] Guest/Volunteer chỉ xem hoạt động đang Công khai trong danh sách, chi tiết và ảnh bìa; tìm kiếm theo tên và phân trang. Cập nhật 08/10/2026: ẩn Hoàn thành/Đã hủy khỏi phạm vi công khai, giữ lịch sử tham gia và phản hồi cá nhân. Xem [phạm vi hiển thị](PHAM_VI_HIEN_THI_HOAT_DONG.md).
 - [x] Kiểm tra thời gian, sức chứa và quyền sở hữu; không lộ hoạt động nháp.
 
 **Tiêu chí:** Organizer tạo và công khai được hoạt động; Volunteer tìm và xem được để đăng ký. Chưa phụ thuộc bản đồ, timeline, ảnh hoạt động hoặc ghép nối kỹ năng.

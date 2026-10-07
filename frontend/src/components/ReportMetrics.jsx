@@ -4,7 +4,7 @@ import { metricLabels } from '../api/reportFormat.js'
 export default function ReportMetrics({ metrics, activity }) {
   return <>
     <p>Mỗi người/hoạt động được tính một đơn. Đã tham gia chỉ tính hoạt động Hoàn thành có điểm danh; không bao gồm hoạt động bị hủy.</p>
-    <div className="activity-grid">{Object.entries(metricLabels).map(([key, label]) => <article className="activity-card" key={key}>
+    <div className="activity-grid report-metrics">{Object.entries(metricLabels).map(([key, label]) => <article className="activity-card" key={key}>
       <h2>{label}</h2><p className="lead">{metrics[key]}</p>
       <Link to={`/bao-cao/dang-ky?metric=${key}${activity ? `&activity=${activity}` : ''}`}>Xem chi tiết: {label.toLocaleLowerCase('vi-VN')}</Link>
     </article>)}</div>

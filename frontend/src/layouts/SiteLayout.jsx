@@ -3,6 +3,8 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useAuth, workspacePaths } from '../auth/context.js'
 import NotificationBell from '../components/NotificationBell.jsx'
+import OrganizerLayout from './OrganizerLayout.jsx'
+import VolunteerLayout from './VolunteerLayout.jsx'
 
 export default function SiteLayout() {
   const { pathname } = useLocation()
@@ -15,10 +17,12 @@ export default function SiteLayout() {
     finally { setBusy(false) }
   }
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
-  if (user?.role === 'organizer' && /^\/nha-to-chuc\/?$/.test(pathname)) return <>
-    <a href="#main-content" className="skip-link">Đến nội dung chính</a>
-    <main id="main-content"><Outlet /></main>
-  </>
+  if (user?.role === 'volunteer' && /^(\/tinh-nguyen-vien|\/hoat-dong|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+    return <VolunteerLayout key={user.id}><Outlet /></VolunteerLayout>
+  }
+  if (user?.role === 'organizer' && /^(\/nha-to-chuc|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+    return <OrganizerLayout key={user.id}><Outlet /></OrganizerLayout>
+  }
   return (
     <>
       <a href="#main-content" className="skip-link">Đến nội dung chính</a>

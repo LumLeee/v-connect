@@ -5,6 +5,7 @@ import useNow from '../hooks/useNow.js'
 import RequestState from '../components/RequestState.jsx'
 import AttendanceStatus from '../components/AttendanceStatus.jsx'
 import AttendanceCodePanel from '../components/AttendanceCodePanel.jsx'
+import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
 import { apiPost } from '../api/client.js'
 import { activityTime } from '../api/activityFormat.js'
 import '../styles/activities.css'
@@ -34,6 +35,7 @@ function AttendanceList({ id }) {
   return <section className="page-width section interior activity-page">
     <Link className="activity-back" to={`/nha-to-chuc/hoat-dong/${id}`}>← Về hoạt động</Link>
     <h1>Điểm danh người tham gia</h1>
+    {activity.data && <OrganizerActivityHeader activity={activity.data} selected="attendance" />}
     <RequestState loading={activity.loading} error={activity.error} retry={activity.retry} />
     {activity.data && <><h2>{activity.data.title}</h2>
       <p>Thời gian điểm danh: {activityTime(activity.data.starts_at)} đến {activityTime(activity.data.ends_at)} (giờ Việt Nam).</p>
@@ -51,11 +53,13 @@ function AttendanceList({ id }) {
     {list.data && <>
       <p>{list.data.count} người trong danh sách.</p>
       {!list.data.count && <p className="activity-empty">Chưa có người được duyệt để điểm danh.</p>}
-      <div className="activity-grid">{list.data.results.map(entry => <article className="activity-card" key={entry.id}>
-        <h2>{entry.volunteer_name}</h2><p>Email: {entry.volunteer_email}</p><p>Điện thoại: {entry.volunteer_phone || 'Chưa cung cấp'}</p>
-        <AttendanceStatus entry={entry} />
+      <div className="activity-grid om-people-list">{list.data.results.map(entry => <article className="activity-card om-person-row" key={entry.id}>
+        <div><h2>{entry.volunteer_name}</h2><p>Email: {entry.volunteer_email}</p><p>Điện thoại: {entry.volunteer_phone || 'Chưa cung cấp'}</p></div>
+        <div><AttendanceStatus entry={entry} />{!entry.attendance && <p>Chưa ghi nhận có mặt.</p>}</div>
+        <div>
         {!entry.attendance && entry.status === 'approved' && <button className="button primary" disabled={busy || !open}
           onClick={() => { setPending({ id: entry.id, name: entry.volunteer_name }); setFailure(''); setMessage('') }}>Ghi nhận có mặt</button>}
+        </div>
       </article>)}</div>
       {(list.data.previous || list.data.next) && <nav className="activity-pagination" aria-label="Phân trang điểm danh">
         <button className="button secondary" disabled={busy || !list.data.previous} onClick={() => { setPending(null); setParams({ page: String(page - 1) }) }}>Trang trước</button>

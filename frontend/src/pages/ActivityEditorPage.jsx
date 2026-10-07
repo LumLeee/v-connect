@@ -37,18 +37,22 @@ function Editor({ initial }) {
     <p>Nhập thời gian theo giờ Việt Nam (UTC+7). Hoạt động mới được lưu ở trạng thái Nháp.</p>
     <fieldset disabled={busy}>
       <legend className="sr-only">Thông tin hoạt động</legend>
-      {fields.map(([name, label, type, maxLength]) => { const Control = type === 'textarea' ? 'textarea' : 'input'; return <div className="activity-field" key={name}>
+      {[[0, 2, 'Thông tin cơ bản'], [2, 6, 'Thời gian, địa điểm và số lượng']].map(([start, end, title]) => <section className="om-editor-section" key={title}><h2>{title}</h2><div className="om-editor-fields">
+      {fields.slice(start, end).map(([name, label, type, maxLength]) => { const Control = type === 'textarea' ? 'textarea' : 'input'; return <div className={`activity-field${['title', 'description', 'address'].includes(name) ? ' om-wide' : ''}`} key={name}>
         <label htmlFor={name}>{label}</label><Control id={name} name={name} type={type === 'textarea' ? undefined : type} rows={type === 'textarea' ? 8 : undefined}
           value={form[name]} required maxLength={maxLength} min={type === 'number' ? 1 : undefined} max={type === 'number' ? 100000 : undefined} step={type === 'number' ? 1 : undefined}
           aria-invalid={Boolean(errors[name])} aria-describedby={errors[name] ? `${name}-error` : undefined}
           onChange={event => setForm(previous => ({ ...previous, [name]: event.target.value }))} />
         {errors[name] && <p id={`${name}-error`} className="field-error">{[].concat(errors[name]).join(' ')}</p>}
       </div> })}
+      </div></section>)}
+      <section className="om-editor-section">
       <h2 className="profile-subtitle">Kỹ năng yêu cầu</h2>
       <p className="muted">Chọn kỹ năng phù hợp với hoạt động. Người chưa có kỹ năng vẫn có thể đăng ký để bạn xét duyệt.</p>
       <SkillPicker selected={form.required_skills} onChange={required_skills => setForm(previous => ({ ...previous, required_skills }))} />
       {errors.required_skills && <p className="field-error" role="alert">{[].concat(errors.required_skills).join(' ')}</p>}
       <p className="muted">Bạn có thể thêm hoặc thay ảnh bìa tại trang quản lý chi tiết sau khi lưu hoạt động.</p>
+      </section>
     </fieldset>
     {error && <p role="alert" className="request-error">{error}</p>}
     <div className="activity-actions"><button className="button primary" disabled={busy}>{busy ? 'Đang lưu…' : initial ? 'Lưu thay đổi' : 'Lưu bản nháp'}</button>

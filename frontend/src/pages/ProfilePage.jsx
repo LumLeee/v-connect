@@ -77,6 +77,7 @@ function ProfileEditor({ initial }) {
     try {
       const data = await apiMutation('/auth/profile/avatar/', body, method)
       setAvatar(data.avatar_url); setAvatarVersion(Date.now()); setAvatarFailed(false)
+      window.dispatchEvent(new Event('profile:changed'))
       setAvatarMessage(method === 'DELETE' ? 'Đã xóa ảnh đại diện.' : 'Đã cập nhật ảnh đại diện.')
     } catch (failure) {
       const detail = failure.details?.error?.details?.avatar

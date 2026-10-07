@@ -5,6 +5,7 @@ import RequestState from '../components/RequestState.jsx'
 import { apiPost } from '../api/client.js'
 import { activityTime } from '../api/activityFormat.js'
 import '../styles/activities.css'
+import { Star } from 'lucide-react'
 
 function FeedbackForm({ id }) {
   const activity = useApi(`/activities/${id}/`)
@@ -29,6 +30,7 @@ function FeedbackForm({ id }) {
     <h1>Phản hồi của tôi</h1>
     <RequestState loading={activity.loading} error={activity.error} retry={activity.retry} />
     {activity.data && <h2>{activity.data.title}</h2>}
+    {activity.data && <p className="vs-feedback-context">{activityTime(activity.data.starts_at)} · {activity.data.address}</p>}
     <RequestState loading={loading} error={error} retry={retry} />
     {failure && <p role="alert" className="request-error">{failure}</p>}
     {data?.feedback ? <article className="activity-editor">
@@ -41,6 +43,7 @@ function FeedbackForm({ id }) {
       <p>Chia sẻ trải nghiệm thực tế của bạn với Nhà tổ chức. Mỗi người chỉ gửi một lần, không sửa hoặc xóa sau khi gửi.</p>
       <fieldset disabled={busy}>
         <legend className="sr-only">Nội dung phản hồi</legend>
+        <div className="vs-rating-stars" role="group" aria-label="Chọn điểm đánh giá">{[1, 2, 3, 4, 5].map(value => <button type="button" key={value} aria-label={`${value} sao`} aria-pressed={Number(rating) === value} className={Number(rating) >= value ? 'selected' : ''} onClick={() => setRating(String(value))}><Star size={28} aria-hidden="true" /></button>)}</div>
         <div className="activity-field"><label htmlFor="feedback-rating">Điểm đánh giá (1–5)</label>
           <input id="feedback-rating" type="number" min="1" max="5" step="1" required value={rating} onChange={event => setRating(event.target.value)} /></div>
         <div className="activity-field"><label htmlFor="feedback-content">Nội dung phản hồi</label>

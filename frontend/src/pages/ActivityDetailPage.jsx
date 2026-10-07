@@ -9,6 +9,7 @@ import ActivityVisual from '../components/ActivityVisual.jsx'
 import { CalendarDays, MapPin, Users, UserRound } from 'lucide-react'
 import '../styles/activities.css'
 import ActivityCoverEditor from '../components/ActivityCoverEditor.jsx'
+import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
 
 function RequiredSkills({ activity }) {
   return activity.skill_details?.length ? <section className="activity-required-skills"><h2>Kỹ năng yêu cầu</h2><div className="activity-skill-tags">{activity.skill_details.map(skill => <span key={skill.id}>{skill.name}</span>)}</div><p className="muted">Nhà tổ chức xét duyệt từng đơn; kỹ năng không tự động giới hạn quyền đăng ký.</p></section> : null
@@ -52,9 +53,10 @@ function ActivityDetail({ activity, managed, refresh }) {
   const editable = ['draft', 'published'].includes(activity.status)
   if (!managed) return <PublicActivityDetail activity={activity} refresh={refresh} />
   return <>
-    <span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span>
     <h1>{activity.title}</h1>
     <p className="lead">Nhà tổ chức: {activity.organizer_name}</p>
+    <OrganizerActivityHeader activity={activity} selected="detail" />
+    <div className="om-detail-body">
     <ActivityCoverEditor activity={activity} refresh={refresh} />
     <RequiredSkills activity={activity} />
     <dl className="activity-facts"><div><dt>Bắt đầu</dt><dd>{activityTime(activity.starts_at)}</dd></div><div><dt>Kết thúc</dt><dd>{activityTime(activity.ends_at)}</dd></div>
@@ -63,6 +65,7 @@ function ActivityDetail({ activity, managed, refresh }) {
     <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
     {activity.status === 'cancelled' && <p role="status">Hoạt động này đã bị hủy.</p>}
     <p>Đã được duyệt: {activity.approved_count}/{activity.capacity} người.</p>
+    </div>
     {!managed && <ParticipationPanel activity={activity} refresh={refresh} />}
     {managed && <div className="activity-actions">
       <Link className="button primary" to={`/nha-to-chuc/hoat-dong/${activity.id}/dang-ky`}>Xem danh sách đăng ký</Link>

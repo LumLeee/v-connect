@@ -1,19 +1,9 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BarChart3, CalendarDays, CheckCircle2, ClipboardList, HeartHandshake, LayoutDashboard, LogOut, MapPin, Plus, RefreshCw, Settings2, UserRound, Users } from 'lucide-react'
-import { useAuth } from '../auth/context.js'
+import { ArrowRight, BarChart3, CalendarDays, CheckCircle2, ClipboardList, MapPin, Plus, RefreshCw, UserRound, Users } from 'lucide-react'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
-import NotificationBell from '../components/NotificationBell.jsx'
 import { activityTime } from '../api/activityFormat.js'
 import '../styles/organizer-dashboard.css'
-
-function ProfileAvatar({ profile }) {
-  const [failed, setFailed] = useState(false)
-  return <span className="od-avatar">{profile?.avatar_url && !failed
-    ? <img src={profile.avatar_url} alt="" onError={() => setFailed(true)} />
-    : <UserRound size={20} aria-hidden="true" />}</span>
-}
 
 function ActivityCard({ activity, ongoing = false }) {
   return <article className="od-activity-card">
@@ -27,38 +17,10 @@ function ActivityCard({ activity, ongoing = false }) {
 }
 
 export default function OrganizerDashboard() {
-  const { user, signOut } = useAuth()
   const { data, loading, error, retry } = useApi('/reports/organizer-dashboard/')
-  const [busy, setBusy] = useState(false)
-  const [logoutError, setLogoutError] = useState('')
-  async function logout() {
-    setBusy(true); setLogoutError('')
-    try { await signOut() } catch (problem) { setLogoutError(problem.message) }
-    finally { setBusy(false) }
-  }
-  return <div className="od-shell">
-    <aside className="od-sidebar" aria-label="Không gian Nhà tổ chức">
-      <Link to="/" className="od-brand"><span><HeartHandshake size={25} aria-hidden="true" /></span>V-Connect<span className="od-brand-dot">.</span></Link>
-      <p className="od-sidebar-caption">KHÔNG GIAN NHÀ TỔ CHỨC</p>
-      <nav aria-label="Điều hướng Nhà tổ chức">
-        <Link className="active" aria-current="page" to="/nha-to-chuc"><LayoutDashboard size={19} aria-hidden="true" />Tổng quan</Link>
-        <Link to="/nha-to-chuc/hoat-dong"><CalendarDays size={19} aria-hidden="true" />Quản lý hoạt động</Link>
-        <Link to="/bao-cao/dang-ky?metric=pending"><ClipboardList size={19} aria-hidden="true" />Đơn đăng ký</Link>
-        <Link to="/bao-cao"><BarChart3 size={19} aria-hidden="true" />Báo cáo</Link>
-        <Link to="/ho-so"><Settings2 size={19} aria-hidden="true" />Chỉnh sửa hồ sơ</Link>
-      </nav>
-      <div className="od-sidebar-note"><HeartHandshake size={23} aria-hidden="true" /><strong>Kết nối để sẻ chia</strong><p>Mỗi hoạt động mở ra một cơ hội cùng cộng đồng tạo nên điều tốt đẹp.</p><Link to="/nha-to-chuc/hoat-dong/tao">Tạo hoạt động <ArrowRight size={14} aria-hidden="true" /></Link></div>
-      <div className="od-sidebar-account"><ProfileAvatar profile={data?.profile} /><div><strong>{user.full_name}</strong><span>{user.email}</span></div></div>
-      <button type="button" className="od-logout" onClick={logout} disabled={busy}><LogOut size={18} aria-hidden="true" />Đăng xuất</button>
-      <Link className="od-home-link" to="/">Về trang chủ</Link>
-    </aside>
-    <div className="od-workspace">
-      <header className="od-topbar"><span>Bảng điều hành <span className="od-topbar-divider">/</span> <strong>Tổng quan</strong></span>
-        <div className="od-topbar-account"><NotificationBell key={user.id} /><span className="od-role">Nhà tổ chức</span><ProfileAvatar profile={data?.profile} /></div></header>
-      <div className="od-content">
+  return <div className="od-content">
         <div className="od-heading"><div><p className="od-eyebrow">CÙNG CỘNG ĐỒNG TẠO KHÁC BIỆT</p><h1>Tổng quan Nhà tổ chức</h1><p>Quản lý hoạt động, kết nối tình nguyện viên và theo dõi kết quả tại một nơi.</p></div>
           <Link className="od-create" to="/nha-to-chuc/hoat-dong/tao"><Plus size={18} aria-hidden="true" />Tạo hoạt động mới</Link></div>
-        {logoutError && <p role="alert" className="request-error">{logoutError}</p>}
         <RequestState loading={loading} error={error} retry={retry} />
         {data && <>
           <div className="od-greeting"><div><h2>Xin chào, {data.profile.full_name}.</h2><p>{data.profile.organizer?.organization_name || 'Không gian quản lý hoạt động của bạn'}</p></div>
@@ -88,7 +50,5 @@ export default function OrganizerDashboard() {
           </div>
           <footer className="od-footer"><span>V-Connect · Kết nối để sẻ chia.</span><Link to="/thong-bao">Xem thông báo</Link></footer>
         </>}
-      </div>
-    </div>
   </div>
 }

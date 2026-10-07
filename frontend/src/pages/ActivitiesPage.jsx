@@ -7,6 +7,7 @@ import useApi from '../hooks/useApi.js'
 import useSkillCatalog from '../hooks/useSkillCatalog.js'
 import RequestState from '../components/RequestState.jsx'
 import '../styles/activities.css'
+import OrganizerActivities from './OrganizerActivities.jsx'
 import { activityStatuses, activityTime } from '../api/activityFormat.js'
 
 const filterNames = ['search', 'status', 'date_from', 'date_to', 'location', 'skill']
@@ -21,10 +22,10 @@ function ActivityFilters({ params, setParams, managed, skills }) {
     next.set('page', '1'); setParams(next)
   }
   return <form className="activity-search" onSubmit={submit}>
-    <h2>Tìm cơ hội đóng góp của bạn</h2>
+    <h2>{managed ? 'Tìm và lọc hoạt động' : 'Tìm cơ hội đóng góp của bạn'}</h2>
     <p>Kết hợp tên, trạng thái, ngày bắt đầu, địa điểm và kỹ năng để tìm hoạt động phù hợp. Ngày được tính theo giờ Việt Nam.</p>
     <label htmlFor="activity-search">Tìm theo tên hoạt động</label>
-    <div><div className="activity-search-input"><Search size={19} aria-hidden="true" /><input id="activity-search" name="search" placeholder="Bạn muốn tham gia hoạt động nào?" maxLength={200} value={search} onChange={event => setSearch(event.target.value)} /></div><button className="button primary" type="submit">Tìm kiếm</button>
+    <div><div className="activity-search-input"><Search size={19} aria-hidden="true" /><input id="activity-search" name="search" placeholder={managed ? 'Nhập tên hoạt động cần quản lý' : 'Bạn muốn tham gia hoạt động nào?'} maxLength={200} value={search} onChange={event => setSearch(event.target.value)} /></div><button className="button primary" type="submit">Tìm kiếm</button>
       {(filterNames.some(name => params.get(name)) || search) && <button className="button secondary" type="button" onClick={() => { setSearch(''); setParams({ page: '1' }) }}>Xóa tìm kiếm</button>}</div>
     <div className="activity-filter-grid">
       <label>Trạng thái hoạt động<select aria-label="Trạng thái hoạt động" name="status" defaultValue={params.get('status') || ''}><option value="">Tất cả trạng thái</option>{Object.entries(activityStatuses).filter(([key]) => managed || key !== 'draft').map(([key, name]) => <option key={key} value={key}>{name}</option>)}</select></label>
@@ -39,7 +40,7 @@ function ActivityFilters({ params, setParams, managed, skills }) {
   </form>
 }
 
-export default function ActivitiesPage({ managed = false }) {
+function ActivitiesBrowser({ managed = false }) {
   const { user } = useAuth()
   const skills = useSkillCatalog()
   const [params, setParams] = useSearchParams()
@@ -77,4 +78,8 @@ export default function ActivitiesPage({ managed = false }) {
       </nav>}
     </>}
   </section>
+}
+
+export default function ActivitiesPage({ managed = false, mode = 'activities' }) {
+  return managed ? <OrganizerActivities Filters={ActivityFilters} mode={mode} /> : <ActivitiesBrowser />
 }

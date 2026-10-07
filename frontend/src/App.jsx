@@ -24,6 +24,7 @@ import AuditPage from './pages/AuditPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
 import CheckInPage from './pages/CheckInPage.jsx'
 import OrganizerDashboard from './pages/OrganizerDashboard.jsx'
+import VolunteerParticipations from './pages/VolunteerParticipations.jsx'
 
 export default function App() {
   const { user } = useAuth()
@@ -48,6 +49,9 @@ export default function App() {
         <Route path="hoat-dong" element={<ActivitiesPage key="public" />} />
         <Route path="hoat-dong/:id" element={<ActivityDetailPage />} />
         <Route element={<RequireRole role="organizer" />}>
+          <Route path="nha-to-chuc/dang-ky" element={<ActivitiesPage key={`registrations-${user?.id}`} managed mode="registrations" />} />
+          <Route path="nha-to-chuc/diem-danh" element={<ActivitiesPage key={`attendance-${user?.id}`} managed mode="attendance" />} />
+          <Route path="nha-to-chuc/phan-hoi" element={<ActivitiesPage key={`feedback-${user?.id}`} managed mode="feedback" />} />
           <Route path="nha-to-chuc/hoat-dong/:id/phan-hoi" element={<FeedbackListPage key={user?.id} />} />
           <Route path="nha-to-chuc/hoat-dong/:id/diem-danh" element={<AttendancePage key={user?.id} />} />
           <Route path="nha-to-chuc/hoat-dong/:id/dang-ky" element={<ParticipationsPage key={user?.id} managed />} />
@@ -62,8 +66,12 @@ export default function App() {
         <Route path="dat-lai-mat-khau/:uid/:token" element={<AuthPage key="reset" mode="reset" />} />
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/check-in" element={<CheckInPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<VolunteerDashboard key={user?.id} />} /></Route>
-        <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/dang-ky" element={<ParticipationsPage key={user?.id} />} /></Route>
-        <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien/lich-su" element={<ParticipationsPage key={`history-${user?.id}`} history />} /></Route>
+        <Route element={<RequireRole role="volunteer" />}>
+          <Route path="tinh-nguyen-vien/dang-ky" element={<VolunteerParticipations key={`registrations-${user?.id}`} />} />
+          <Route path="tinh-nguyen-vien/lich-su" element={<VolunteerParticipations key={`history-${user?.id}`} mode="history" />} />
+          <Route path="tinh-nguyen-vien/check-in" element={<VolunteerParticipations key={`checkin-${user?.id}`} mode="checkin" />} />
+          <Route path="tinh-nguyen-vien/phan-hoi" element={<VolunteerParticipations key={`feedback-${user?.id}`} mode="feedback" />} />
+        </Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/phan-hoi" element={<FeedbackPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="admin" />}><Route path="quan-tri/phan-hoi" element={<FeedbackListPage key={user?.id} admin />} /></Route>
         <Route element={<RequireRole role="organizer" />}><Route path="nha-to-chuc" element={<OrganizerDashboard key={user?.id} />} /></Route>

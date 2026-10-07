@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
+import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
 import { apiPost } from '../api/client.js'
 import { activityTime } from '../api/activityFormat.js'
 import '../styles/activities.css'
@@ -30,6 +31,7 @@ function FeedbackList({ id, admin }) {
   return <section className="page-width section interior activity-page">
     <Link className="activity-back" to={admin ? '/quan-tri' : `/nha-to-chuc/hoat-dong/${id}`}>← {admin ? 'Về quản trị' : 'Về hoạt động'}</Link>
     <h1>{admin ? 'Quản lý phản hồi' : 'Phản hồi hoạt động'}</h1>
+    {!admin && <OrganizerActivityHeader id={id} selected="feedback" />}
     <p>{admin ? 'Ẩn nội dung không phù hợp cần có lý do. Bản gốc và người xử lý được giữ để đối chiếu.' : 'Chỉ hiển thị phản hồi hợp lệ của người đã được xác nhận tham gia. Phản hồi bị ẩn không tính vào thống kê.'}</p>
     {admin && <div className="activity-actions" aria-label="Lọc phản hồi">{[['all', 'Tất cả'], ['visible', 'Chưa ẩn'], ['hidden', 'Đã ẩn']].map(([value, label]) =>
       <button key={value} className={`button ${status === value ? 'primary' : 'secondary'}`} aria-pressed={status === value} disabled={busy}

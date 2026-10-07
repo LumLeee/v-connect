@@ -4,7 +4,7 @@
 
 Cập nhật riêng trang `/nha-to-chuc`. Bố cục gồm thanh điều hướng bên trái, thanh thông tin tài khoản và chuông thông báo phía trên, ba thẻ thống kê và các khối công việc. Màu sắc và nội dung được điều chỉnh theo V-Connect; chỉ hiển thị chức năng đã có.
 
-Các trang quản lý hoạt động, xét duyệt, điểm danh, hồ sơ và báo cáo giữ giao diện hiện tại. Các lối tắt trên tổng quan dẫn đến những trang này.
+Sau đợt cập nhật tiếp theo, các trang quản lý bên trong dùng chung khung điều hướng với tổng quan. Xem `GIAO_DIEN_QUAN_LY_NHA_TO_CHUC.md` để biết phạm vi và cách tổ chức mã nguồn.
 
 ## Dữ liệu hiển thị
 
@@ -18,7 +18,7 @@ Các trang quản lý hoạt động, xét duyệt, điểm danh, hồ sơ và b
 | Đăng ký cần xử lý | Tối đa 4 đơn còn hạn, ưu tiên hoạt động sắp bắt đầu rồi đến đơn đăng ký sớm. |
 | Kết quả và phản hồi | Lượt tham gia có điểm danh ở hoạt động Hoàn thành và phản hồi được phép hiển thị. |
 
-Số tổng trên từng khu vực tính toàn bộ dữ liệu phù hợp, không chỉ số mục xem trước. Danh sách đầy đủ nằm ở trang Quản lý hoạt động và Báo cáo. Mục Đơn đăng ký trong thanh điều hướng mở báo cáo tất cả đơn chờ duyệt, có thể bao gồm đơn đã quá hạn; khu vực cần xử lý trên tổng quan chỉ hiển thị đơn còn hạn.
+Số tổng trên từng khu vực tính toàn bộ dữ liệu phù hợp, không chỉ số mục xem trước. Danh sách đầy đủ nằm ở trang Quản lý hoạt động và Báo cáo. Mục Đơn đăng ký trong thanh điều hướng mở trang chọn hoạt động để xét duyệt; khu vực cần xử lý trên tổng quan chỉ hiển thị đơn còn hạn.
 
 Thời gian hiển thị theo múi giờ Việt Nam. Nút Cập nhật dữ liệu tải lại tổng quan. Hệ thống có trạng thái đang tải, lỗi kèm nút thử lại và hướng dẫn khi chưa có dữ liệu.
 

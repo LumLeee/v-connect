@@ -4,6 +4,7 @@ import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
 import AttendanceStatus from '../components/AttendanceStatus.jsx'
 import ReportMetrics, { ReportPagination } from '../components/ReportMetrics.jsx'
+import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
 import { metricLabels } from '../api/reportFormat.js'
 import { activityStatuses, activityTime } from '../api/activityFormat.js'
 import { participationLabels } from '../api/participationFormat.js'
@@ -22,6 +23,7 @@ export default function ReportsPage({ mode = 'overview' }) {
   return <section className="page-width section interior activity-page">
     <Link className="activity-back" to={mode === 'overview' ? ({ volunteer: '/tinh-nguyen-vien', organizer: '/nha-to-chuc', admin: '/quan-tri' }[user.role]) : '/bao-cao'}>← {mode === 'overview' ? 'Về tài khoản' : 'Về thống kê'}</Link>
     <h1>{title}</h1><button className="text-button" onClick={retry}>Cập nhật số liệu</button>
+    {user.role === 'organizer' && mode === 'result' && <OrganizerActivityHeader id={id} selected="reports" />}
     {user.role !== 'volunteer' && <p><Link className="button primary" to="/bao-cao/mo-rong">Báo cáo mở rộng</Link></p>}
     <RequestState loading={loading} error={error} retry={retry} />
     {data && mode === 'overview' && <>

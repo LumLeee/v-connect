@@ -80,6 +80,32 @@ class ActivityTests(APITestCase):
                 self.assertEqual(self.mutate('post', self.url, {**self.payload, **extra}).status_code, 400)
         self.assertFalse(Activity.objects.exists())
 
+    def test_start_requires_full_24_hours_on_create_and_reschedule(self):
+        now = timezone.now()
+        with patch('apps.activities.serializers.timezone.now', return_value=now):
+            for delta, expected in [(timedelta(hours=24, microseconds=-1), 400), (timedelta(hours=24), 201)]:
+                response = self.mutate('post', self.url, {**self.payload, 'starts_at': (now + delta).isoformat()})
+                self.assertEqual(response.status_code, expected, response.data)
+            activity = Activity.objects.get(pk=response.data['id'])
+            url = f'{self.url}{activity.pk}/'
+            response = self.mutate('patch', url, {'title': 'Không được lưu', 'starts_at': (now + timedelta(hours=23)).isoformat()})
+            self.assertEqual(response.status_code, 400)
+            activity.refresh_from_db()
+            self.assertEqual(activity.title, self.payload['title'])
+        with patch('apps.activities.serializers.timezone.now', return_value=now + timedelta(hours=2)):
+            self.assertEqual(self.mutate('patch', url, {'title': 'Đổi nội dung', 'starts_at': activity.starts_at.isoformat()}).status_code, 200)
+            self.assertEqual(self.mutate('patch', url, {'starts_at': (now + timedelta(hours=26)).isoformat()}).status_code, 200)
+
+    def test_publication_rechecks_24_hours_and_keeps_rejected_draft_private(self):
+        activity = self.create()
+        with patch('apps.activities.views.timezone.now', return_value=activity.starts_at - timedelta(hours=24) + timedelta(microseconds=1)):
+            self.assertEqual(self.change(activity, 'published').status_code, 400)
+        activity.refresh_from_db()
+        self.assertEqual(activity.status, 'draft')
+        self.assertIsNone(activity.published_at)
+        with patch('apps.activities.views.timezone.now', return_value=activity.starts_at - timedelta(hours=24)):
+            self.assertEqual(self.change(activity, 'published').status_code, 200)
+
     def test_partial_edit_checks_combined_dates_and_does_not_partially_write(self):
         activity = self.create()
         url = f'{self.url}{activity.pk}/'

@@ -19,7 +19,7 @@ test('Các trang quản lý dùng chung điều hướng, dữ liệu và bố c
   test.setTimeout(120000)
   page.on('pageerror', error => { throw error })
   await register(page.request, 'organizer', 'Nhóm tình nguyện Kết Nối')
-  const start = Date.now() + 86400000
+  const start = Date.now() + 2 * 86400000
   const activity = await post(page.request, '/api/v1/organizer/activities/', { title: 'Chung tay làm xanh khu phố',
     description: 'Cùng dọn vệ sinh, trồng cây và chăm sóc không gian chung của cộng đồng.', address: 'Nhà văn hóa phường, thành phố Huế', capacity: 25,
     starts_at: new Date(start).toISOString(), ends_at: new Date(start + 3600000).toISOString() })

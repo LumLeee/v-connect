@@ -21,7 +21,7 @@ test('Tổng quan Nhà tổ chức: dữ liệu thật, xét duyệt, điểm da
   const now = Date.now()
   const activities = []
   for (const [index, title] of ['Ngày hội xanh vì cộng đồng', 'Lớp học sẻ chia cuối tuần'].entries()) {
-    const starts = now + (index + 1) * 86400000
+    const starts = now + (index + 2) * 86400000
     const activity = await post(page.request, '/api/v1/organizer/activities/', { title,
       description: 'Cùng chung tay mang lại những giá trị tốt đẹp cho cộng đồng.',
       address: 'Trung tâm sinh hoạt cộng đồng, thành phố Huế', capacity: 30,
@@ -36,7 +36,7 @@ test('Tổng quan Nhà tổ chức: dữ liệu thật, xét duyệt, điểm da
       await post(context.request, `/api/v1/activities/${activity.id}/participation/`, {})
     }
     // Advance only this test's clock; the first activity is now live and its pending entry is no longer actionable.
-    const instant = new Date(now + 86400000 + 60000)
+    const instant = new Date(now + 2 * 86400000 + 60000)
     await page.context().setExtraHTTPHeaders({ 'X-E2E-Time': instant.toISOString(), 'X-E2E-Clock-Key': process.env.E2E_CLOCK_KEY })
     await page.clock.setFixedTime(instant)
     await page.goto('/nha-to-chuc')

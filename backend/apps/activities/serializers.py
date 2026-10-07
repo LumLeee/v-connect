@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -44,8 +46,9 @@ class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
         end = attrs.get('ends_at', getattr(self.instance, 'ends_at', None))
         if start and end and end <= start:
             raise serializers.ValidationError({'ends_at': 'Thời gian kết thúc phải sau thời gian bắt đầu.'})
-        if 'starts_at' in attrs and start <= timezone.now():
-            raise serializers.ValidationError({'starts_at': 'Thời gian bắt đầu phải ở tương lai.'})
+        changed_start = 'starts_at' in attrs and (self.instance is None or start != self.instance.starts_at)
+        if changed_start and start < timezone.now() + timedelta(hours=24):
+            raise serializers.ValidationError({'starts_at': 'Thời gian bắt đầu phải cách thời điểm hiện tại ít nhất 24 giờ.'})
         return attrs
 
 

@@ -19,7 +19,7 @@ async function setTime(page, instant) {
 async function setup(page, context) {
   await account(page.request, 'organizer')
   await account(context.request, 'volunteer')
-  const start = Date.now() + 3600000
+  const start = Date.now() + 2 * 86400000
   const response = await post(page.request, '/api/v1/organizer/activities/', { title: 'Ngày hội QR', description: 'Cùng tham gia',
     address: 'Huế', capacity: 10, starts_at: new Date(start).toISOString(), ends_at: new Date(start + 7200000).toISOString() })
   expect(response.status()).toBe(201)

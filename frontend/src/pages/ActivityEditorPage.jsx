@@ -25,6 +25,10 @@ function Editor({ initial }) {
         if (form.starts_at === vietnamInput(initial.starts_at)) delete payload.starts_at
         if (form.ends_at === vietnamInput(initial.ends_at)) delete payload.ends_at
       }
+      if (payload.starts_at && new Date(payload.starts_at).getTime() < Date.now() + 24 * 60 * 60 * 1000) {
+        setErrors({ starts_at: 'Thời gian bắt đầu phải cách thời điểm hiện tại ít nhất 24 giờ.' })
+        return
+      }
       const activity = await apiMutation(`/organizer/activities/${initial ? `${initial.id}/` : ''}`, payload, initial ? 'PATCH' : 'POST')
       navigate(`/nha-to-chuc/hoat-dong/${activity.id}`)
     } catch (failure) { setErrors(failure.details?.error?.details || {}); setError(failure.message) }
@@ -35,6 +39,7 @@ function Editor({ initial }) {
     ['starts_at', 'Thời gian bắt đầu', 'datetime-local'], ['ends_at', 'Thời gian kết thúc', 'datetime-local'], ['capacity', 'Số lượng người cần tuyển', 'number']]
   return <form className="activity-editor" onSubmit={save}>
     <p>Nhập thời gian theo giờ Việt Nam (UTC+7). Hoạt động mới được lưu ở trạng thái Nháp.</p>
+    <p>Khi tạo, đổi giờ bắt đầu hoặc công khai hoạt động, giờ bắt đầu phải cách thời điểm thực hiện ít nhất 24 giờ.</p>
     <fieldset disabled={busy}>
       <legend className="sr-only">Thông tin hoạt động</legend>
       {[[0, 2, 'Thông tin cơ bản'], [2, 6, 'Thời gian, địa điểm và số lượng']].map(([start, end, title]) => <section className="om-editor-section" key={title}><h2>{title}</h2><div className="om-editor-fields">

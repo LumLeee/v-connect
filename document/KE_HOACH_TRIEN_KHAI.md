@@ -78,6 +78,7 @@ Kỹ năng, sở thích, lịch rảnh, địa điểm và mở rộng lưu tr�
 ### Giai đoạn 4: Quản lý và xem hoạt động — đã đẩy GitHub
 
 - [x] Organizer tạo/sửa hoạt động: tên, mô tả, thời gian bắt đầu/kết thúc, địa chỉ dạng văn bản và sức chứa.
+- [x] Quy tắc cập nhật ngày 07/10/2026: khi tạo, đổi giờ bắt đầu hoặc công khai, giờ bắt đầu phải cách thời điểm thực hiện ít nhất 24 giờ. Sửa nội dung mà giữ nguyên lịch không bị áp lại mốc này; các giới hạn sửa hoạt động đang diễn ra, đã hoàn thành hoặc hủy vẫn giữ nguyên.
 - [x] Quản lý trạng thái nháp, công khai, hoàn thành, hủy; chỉ chuyển trạng thái hợp lệ.
 - [x] Organizer xem danh sách và chi tiết hoạt động của mình.
 - [x] Guest/Volunteer xem hoạt động công khai; tìm kiếm theo tên và phân trang.

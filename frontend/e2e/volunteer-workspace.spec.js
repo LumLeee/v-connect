@@ -21,7 +21,7 @@ test('Không gian Tình nguyện viên: các trang, lịch sử thật và gửi
   try {
     await register(organizer.request, 'organizer')
     await register(page.request, 'volunteer')
-    const start = Date.now() + 3600000
+    const start = Date.now() + 2 * 86400000
     const activity = await post(organizer.request, '/api/v1/organizer/activities/', { title: 'Ngày xanh cùng cộng đồng',
       description: 'Cùng chăm sóc cây xanh và kết nối với những người bạn mới.', address: 'Công viên bên sông, Huế', capacity: 20,
       starts_at: new Date(start).toISOString(), ends_at: new Date(start + 3600000).toISOString() })

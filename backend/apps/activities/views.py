@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -107,8 +109,8 @@ class TransitionView(APIView):
                 raise ValidationError({'status': 'Không thể chuyển trạng thái hoạt động theo yêu cầu.'})
             now = timezone.now()
             if target == 'published':
-                if activity.starts_at <= now:
-                    raise ValidationError({'starts_at': 'Cập nhật thời gian bắt đầu ở tương lai trước khi công khai.'})
+                if activity.starts_at < now + timedelta(hours=24):
+                    raise ValidationError({'starts_at': 'Thời gian bắt đầu phải cách thời điểm công khai ít nhất 24 giờ. Vui lòng cập nhật lịch hoạt động.'})
                 activity.published_at = now
             if target == 'completed' and activity.ends_at > now:
                 raise ValidationError({'status': 'Chỉ hoàn thành hoạt động sau thời gian kết thúc.'})

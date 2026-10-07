@@ -37,7 +37,7 @@ test('Toàn bộ luồng chính qua giao diện với Guest, Volunteer, Organize
     const volunteerEmail = `flow.volunteer.${randomUUID()}@example.invalid`
     await register(page, 'organizer', `flow.organizer.${randomUUID()}@example.invalid`)
     const title = `Luồng cộng đồng ${randomUUID()}`
-    const start = Math.floor(Date.now() / 60000) * 60000 + 3600000
+    const start = Math.floor(Date.now() / 60000) * 60000 + 2 * 86400000
     const end = start + 3600000
     await page.goto('/nha-to-chuc/hoat-dong/tao')
     await page.getByLabel('Tên hoạt động', { exact: true }).fill(title)

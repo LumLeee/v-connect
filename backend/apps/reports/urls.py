@@ -2,8 +2,11 @@ from django.urls import path
 from .views import Overview, ActivityList, ActivityResult, ParticipationList, AccountList, AccountStatus, AuditList, VolunteerDashboard
 from .analytics_views import Analytics, ExportAnalytics, ReportOrganizers
 from .organizer_dashboard import OrganizerDashboard
+from .matching import RecommendedActivities, RecommendedVolunteers
 
 urlpatterns = [
+    path('matching/activities/', RecommendedActivities.as_view()),
+    path('organizer/activities/<uuid:pk>/matching/', RecommendedVolunteers.as_view()),
     path('reports/organizer-dashboard/', OrganizerDashboard.as_view()),
     path('reports/analytics/', Analytics.as_view()),
     path('reports/analytics/export/', ExportAnalytics.as_view()),

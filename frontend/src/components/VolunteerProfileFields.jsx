@@ -32,6 +32,8 @@ export default function VolunteerProfileFields({ value, onChange, errors = {}, d
   return <fieldset className="volunteer-fields" disabled={disabled}>
     <legend>Hồ sơ tình nguyện mở rộng</legend>
     <p className="profile-hint">Bổ sung kỹ năng, sở thích và thời gian bạn có thể tham gia. Các thông tin này không bắt buộc.</p>
+    <label className="profile-hint"><input type="checkbox" checked={value.matching_visible} onChange={event => update('matching_visible', event.target.checked)} /> Cho phép Nhà tổ chức tìm thấy tôi trong gợi ý</label>
+    <p className="profile-hint">Mặc định tắt. Khi bật, Nhà tổ chức thấy họ tên, kỹ năng và sở thích phù hợp cùng mức phù hợp lịch của bạn với hoạt động. Không hiển thị email, số điện thoại hay toàn bộ lịch rảnh. Bạn có thể tắt bất cứ lúc nào.</p>
     <h2 className="profile-subtitle">Kỹ năng</h2>
     <SkillPicker selected={value.skills} onChange={next => update('skills', next)} />
     {errors.skills && <p className="field-error" role="alert">{errorText(errors.skills)}</p>}

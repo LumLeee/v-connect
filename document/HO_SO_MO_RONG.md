@@ -6,7 +6,7 @@ Ngày thực hiện: 27/09/2026. Phạm vi đã thống nhất: kỹ năng, sở
 
 Mở **Chỉnh sửa hồ sơ** → **Hồ sơ tình nguyện mở rộng**. Chọn kỹ năng từ danh mục, nhập mỗi sở thích trên một dòng, thêm ngày và khoảng giờ rảnh rồi bấm **Lưu hồ sơ**. Dữ liệu được lưu cùng thông tin cơ bản. Có thể bỏ chọn kỹ năng, xóa dòng sở thích hoặc xóa khung giờ rồi lưu lại.
 
-Các mục đều tùy chọn; bỏ trống nghĩa là chưa khai báo, không có nghĩa người dùng không có kỹ năng hoặc không thể tham gia. Thông tin mở rộng hiện chỉ chủ tài khoản xem và sửa. Organizer và Admin tiếp tục dùng hồ sơ theo vai trò hiện có.
+Các mục đều tùy chọn; bỏ trống nghĩa là chưa khai báo, không có nghĩa người dùng không có kỹ năng hoặc không thể tham gia. Chỉ chủ tài khoản xem và sửa đầy đủ thông tin mở rộng. Từ 09/10/2026, người dùng có thể bật tùy chọn cho phép Nhà tổ chức tìm thấy mình trong gợi ý (mặc định tắt); chỉ chia sẻ thông tin phù hợp với hoạt động, không chia sẻ thông tin liên hệ hoặc toàn bộ lịch rảnh. Xem [ghép nối](GHEP_NOI.md).
 
 ## Quy tắc dữ liệu
 

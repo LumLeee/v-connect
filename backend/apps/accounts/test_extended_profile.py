@@ -31,7 +31,7 @@ class ExtendedProfileTests(APITestCase):
                                 'availability': [self.slot(6), self.slot(0)]})
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data['profile']['volunteer'], {
-            'skills': [self.skill.pk], 'interests': ['Môi trường'], 'availability': [self.slot(0), self.slot(6)]})
+            'skills': [self.skill.pk], 'interests': ['Môi trường'], 'availability': [self.slot(0), self.slot(6)], 'matching_visible': False})
         self.assertEqual(self.update({'interests': ['Giáo dục']}).status_code, 200)
         profile = self.client.get(self.url).data['profile']['volunteer']
         self.assertEqual(profile['skills'], [self.skill.pk])
@@ -43,7 +43,16 @@ class ExtendedProfileTests(APITestCase):
         self.assertFalse(response.data['profile'].get('volunteer'))
         self.client.force_login(self.user)
         response = self.update({'skills': [], 'interests': [], 'availability': []})
-        self.assertEqual(response.data['profile']['volunteer'], {'skills': [], 'interests': [], 'availability': []})
+        self.assertEqual(response.data['profile']['volunteer'], {'skills': [], 'interests': [], 'availability': [], 'matching_visible': False})
+
+    def test_matching_consent_defaults_off_preserves_fields_and_can_be_revoked(self):
+        self.update({'skills': [self.skill.pk], 'interests': ['Cộng đồng']})
+        self.assertFalse(self.user.volunteer_profile.matching_visible)
+        response = self.update({'matching_visible': True})
+        self.assertTrue(response.data['profile']['volunteer']['matching_visible'])
+        self.assertEqual(response.data['profile']['volunteer']['skills'], [self.skill.pk])
+        self.assertTrue(self.update({'interests': []}).data['profile']['volunteer']['matching_visible'])
+        self.assertFalse(self.update({'matching_visible': False}).data['profile']['volunteer']['matching_visible'])
 
     def test_skills_interests_and_unknown_fields_validation_is_atomic(self):
         bad_values = [

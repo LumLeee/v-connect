@@ -171,7 +171,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | Điểm danh nâng cao | Đã có Nhà tổ chức cấp QR/mã 8 chữ số có hạn 5 phút; Volunteer tự check-in, thu hồi/thay mã và dự phòng thủ công. Check-out để sau theo phạm vi đã chọn | Điểm danh cơ bản; xem [chi tiết](DIEM_DANH_NANG_CAO.md) |
 | Đóng góp | Nhà tổ chức xác nhận số phút cho người đã điểm danh sau khi hoạt động Hoàn thành; điều chỉnh có lý do, lưu lịch sử; Volunteer xem tổng thời gian và chi tiết | Không vượt thời lượng hoạt động; xem [chi tiết](DONG_GOP.md) |
 | Thông báo | Đã có chuông, danh sách, đã đọc, liên kết, nhắc trước 1 giờ và hàng đợi email toàn bộ nghiệp vụ; bật/tắt email theo tài khoản | Cần tiến trình xử lý chạy; SMTP thật chưa cấu hình. Xem [chi tiết](THONG_BAO.md) |
-| Ghép nối | Lọc điều kiện, đối chiếu lịch, baseline và đề xuất hai chiều có lý do | Kỹ năng, sở thích, lịch rảnh và hoạt động |
+| Ghép nối | Đã triển khai quy tắc hai chiều: đối chiếu kỹ năng/sở thích/lịch, loại xung đột, giải thích điểm; người dùng chủ động cho phép được gợi ý. Xem [chi tiết](GHEP_NOI.md) | Kỹ năng, sở thích, lịch rảnh và hoạt động |
 | AI ghép nối | Embedding hoặc mô hình phù hợp, đo chất lượng | Baseline và dữ liệu đánh giá |
 | AI phản hồi | Chuẩn hóa nhãn, phân loại cảm xúc, hỗ trợ phát hiện spam/sự cố và rà soát | Phản hồi và dữ liệu đánh giá |
 | AI báo cáo | Tóm tắt từ số liệu, phản hồi hợp lệ; cho phép kiểm tra lại | Báo cáo cơ bản, không tự bịa kết quả |

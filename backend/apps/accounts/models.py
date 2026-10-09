@@ -97,6 +97,7 @@ class VolunteerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='volunteer_profile')
     skills = models.ManyToManyField('core.Skill', blank=True, related_name='volunteer_profiles')
     interests = models.JSONField('Sở thích', default=list, blank=True)
+    matching_visible = models.BooleanField('Cho phép xuất hiện trong gợi ý', default=False)
 
 
 class AvailabilitySlot(models.Model):

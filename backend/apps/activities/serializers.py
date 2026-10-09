@@ -29,6 +29,8 @@ class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
         return (profile.organization_name if profile else '') or activity.organizer.full_name
 
     def get_approved_count(self, activity):
+        if hasattr(activity, 'matching_approved'):
+            return activity.matching_approved
         return activity.participations.filter(status='approved').count()
 
     def get_cover_url(self, activity):

@@ -10,6 +10,7 @@ import '../styles/volunteer-workspace.css'
 const items = [
   ['overview', '/tinh-nguyen-vien', 'Tổng quan', LayoutDashboard],
   ['activities', '/hoat-dong', 'Khám phá', Compass],
+  ['matching', '/tinh-nguyen-vien/ghep-noi', 'Gợi ý phù hợp', HeartHandshake],
   ['registrations', '/tinh-nguyen-vien/dang-ky', 'Quản lý đăng ký', ClipboardList],
   ['checkin', '/tinh-nguyen-vien/check-in', 'Điểm danh của tôi', ScanLine],
   ['history', '/tinh-nguyen-vien/lich-su', 'Lịch sử hoạt động', History],
@@ -21,6 +22,7 @@ const items = [
 ]
 
 function sectionFor(path) {
+  if (path.endsWith('/ghep-noi')) return 'matching'
   if (path.endsWith('/dong-gop')) return 'contributions'
   if (path.endsWith('/check-in')) return 'checkin'
   if (path.endsWith('/phan-hoi')) return 'feedback'

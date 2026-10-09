@@ -6,6 +6,7 @@ import RequestState from '../components/RequestState.jsx'
 import { activityStatuses, activityTime } from '../api/activityFormat.js'
 
 const modes = {
+  matching: ['Ghép nối tình nguyện viên', 'Chọn hoạt động Công khai chưa bắt đầu để xem người phù hợp đã đồng ý được gợi ý.', 'Xem người phù hợp', '/ghep-noi'],
   contributions: ['Quản lý đóng góp', 'Chọn hoạt động Hoàn thành để xác nhận số phút cho người đã được điểm danh.', 'Xác nhận đóng góp', '/dong-gop'],
   activities: ['Hoạt động của tôi', 'Theo dõi và quản lý những hoạt động bạn tổ chức cho cộng đồng.', 'Xem chi tiết', ''],
   registrations: ['Quản lý đơn đăng ký', 'Chọn hoạt động để xem người đăng ký và xét duyệt từng đơn.', 'Xét duyệt đăng ký', '/dang-ky'],
@@ -24,7 +25,7 @@ function Summary() {
 }
 
 export default function OrganizerActivities({ Filters, mode = 'activities' }) {
-  const [params, setParams] = useSearchParams(mode === 'contributions' ? { status: 'completed' } : {})
+  const [params, setParams] = useSearchParams(mode === 'contributions' ? { status: 'completed' } : mode === 'matching' ? { status: 'published' } : {})
   const skills = useSkillCatalog()
   const page = Math.max(1, Number(params.get('page')) || 1)
   const query = new URLSearchParams({ page: String(page), page_size: '12' })

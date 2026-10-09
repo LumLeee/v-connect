@@ -9,7 +9,7 @@ import VolunteerProfileFields from '../components/VolunteerProfileFields.jsx'
 import '../styles/profile.css'
 
 const emptyOrganization = { organization_name: '', description: '', website: '', contact_address: '' }
-const volunteerForm = profile => ({ skills: profile?.skills || [], interestsText: (profile?.interests || []).join('\n'), availability: profile?.availability || [] })
+const volunteerForm = profile => ({ skills: profile?.skills || [], interestsText: (profile?.interests || []).join('\n'), availability: profile?.availability || [], matching_visible: profile?.matching_visible || false })
 
 function Field({ name, label, value, onChange, error, multiline = false, ...props }) {
   const Control = multiline ? 'textarea' : 'input'
@@ -48,7 +48,7 @@ function ProfileEditor({ initial }) {
     const payload = { full_name: form.full_name, phone: form.phone, bio: form.bio }
     if (isOrganizer) payload.organizer = form.organizer
     if (initial.role === 'volunteer') payload.volunteer = {
-      skills: volunteer.skills, interests: volunteer.interestsText.split('\n').map(value => value.trim()).filter(Boolean), availability: volunteer.availability,
+      skills: volunteer.skills, interests: volunteer.interestsText.split('\n').map(value => value.trim()).filter(Boolean), availability: volunteer.availability, matching_visible: volunteer.matching_visible,
     }
     try {
       const { profile } = await apiMutation('/auth/profile/', payload)

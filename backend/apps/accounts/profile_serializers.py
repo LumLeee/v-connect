@@ -51,7 +51,7 @@ class VolunteerProfileSerializer(StrictFieldsMixin, serializers.ModelSerializer)
 
     class Meta:
         model = VolunteerProfile
-        fields = ['skills', 'interests', 'availability']
+        fields = ['skills', 'interests', 'availability', 'matching_visible']
 
     def validate_skills(self, value):
         if len(value) > 20:
@@ -111,6 +111,9 @@ class ProfileSerializer(StrictFieldsMixin, serializers.ModelSerializer):
             OrganizerProfile.objects.update_or_create(user=instance, defaults=organizer)
         if volunteer is not None:
             profile, _ = VolunteerProfile.objects.get_or_create(user=instance)
+            if 'matching_visible' in volunteer:
+                profile.matching_visible = volunteer['matching_visible']
+                profile.save(update_fields=['matching_visible'])
             if 'interests' in volunteer:
                 profile.interests = volunteer['interests']
                 profile.save(update_fields=['interests'])

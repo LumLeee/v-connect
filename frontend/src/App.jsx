@@ -26,6 +26,7 @@ import CheckInPage from './pages/CheckInPage.jsx'
 import OrganizerDashboard from './pages/OrganizerDashboard.jsx'
 import VolunteerParticipations from './pages/VolunteerParticipations.jsx'
 import ContributionsPage from './pages/ContributionsPage.jsx'
+import MatchingPage from './pages/MatchingPage.jsx'
 
 export default function App() {
   const { user } = useAuth()
@@ -50,6 +51,8 @@ export default function App() {
         <Route path="hoat-dong" element={<ActivitiesPage key="public" />} />
         <Route path="hoat-dong/:id" element={<ActivityDetailPage />} />
         <Route element={<RequireRole role="organizer" />}>
+          <Route path="nha-to-chuc/hoat-dong/:id/ghep-noi" element={<MatchingPage key={user?.id} managed />} />
+          <Route path="nha-to-chuc/ghep-noi" element={<ActivitiesPage key={`matching-${user?.id}`} managed mode="matching" />} />
           <Route path="nha-to-chuc/hoat-dong/:id/dong-gop" element={<ContributionsPage key={user?.id} managed />} />
           <Route path="nha-to-chuc/dong-gop" element={<ActivitiesPage key={`contributions-${user?.id}`} managed mode="contributions" />} />
           <Route path="nha-to-chuc/dang-ky" element={<ActivitiesPage key={`registrations-${user?.id}`} managed mode="registrations" />} />
@@ -70,6 +73,7 @@ export default function App() {
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/check-in" element={<CheckInPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<VolunteerDashboard key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}>
+          <Route path="tinh-nguyen-vien/ghep-noi" element={<MatchingPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/dong-gop" element={<ContributionsPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/dang-ky" element={<VolunteerParticipations key={`registrations-${user?.id}`} />} />
           <Route path="tinh-nguyen-vien/lich-su" element={<VolunteerParticipations key={`history-${user?.id}`} mode="history" />} />

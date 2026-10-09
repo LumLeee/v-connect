@@ -10,6 +10,7 @@ import '../styles/organizer-management.css'
 const items = [
   ['overview', '/nha-to-chuc', 'Tổng quan', LayoutDashboard],
   ['activities', '/nha-to-chuc/hoat-dong', 'Quản lý hoạt động', CalendarDays],
+  ['matching', '/nha-to-chuc/ghep-noi', 'Ghép nối tình nguyện viên', HeartHandshake],
   ['registrations', '/nha-to-chuc/dang-ky', 'Đơn đăng ký', ClipboardList],
   ['attendance', '/nha-to-chuc/diem-danh', 'Quản lý điểm danh', UserCheck],
   ['contributions', '/nha-to-chuc/dong-gop', 'Quản lý đóng góp', HeartHandshake],
@@ -20,6 +21,7 @@ const items = [
 ]
 
 function sectionFor(path) {
+  if (path.endsWith('/ghep-noi')) return 'matching'
   if (path.endsWith('/dong-gop')) return 'contributions'
   if (path.startsWith('/bao-cao')) return 'reports'
   if (path === '/ho-so') return 'profile'

@@ -1,0 +1,4 @@
+.contribution-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:24px 0; }
+.contribution-summary > div { display:grid; gap:12px; padding:22px; background:white; border:1px solid #dfe8e2; border-radius:12px; min-width:0; overflow-wrap:anywhere; }
+.contribution-summary span { font-size:13px; color:#678474; }.contribution-summary strong { font-size:25px; line-height:1.3; color:#285d45; }
+@media(max-width:900px) { .contribution-summary { grid-template-columns:1fr; } }

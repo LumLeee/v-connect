@@ -7,7 +7,7 @@ function Summary({ activity, selected }) {
   const base = `/nha-to-chuc/hoat-dong/${activity.id}`
   const links = [['detail', base, 'Tổng quan hoạt động'], ['registrations', `${base}/dang-ky`, 'Đăng ký tham gia'],
     ['attendance', `${base}/diem-danh`, 'Bảng điểm danh'], ['feedback', `${base}/phan-hoi`, 'Đánh giá'],
-    ['reports', `/bao-cao/hoat-dong/${activity.id}`, 'Báo cáo kết quả']]
+    ['contributions', `${base}/dong-gop`, 'Giờ đóng góp'], ['reports', `/bao-cao/hoat-dong/${activity.id}`, 'Báo cáo kết quả']]
   return <div className="om-activity-context">
     <div className="om-context-main"><div><span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span><strong>{activity.title}</strong><p>{activityTime(activity.starts_at)} · {activity.address}</p></div>
       <div className="om-capacity"><strong>{activity.approved_count}/{activity.capacity}</strong><span>người được duyệt</span><progress value={activity.approved_count} max={activity.capacity} aria-label="Tỷ lệ người được duyệt" /></div></div>

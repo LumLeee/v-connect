@@ -52,3 +52,28 @@ class AttendanceCode(models.Model):
     issued_at = models.DateTimeField()
     expires_at = models.DateTimeField()
     revoked_at = models.DateTimeField(null=True, blank=True)
+
+
+class Contribution(models.Model):
+    attendance = models.OneToOneField(Attendance, on_delete=models.PROTECT, related_name='contribution')
+    minutes = models.PositiveIntegerField()
+    revision = models.PositiveIntegerField(default=1)
+    confirmed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at', '-pk']
+
+
+class ContributionChange(models.Model):
+    contribution = models.ForeignKey(Contribution, on_delete=models.PROTECT, related_name='changes')
+    revision = models.PositiveIntegerField()
+    previous_minutes = models.PositiveIntegerField(null=True)
+    minutes = models.PositiveIntegerField()
+    reason = models.CharField(max_length=1000, blank=True)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-revision']
+        constraints = [models.UniqueConstraint(fields=['contribution', 'revision'], name='contribution_unique_revision')]

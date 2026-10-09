@@ -12,6 +12,7 @@ const items = [
   ['activities', '/nha-to-chuc/hoat-dong', 'Quản lý hoạt động', CalendarDays],
   ['registrations', '/nha-to-chuc/dang-ky', 'Đơn đăng ký', ClipboardList],
   ['attendance', '/nha-to-chuc/diem-danh', 'Quản lý điểm danh', UserCheck],
+  ['contributions', '/nha-to-chuc/dong-gop', 'Quản lý đóng góp', HeartHandshake],
   ['feedback', '/nha-to-chuc/phan-hoi', 'Phản hồi hoạt động', MessageSquare],
   ['reports', '/bao-cao', 'Báo cáo', BarChart3],
   ['notifications', '/thong-bao', 'Thông báo', Bell],
@@ -19,6 +20,7 @@ const items = [
 ]
 
 function sectionFor(path) {
+  if (path.endsWith('/dong-gop')) return 'contributions'
   if (path.startsWith('/bao-cao')) return 'reports'
   if (path === '/ho-so') return 'profile'
   if (path === '/thong-bao') return 'notifications'

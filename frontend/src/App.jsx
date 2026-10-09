@@ -25,6 +25,7 @@ import NotificationsPage from './pages/NotificationsPage.jsx'
 import CheckInPage from './pages/CheckInPage.jsx'
 import OrganizerDashboard from './pages/OrganizerDashboard.jsx'
 import VolunteerParticipations from './pages/VolunteerParticipations.jsx'
+import ContributionsPage from './pages/ContributionsPage.jsx'
 
 export default function App() {
   const { user } = useAuth()
@@ -49,6 +50,8 @@ export default function App() {
         <Route path="hoat-dong" element={<ActivitiesPage key="public" />} />
         <Route path="hoat-dong/:id" element={<ActivityDetailPage />} />
         <Route element={<RequireRole role="organizer" />}>
+          <Route path="nha-to-chuc/hoat-dong/:id/dong-gop" element={<ContributionsPage key={user?.id} managed />} />
+          <Route path="nha-to-chuc/dong-gop" element={<ActivitiesPage key={`contributions-${user?.id}`} managed mode="contributions" />} />
           <Route path="nha-to-chuc/dang-ky" element={<ActivitiesPage key={`registrations-${user?.id}`} managed mode="registrations" />} />
           <Route path="nha-to-chuc/diem-danh" element={<ActivitiesPage key={`attendance-${user?.id}`} managed mode="attendance" />} />
           <Route path="nha-to-chuc/phan-hoi" element={<ActivitiesPage key={`feedback-${user?.id}`} managed mode="feedback" />} />
@@ -67,6 +70,7 @@ export default function App() {
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/check-in" element={<CheckInPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<VolunteerDashboard key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}>
+          <Route path="tinh-nguyen-vien/dong-gop" element={<ContributionsPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/dang-ky" element={<VolunteerParticipations key={`registrations-${user?.id}`} />} />
           <Route path="tinh-nguyen-vien/lich-su" element={<VolunteerParticipations key={`history-${user?.id}`} mode="history" />} />
           <Route path="tinh-nguyen-vien/check-in" element={<VolunteerParticipations key={`checkin-${user?.id}`} mode="checkin" />} />

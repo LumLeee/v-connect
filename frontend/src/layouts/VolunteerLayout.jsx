@@ -13,6 +13,7 @@ const items = [
   ['registrations', '/tinh-nguyen-vien/dang-ky', 'Quản lý đăng ký', ClipboardList],
   ['checkin', '/tinh-nguyen-vien/check-in', 'Điểm danh của tôi', ScanLine],
   ['history', '/tinh-nguyen-vien/lich-su', 'Lịch sử hoạt động', History],
+  ['contributions', '/tinh-nguyen-vien/dong-gop', 'Đóng góp của tôi', HeartHandshake],
   ['feedback', '/tinh-nguyen-vien/phan-hoi', 'Đánh giá hoạt động', MessageSquare],
   ['reports', '/bao-cao', 'Thống kê', BarChart3],
   ['notifications', '/thong-bao', 'Thông báo', Bell],
@@ -20,6 +21,7 @@ const items = [
 ]
 
 function sectionFor(path) {
+  if (path.endsWith('/dong-gop')) return 'contributions'
   if (path.endsWith('/check-in')) return 'checkin'
   if (path.endsWith('/phan-hoi')) return 'feedback'
   if (path.startsWith('/hoat-dong')) return 'activities'

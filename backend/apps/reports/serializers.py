@@ -26,3 +26,9 @@ class AuditSerializer(serializers.ModelSerializer):
         model = AuditEvent
         fields = ['id', 'actor', 'actor_name', 'subject', 'subject_name', 'action', 'action_label', 'object_id', 'activity', 'activity_title', 'reason', 'created_at']
         read_only_fields = fields
+
+
+class AuditDetailSerializer(AuditSerializer):
+    class Meta(AuditSerializer.Meta):
+        fields = AuditSerializer.Meta.fields + ['before', 'after']
+        read_only_fields = fields

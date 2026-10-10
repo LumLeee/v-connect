@@ -61,5 +61,6 @@ def hide(feedback_id, admin, reason):
                entry.attendance.participation.activity,
                href=f'/hoat-dong/{entry.attendance.participation.activity_id}/phan-hoi')
         AuditEvent.objects.create(actor=admin, subject=entry.attendance.participation.volunteer,
-            activity=entry.attendance.participation.activity, object_id=entry.pk, action='feedback_hidden', reason=reason)
+            activity=entry.attendance.participation.activity, object_id=entry.pk, action='feedback_hidden', reason=reason,
+            before={'is_hidden': False}, after={'is_hidden': True})
     return entry

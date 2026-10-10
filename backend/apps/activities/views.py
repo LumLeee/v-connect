@@ -16,6 +16,7 @@ from .serializers import ActivitySerializer, TransitionSerializer
 from .filters import filter_activities
 from apps.notifications.services import notify_participants
 from apps.participations.models import AttendanceCode
+from apps.reports.audit import activity_snapshot, record_activity
 
 
 class IsOrganizer(BasePermission):
@@ -60,7 +61,8 @@ class ManagedList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         with transaction.atomic():
-            serializer.save(organizer=self.request.user)
+            activity = serializer.save(organizer=self.request.user)
+            record_activity(self.request.user, activity, 'activity_created', None, activity_snapshot(activity))
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -77,6 +79,7 @@ class ManagedDetail(APIView):
                 raise ValidationError('Không thể sửa hoạt động đã hoàn thành hoặc đã hủy.')
             serializer = ActivitySerializer(activity, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
+            before = activity_snapshot(activity)
             if serializer.validated_data.get('capacity', activity.capacity) < activity.participations.filter(status='approved').count():
                 raise ValidationError({'capacity': 'Sức chứa không được thấp hơn số người đã được duyệt.'})
             if activity.starts_at <= timezone.now() and activity.participations.exists() and any(
@@ -87,6 +90,7 @@ class ManagedDetail(APIView):
             changed = any(name in serializer.validated_data and serializer.validated_data[name] != getattr(activity, name)
                           for name in ['starts_at', 'ends_at', 'address'])
             serializer.save()
+            record_activity(request.user, activity, 'activity_updated', before, activity_snapshot(activity))
             if changed:
                 AttendanceCode.objects.filter(activity=activity, revoked_at__isnull=True).update(revoked_at=timezone.now())
                 notify_participants(activity, 'activity_changed', 'Hoạt động thay đổi lịch hoặc địa điểm',
@@ -114,8 +118,10 @@ class TransitionView(APIView):
                 activity.published_at = now
             if target == 'completed' and activity.ends_at > now:
                 raise ValidationError({'status': 'Chỉ hoàn thành hoạt động sau thời gian kết thúc.'})
+            before = {'status': activity.status}
             activity.status = target
             activity.save(update_fields=['status', 'published_at', 'updated_at'])
+            record_activity(request.user, activity, 'activity_status_changed', before, {'status': target})
             if target == 'cancelled':
                 notify_participants(activity, 'activity_cancelled', 'Hoạt động đã bị hủy',
                                     f'Nhà tổ chức đã hủy “{activity.title}”. Đăng ký của bạn được hủy cùng hoạt động.')

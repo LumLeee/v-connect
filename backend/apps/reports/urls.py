@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Overview, ActivityList, ActivityResult, ParticipationList, AccountList, AccountStatus, AuditList, VolunteerDashboard
+from .views import Overview, ActivityList, ActivityResult, ParticipationList, AccountList, AccountStatus, AuditList, AuditDetail, VolunteerDashboard
 from .analytics_views import Analytics, ExportAnalytics, ReportOrganizers
 from .organizer_dashboard import OrganizerDashboard
 from .matching import RecommendedActivities, RecommendedVolunteers
@@ -19,4 +19,5 @@ urlpatterns = [
     path('admin/accounts/', AccountList.as_view()),
     path('admin/accounts/<uuid:pk>/status/', AccountStatus.as_view()),
     path('admin/audit/', AuditList.as_view()),
+    path('admin/audit/<uuid:pk>/', AuditDetail.as_view()),
 ]

@@ -1,0 +1,11 @@
+.audit-filters { padding:20px; border:1px solid #dce6e0; background:white; border-radius:12px; margin:24px 0; }
+.audit-filter-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.audit-filters details summary { cursor:pointer; margin:12px 0; }
+.audit-meta dd { margin:4px 0 16px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.audit-meta dt { font-weight:600; }.audit-meta a { display:block; margin-top:5px; }
+.audit-changes { display:grid; gap:16px; }.audit-change { overflow-wrap:anywhere; }
+.audit-comparison { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.audit-comparison section { background:#f5f8f6; padding:16px; border-radius:8px; white-space:pre-wrap; }
+.audit-comparison h4 { margin:0 0 12px; }.audit-comparison dd { margin:3px 0 12px; }
+.audit-value-list { padding-left:20px; }.audit-value-list li + li { margin-top:12px; }
+@media(max-width:700px) { .audit-filter-grid,.audit-comparison { grid-template-columns:1fr; } }

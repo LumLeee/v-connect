@@ -176,7 +176,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | AI phản hồi | Chuẩn hóa nhãn, phân loại cảm xúc, hỗ trợ phát hiện spam/sự cố và rà soát | Phản hồi và dữ liệu đánh giá |
 | AI báo cáo | Tóm tắt từ số liệu, phản hồi hợp lệ; cho phép kiểm tra lại | Báo cáo cơ bản, không tự bịa kết quả |
 | Báo cáo mở rộng | Đã có biểu đồ, lọc thống kê, Excel và in/lưu PDF; các mẫu chuyên biệt bổ sung khi có nhu cầu | Thống kê và quyền xuất dữ liệu; xem [chi tiết](BAO_CAO_MO_RONG.md) |
-| Quản trị mở rộng | Quyền chi tiết, giao diện audit log, mẫu báo cáo/chứng nhận, câu chuyện tác động | Nghiệp vụ chính; chốt yêu cầu từng mục |
+| Quản trị mở rộng | Đã bổ sung [nhật ký nâng cao](NHAT_KY_NANG_CAO.md): bộ lọc kết hợp, chi tiết trước–sau, ghi nhận hoạt động/timeline và đóng góp. Quyền chi tiết, mẫu báo cáo/chứng nhận, câu chuyện tác động để sau | Nghiệp vụ chính; chốt yêu cầu từng mục |
 | Lưu trữ/vận hành | Lưu file bên ngoài, hosting/domain, cache chung và tối ưu theo tải | Nhu cầu triển khai thực tế |
 
 AI phải phân biệt kết quả quy tắc với mô hình, có timeout và dự phòng khi dịch vụ lỗi, ghi rõ nguồn kết quả và chất lượng đã đo. Không dùng kết quả kiểm thử của báo cáo cũ làm kết quả hệ thống mới.

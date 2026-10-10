@@ -51,9 +51,11 @@ def set_account_status(actor, account_id, active, reason):
     if account.role == 'admin' or account.is_staff or account.is_superuser:
         raise ValidationError('Không khóa hoặc mở khóa tài khoản quản trị qua chức năng này.')
     if account.is_active != active:
+        before = {'is_active': account.is_active}
         account.is_active = active
         account.session_version += 1
         account.save(update_fields=['is_active', 'session_version'])
         AuditEvent.objects.create(actor=actor, subject=account, object_id=account.pk,
-            action='account_unlocked' if active else 'account_locked', reason=reason)
+            action='account_unlocked' if active else 'account_locked', reason=reason,
+            before=before, after={'is_active': active})
     return account

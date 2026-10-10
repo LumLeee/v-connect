@@ -14,6 +14,7 @@ from apps.accounts.profile_serializers import StrictFieldsMixin
 from apps.activities.models import Activity
 from apps.activities.views import IsOrganizer
 from apps.notifications.services import notify
+from apps.reports.models import AuditEvent
 from .models import Attendance, Contribution, ContributionChange
 from .views import IsVolunteer
 
@@ -92,6 +93,10 @@ def confirm(actor, activity_id, attendance_id, values):
         record = Contribution.objects.create(attendance=attendance, minutes=values['minutes'], confirmed_by=actor)
     ContributionChange.objects.create(contribution=record, revision=record.revision, previous_minutes=previous,
         minutes=record.minutes, reason=values['reason'], actor=actor)
+    AuditEvent.objects.create(actor=actor, subject=attendance.participation.volunteer, activity=activity,
+        object_id=attendance.pk, action='contribution_confirmed' if previous is None else 'contribution_updated',
+        reason=values['reason'], before=None if previous is None else {'minutes': previous, 'revision': revision},
+        after={'minutes': record.minutes, 'revision': record.revision})
     notify(attendance.participation.volunteer, 'contribution_confirmed' if previous is None else 'contribution_updated',
         'Đóng góp đã được xác nhận' if previous is None else 'Giờ đóng góp được điều chỉnh',
         f'“{activity.title}”: {record.minutes} phút được công nhận.', activity, href='/tinh-nguyen-vien/dong-gop')

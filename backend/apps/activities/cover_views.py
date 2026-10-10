@@ -20,6 +20,7 @@ from rest_framework.views import APIView
 from .models import Activity
 from .serializers import ActivitySerializer
 from .views import IsOrganizer
+from apps.reports.audit import record_activity
 
 logger = logging.getLogger('vconnect.activities')
 
@@ -94,6 +95,7 @@ class ActivityCover(APIView):
                 new_name = storage.save(f'activities/covers/{uuid.uuid4().hex}.jpg', content)
                 activity.cover.name = new_name
                 activity.save(update_fields=['cover', 'updated_at'])
+                record_activity(request.user, activity, 'activity_cover_changed', {'cover': previous or None}, {'cover': new_name})
                 transaction.on_commit(lambda: remove_cover(storage, previous))
         except Exception:
             remove_cover(storage, new_name)
@@ -106,5 +108,6 @@ class ActivityCover(APIView):
             previous, storage = activity.cover.name, activity.cover.storage
             activity.cover = ''
             activity.save(update_fields=['cover', 'updated_at'])
+            record_activity(request.user, activity, 'activity_cover_changed', {'cover': previous or None}, {'cover': None})
             transaction.on_commit(lambda: remove_cover(storage, previous))
         return Response({'cover_url': None})

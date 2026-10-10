@@ -77,7 +77,8 @@ def review(activity_id, entry_id, organizer, target):
     entry.reviewed_at = timezone.now()
     entry.save(update_fields=['status', 'reviewed_by', 'reviewed_at', 'updated_at'])
     AuditEvent.objects.create(actor=organizer, subject=entry.volunteer, activity=activity, object_id=entry.pk,
-                              action='review_approved' if target == 'approved' else 'review_rejected')
+                              action='review_approved' if target == 'approved' else 'review_rejected',
+                              before={'status': 'pending'}, after={'status': target})
     notify(entry.volunteer, 'review_' + target, 'Kết quả xét duyệt đăng ký',
            f'Đơn đăng ký “{activity.title}” đã được duyệt.' if target == 'approved'
            else f'Đơn đăng ký “{activity.title}” đã bị từ chối.', activity)
@@ -106,5 +107,6 @@ def record_attendance(activity, entry, actor, method):
                f'Bạn đã được xác nhận có mặt tại “{activity.title}”.', activity,
                href='/tinh-nguyen-vien/lich-su')
         AuditEvent.objects.create(actor=actor, subject=entry.volunteer, activity=activity,
-                                  object_id=attendance.pk, action='attendance_confirmed')
+                                  object_id=attendance.pk, action='attendance_confirmed',
+                                  before={'attended': False}, after={'attended': True, 'method': method})
     return attendance, created

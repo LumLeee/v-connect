@@ -28,6 +28,13 @@ def require_window(activity):
     return now
 
 
+def audit_session(session):
+    return None if session is None else {
+        'issued_at': session.issued_at.isoformat(), 'expires_at': session.expires_at.isoformat(),
+        'revoked_at': session.revoked_at.isoformat() if session.revoked_at else None,
+    }
+
+
 def session_data(activity):
     now = timezone.now()
     session = AttendanceCode.objects.filter(activity=activity).first()
@@ -48,6 +55,7 @@ def issue(activity_id, organizer):
         raise ValidationError('Hoạt động đã đến giờ kết thúc; không thể tạo mã mới.')
     session = AttendanceCode.objects.filter(activity=activity).first()
     old_code = credentials(session)[1] if session else None
+    before = audit_session(session)
     if session is None:
         session = AttendanceCode(activity=activity)
     session.issued_by = organizer
@@ -59,7 +67,8 @@ def issue(activity_id, organizer):
         if credentials(session)[1] != old_code:
             break
     session.save()
-    AuditEvent.objects.create(actor=organizer, activity=activity, object_id=session.pk, action='attendance_code_issued')
+    AuditEvent.objects.create(actor=organizer, activity=activity, object_id=session.pk, action='attendance_code_issued',
+                              before=before, after=audit_session(session))
     return session_data(activity)
 
 
@@ -68,9 +77,11 @@ def revoke(activity_id, organizer):
     activity = get_object_or_404(Activity.objects.select_for_update(), pk=activity_id, organizer=organizer)
     session = AttendanceCode.objects.filter(activity=activity).first()
     if session and not session.revoked_at:
+        before = audit_session(session)
         session.revoked_at = timezone.now()
         session.save(update_fields=['revoked_at'])
-        AuditEvent.objects.create(actor=organizer, activity=activity, object_id=session.pk, action='attendance_code_revoked')
+        AuditEvent.objects.create(actor=organizer, activity=activity, object_id=session.pk, action='attendance_code_revoked',
+                                  before=before, after=audit_session(session))
     return session_data(activity)
 
 

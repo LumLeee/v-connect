@@ -17,7 +17,8 @@ from apps.activities.views import search
 from apps.feedback.views import IsAdmin
 from apps.participations.serializers import ApplicantSerializer, ParticipationSerializer
 from .models import AuditEvent
-from .serializers import AccountSerializer, AccountStatusSerializer, AuditSerializer
+from .serializers import AccountSerializer, AccountStatusSerializer, AuditSerializer, AuditDetailSerializer
+from .audit_filters import filter_audit
 from . import services
 
 
@@ -145,9 +146,11 @@ class AuditList(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = AuditEvent.objects.select_related('actor', 'subject', 'activity')
-        action = self.request.query_params.get('action')
-        if action:
-            if action not in dict(AuditEvent._meta.get_field('action').choices):
-                raise ValidationError({'action': 'Thao tác không hợp lệ.'})
-            queryset = queryset.filter(action=action)
-        return queryset
+        return filter_audit(queryset.defer('before', 'after'), self.request.query_params)
+
+
+@method_decorator(never_cache, name='dispatch')
+class AuditDetail(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    serializer_class = AuditDetailSerializer
+    queryset = AuditEvent.objects.select_related('actor', 'subject', 'activity')

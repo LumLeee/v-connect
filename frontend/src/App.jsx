@@ -21,6 +21,7 @@ import ReportsPage from './pages/ReportsPage.jsx'
 import AdvancedReportsPage from './pages/AdvancedReportsPage.jsx'
 import AdminAccountsPage from './pages/AdminAccountsPage.jsx'
 import AuditPage from './pages/AuditPage.jsx'
+import AuditDetailPage from './pages/AuditDetailPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
 import CheckInPage from './pages/CheckInPage.jsx'
 import OrganizerDashboard from './pages/OrganizerDashboard.jsx'
@@ -44,6 +45,7 @@ export default function App() {
         <Route element={<RequireRole role="admin" />}>
           <Route path="quan-tri/tai-khoan" element={<AdminAccountsPage key={user?.id} />} />
           <Route path="quan-tri/nhat-ky" element={<AuditPage key={user?.id} />} />
+          <Route path="quan-tri/nhat-ky/:id" element={<AuditDetailPage key={user?.id} />} />
         </Route>
         <Route index element={<HomePage />} />
         <Route path="gioi-thieu" element={<AboutPage />} />

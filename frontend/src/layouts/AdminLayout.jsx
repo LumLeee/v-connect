@@ -25,7 +25,7 @@ function sectionFor(path) {
   if (path === '/ho-so') return 'profile'
   if (path === '/thong-bao') return 'notifications'
   if (path.endsWith('/tai-khoan')) return 'accounts'
-  if (path.endsWith('/nhat-ky')) return 'audit'
+  if (path.startsWith('/quan-tri/nhat-ky')) return 'audit'
   if (path.endsWith('/phan-hoi')) return 'feedback'
   return 'overview'
 }

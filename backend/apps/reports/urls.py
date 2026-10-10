@@ -3,8 +3,17 @@ from .views import Overview, ActivityList, ActivityResult, ParticipationList, Ac
 from .analytics_views import Analytics, ExportAnalytics, ReportOrganizers
 from .organizer_dashboard import OrganizerDashboard
 from .matching import RecommendedActivities, RecommendedVolunteers
+from .certificate_views import (CertificateList, CertificateDetail, CertificateCandidates, IssueCertificate,
+                                RevokeCertificate, VerifyCertificate, ActivitySummaryDocument)
 
 urlpatterns = [
+    path('certificates/', CertificateList.as_view()),
+    path('certificates/<uuid:pk>/', CertificateDetail.as_view()),
+    path('certificates/<uuid:pk>/revoke/', RevokeCertificate.as_view()),
+    path('certificates/<uuid:pk>/verify/', VerifyCertificate.as_view()),
+    path('reports/activities/<uuid:pk>/certificate-candidates/', CertificateCandidates.as_view()),
+    path('reports/activities/<uuid:pk>/certificates/', IssueCertificate.as_view()),
+    path('reports/activities/<uuid:pk>/summary-document/', ActivitySummaryDocument.as_view()),
     path('matching/activities/', RecommendedActivities.as_view()),
     path('organizer/activities/<uuid:pk>/matching/', RecommendedVolunteers.as_view()),
     path('reports/organizer-dashboard/', OrganizerDashboard.as_view()),

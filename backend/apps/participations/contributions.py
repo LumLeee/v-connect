@@ -85,6 +85,9 @@ def confirm(actor, activity_id, attendance_id, values):
         raise ValidationError({'reason': 'Nhập lý do khi điều chỉnh số phút đóng góp.'})
     previous = record.minutes if record else None
     if record:
+        from apps.reports.certificate_services import revoke_for_contribution
+        revoke_for_contribution(actor, attendance)
+    if record:
         record.minutes = values['minutes']
         record.revision += 1
         record.confirmed_by = actor

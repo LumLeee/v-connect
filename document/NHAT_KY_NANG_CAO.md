@@ -27,7 +27,7 @@ Ngày triển khai: 10/10/2026. Trang **Quản trị → Lịch sử thao tác**
 
 Thay đổi timeline nằm trong thao tác **Sửa hoạt động**, hiển thị danh sách mốc trước/sau. Thao tác lưu lại dữ liệu không thay đổi không sinh sự kiện sửa hoạt động. Các thao tác lặp vốn không làm thay đổi trạng thái tiếp tục không tạo nhật ký giả. Nhật ký được ghi cùng transaction với thay đổi nghiệp vụ: lỗi ghi nhật ký làm rollback thay đổi đó.
 
-Chưa ghi lịch sử riêng cho mọi hành động trong hệ thống (ví dụ xem trang, sửa hồ sơ cá nhân, tự đăng ký/hủy đơn). Chưa có chức năng cấp quyền quản trị chi tiết/chứng nhận nên chưa có nhật ký cho các mục này. Các thao tác SQL trực tiếp hoặc công cụ bên ngoài API không tự được ghi nhận.
+Chưa ghi lịch sử riêng cho mọi hành động trong hệ thống (ví dụ xem trang, sửa hồ sơ cá nhân, tự đăng ký/hủy đơn). Đã bổ sung nhật ký cấp/thu hồi chứng nhận, gồm thu hồi tự động khi điều chỉnh số phút đóng góp; xem [mẫu báo cáo/chứng nhận](MAU_BAO_CAO_CHUNG_NHAN.md). Chưa có chức năng cấp quyền quản trị chi tiết. Các thao tác SQL trực tiếp hoặc công cụ bên ngoài API không tự được ghi nhận.
 
 ## API và lưu trữ
 

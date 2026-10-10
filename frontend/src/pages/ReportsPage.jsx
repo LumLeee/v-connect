@@ -25,6 +25,7 @@ export default function ReportsPage({ mode = 'overview' }) {
     <h1>{title}</h1><button className="text-button" onClick={retry}>Cập nhật số liệu</button>
     {user.role === 'organizer' && mode === 'result' && <OrganizerActivityHeader id={id} selected="reports" />}
     {user.role !== 'volunteer' && <p><Link className="button primary" to="/bao-cao/mo-rong">Báo cáo mở rộng</Link></p>}
+    {user.role !== 'volunteer' && <p><Link className="button secondary" to="/bao-cao/chung-nhan">Quản lý chứng nhận</Link></p>}
     <RequestState loading={loading} error={error} retry={retry} />
     {data && mode === 'overview' && <>
       {data.accounts && <p className="activity-empty">Tài khoản: {data.accounts.total} tổng cộng, {data.accounts.active} hoạt động, {data.accounts.locked} bị khóa. <Link to="/quan-tri/tai-khoan">Quản lý tài khoản</Link></p>}
@@ -36,6 +37,7 @@ export default function ReportsPage({ mode = 'overview' }) {
       <h2>{data.activity.title}</h2><p>{activityStatuses[data.activity.status]} · {activityTime(data.activity.starts_at)} (giờ Việt Nam)</p>
       {data.activity.status !== 'completed' && <p className="activity-empty">Đây là số liệu hiện tại. Hoạt động chưa hoàn thành hoặc đã bị hủy.</p>}
       <ReportMetrics metrics={data.metrics} activity={id} />
+      {user.role !== 'volunteer' && <div className="activity-actions"><Link className="button secondary" to={`/bao-cao/hoat-dong/${id}/chung-nhan`}>Cấp và quản lý chứng nhận</Link>{data.activity.status === 'completed' && <Link className="button primary" to={`/bao-cao/hoat-dong/${id}/tong-ket`}>Mẫu báo cáo tổng kết</Link>}</div>}
       {user.role === 'organizer' && <p><Link to={`/nha-to-chuc/hoat-dong/${id}/phan-hoi`}>Xem phản hồi hoạt động</Link></p>}
     </>}
     {mode === 'activities' && <form className="activity-search" onSubmit={event => { event.preventDefault(); const form = new FormData(event.currentTarget); setParams({ search: form.get('search'), status: form.get('status'), page: '1' }) }}>

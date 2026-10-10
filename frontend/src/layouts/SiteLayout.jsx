@@ -18,13 +18,13 @@ export default function SiteLayout() {
     finally { setBusy(false) }
   }
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
-  if (user?.role === 'admin' && /^(\/quan-tri|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+  if (user?.role === 'admin' && /^(\/quan-tri|\/bao-cao|\/ho-so|\/thong-bao|\/chung-nhan)(\/|$)/.test(pathname)) {
     return <AdminLayout key={user.id}><Outlet /></AdminLayout>
   }
-  if (user?.role === 'volunteer' && /^(\/tinh-nguyen-vien|\/hoat-dong|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+  if (user?.role === 'volunteer' && /^(\/tinh-nguyen-vien|\/hoat-dong|\/bao-cao|\/ho-so|\/thong-bao|\/chung-nhan)(\/|$)/.test(pathname)) {
     return <VolunteerLayout key={user.id}><Outlet /></VolunteerLayout>
   }
-  if (user?.role === 'organizer' && /^(\/nha-to-chuc|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+  if (user?.role === 'organizer' && /^(\/nha-to-chuc|\/bao-cao|\/ho-so|\/thong-bao|\/chung-nhan)(\/|$)/.test(pathname)) {
     return <OrganizerLayout key={user.id}><Outlet /></OrganizerLayout>
   }
   return (
@@ -41,7 +41,7 @@ export default function SiteLayout() {
       </header>
       {logoutError && <div className="page-width request-error" role="alert">{logoutError}</div>}
       <main id="main-content" className={pathname === '/tinh-nguyen-vien' ? 'volunteer-dashboard-main' : undefined}><Outlet /></main>
-      <footer className="site-footer"><span>V-Connect · Kết nối để sẻ chia.</span><Link to="/trang-thai">Trạng thái hệ thống</Link><span>Dự án C2SE.14</span></footer>
+      <footer className="site-footer"><span>V-Connect · Kết nối để sẻ chia.</span><Link to="/tra-cuu-chung-nhan">Tra cứu chứng nhận</Link><Link to="/trang-thai">Trạng thái hệ thống</Link><span>Dự án C2SE.14</span></footer>
     </>
   )
 }

@@ -7,6 +7,9 @@ import '../styles/audit.css'
 
 const labels = { title: 'Tên hoạt động / mốc', description: 'Mô tả', address: 'Địa điểm', starts_at: 'Bắt đầu', ends_at: 'Kết thúc', capacity: 'Sức chứa', status: 'Trạng thái', required_skills: 'Kỹ năng yêu cầu', timeline: 'Chương trình hoạt động', cover: 'Tệp ảnh bìa', is_active: 'Tài khoản hoạt động', attended: 'Có mặt', method: 'Cách điểm danh', is_hidden: 'Đã ẩn', minutes: 'Số phút đóng góp', revision: 'Lần xác nhận', issued_at: 'Thời điểm tạo mã', expires_at: 'Hết hạn mã', revoked_at: 'Thu hồi mã' }
 const statuses = { draft: 'Nháp', published: 'Công khai', completed: 'Hoàn thành', cancelled: 'Đã hủy', pending: 'Chờ duyệt', approved: 'Được duyệt', rejected: 'Bị từ chối', manual: 'Thủ công', qr: 'Quét QR', code: 'Nhập mã' }
+labels.certificate_status = 'Trạng thái chứng nhận'
+statuses.valid = 'Còn hiệu lực'
+statuses.revoked = 'Đã thu hồi'
 
 function Value({ value, field }) {
   if (value == null) return <span className="muted">Chưa có</span>
@@ -17,7 +20,7 @@ function Value({ value, field }) {
     return <dl>{Object.entries(value).sort(([a], [b]) => order.indexOf(a) - order.indexOf(b)).map(([key, item]) => <div key={key}><dt>{labels[key] || key}</dt><dd><Value value={item} field={key} /></dd></div>)}</dl>
   }
   if (field.endsWith('_at')) return activityTime(value)
-  if (field === 'status' || field === 'method') return statuses[value] || String(value)
+  if (field === 'status' || field === 'method' || field === 'certificate_status') return statuses[value] || String(value)
   return String(value) || 'Trống'
 }
 

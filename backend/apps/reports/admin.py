@@ -2,7 +2,7 @@ from django.contrib import admin
 from apps.activities.models import Activity
 from apps.participations.models import Participation, Attendance
 from apps.feedback.models import Feedback
-from .models import AuditEvent
+from .models import AuditEvent, Certificate
 
 
 class ReadOnlyBusinessAdmin(admin.ModelAdmin):
@@ -44,3 +44,8 @@ class FeedbackAdmin(ReadOnlyBusinessAdmin):
 class AuditAdmin(ReadOnlyBusinessAdmin):
     list_display = ['action', 'actor', 'subject', 'activity', 'created_at']
     list_filter = ['action']
+
+
+@admin.register(Certificate)
+class CertificateAdmin(ReadOnlyBusinessAdmin):
+    list_display = ['id', 'volunteer_name', 'activity_title', 'minutes', 'issued_at', 'revoked_at']

@@ -8,6 +8,8 @@ import '../styles/audit.css'
 
 const actions = { account_locked: 'Khóa tài khoản', account_unlocked: 'Mở khóa tài khoản', review_approved: 'Duyệt đăng ký', review_rejected: 'Từ chối đăng ký', attendance_confirmed: 'Xác nhận có mặt', attendance_code_issued: 'Tạo mã điểm danh', attendance_code_revoked: 'Thu hồi mã điểm danh', feedback_hidden: 'Ẩn phản hồi', activity_created: 'Tạo hoạt động', activity_updated: 'Sửa hoạt động', activity_status_changed: 'Đổi trạng thái hoạt động', activity_cover_changed: 'Đổi ảnh bìa', contribution_confirmed: 'Xác nhận đóng góp', contribution_updated: 'Điều chỉnh đóng góp' }
 const errorText = value => typeof value === 'string' ? value : Object.values(value || {}).map(errorText).join(' ')
+actions.certificate_issued = 'Cấp chứng nhận'
+actions.certificate_revoked = 'Thu hồi chứng nhận'
 
 export default function AuditPage() {
   const [params, setParams] = useSearchParams()

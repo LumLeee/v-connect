@@ -22,6 +22,10 @@ import AdvancedReportsPage from './pages/AdvancedReportsPage.jsx'
 import AdminAccountsPage from './pages/AdminAccountsPage.jsx'
 import AuditPage from './pages/AuditPage.jsx'
 import AuditDetailPage from './pages/AuditDetailPage.jsx'
+import CertificatesPage from './pages/CertificatesPage.jsx'
+import CertificateDetailPage from './pages/CertificateDetailPage.jsx'
+import CertificateVerificationPage from './pages/CertificateVerificationPage.jsx'
+import ActivitySummaryDocumentPage from './pages/ActivitySummaryDocumentPage.jsx'
 import NotificationsPage from './pages/NotificationsPage.jsx'
 import CheckInPage from './pages/CheckInPage.jsx'
 import OrganizerDashboard from './pages/OrganizerDashboard.jsx'
@@ -35,6 +39,10 @@ export default function App() {
     <Routes>
       <Route element={<SiteLayout />}>
         <Route element={<RequireRole />}>
+          <Route path="bao-cao/chung-nhan" element={<CertificatesPage key={user?.id} />} />
+          <Route path="bao-cao/hoat-dong/:id/chung-nhan" element={<CertificatesPage key={user?.id} />} />
+          <Route path="bao-cao/hoat-dong/:id/tong-ket" element={<ActivitySummaryDocumentPage key={user?.id} />} />
+          <Route path="chung-nhan/:id" element={<CertificateDetailPage key={user?.id} />} />
           <Route path="thong-bao" element={<NotificationsPage key={user?.id} />} />
           <Route path="bao-cao/mo-rong" element={<AdvancedReportsPage key={user?.id} />} />
           <Route path="bao-cao" element={<ReportsPage key={`overview-${user?.id}`} />} />
@@ -48,6 +56,7 @@ export default function App() {
           <Route path="quan-tri/nhat-ky/:id" element={<AuditDetailPage key={user?.id} />} />
         </Route>
         <Route index element={<HomePage />} />
+        <Route path="tra-cuu-chung-nhan/:id?" element={<CertificateVerificationPage />} />
         <Route path="gioi-thieu" element={<AboutPage />} />
         <Route path="trang-thai" element={<StatusPage />} />
         <Route path="hoat-dong" element={<ActivitiesPage key="public" />} />
@@ -75,6 +84,7 @@ export default function App() {
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/check-in" element={<CheckInPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<VolunteerDashboard key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}>
+          <Route path="tinh-nguyen-vien/chung-nhan" element={<CertificatesPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/ghep-noi" element={<MatchingPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/dong-gop" element={<ContributionsPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/dang-ky" element={<VolunteerParticipations key={`registrations-${user?.id}`} />} />

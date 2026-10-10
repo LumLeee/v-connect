@@ -14,12 +14,14 @@ const items = [
   ['activities', '/bao-cao/hoat-dong', 'Hoạt động toàn hệ thống', CalendarDays],
   ['feedback', '/quan-tri/phan-hoi', 'Kiểm duyệt phản hồi', MessageSquare],
   ['audit', '/quan-tri/nhat-ky', 'Lịch sử thao tác', ClipboardList],
+  ['certificates', '/bao-cao/chung-nhan', 'Quản lý chứng nhận', ClipboardList],
   ['reports', '/bao-cao', 'Báo cáo và thống kê', BarChart3],
   ['notifications', '/thong-bao', 'Thông báo', Bell],
   ['profile', '/ho-so', 'Hồ sơ cá nhân', Settings2],
 ]
 
 function sectionFor(path) {
+  if (path.includes('/chung-nhan')) return 'certificates'
   if (path.startsWith('/bao-cao/hoat-dong')) return 'activities'
   if (path.startsWith('/bao-cao')) return 'reports'
   if (path === '/ho-so') return 'profile'

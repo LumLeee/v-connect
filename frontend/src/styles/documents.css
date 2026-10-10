@@ -1,0 +1,35 @@
+.document-sheet { background:#fff; border:1px solid #d6e3db; padding:40px; margin:28px auto; color:#173c34; overflow-wrap:anywhere; }
+.document-brand { text-align:center; letter-spacing:2px; font-size:12px; font-weight:700; color:#37735b; margin-bottom:24px; }
+.certificate-sheet { border:6px double #6f947b; text-align:center; max-width:1000px; }
+.certificate-sheet h2 { font-size:30px; letter-spacing:2px; margin:24px 0; }.certificate-sheet .certificate-recipient { font-size:32px; color:#246750; margin:20px 0; }
+.certificate-sheet h3 { font-size:22px; }.certificate-sheet p { line-height:1.7; }
+.certificate-hours { font-size:20px; padding:16px; background:#eef5f0; }
+.certificate-bottom { display:grid; grid-template-columns:minmax(0,1fr) 140px; gap:24px; align-items:center; text-align:left; margin-top:28px; font-size:12px; }
+.certificate-code { overflow-wrap:anywhere; font-size:11px; }.certificate-bottom img { max-width:100%; height:auto; }
+.certificate-status { display:inline-block; border-radius:8px; padding:6px 10px; font-size:12px; font-weight:700; margin-bottom:12px; }
+.certificate-status.valid { background:#eaf5ed; color:#23623f; }.certificate-status.revoked { background:#fdeceb; color:#912f2f; }
+.certificate-candidates { margin:28px 0 40px; }.certificate-page textarea { width:100%; min-height:100px; margin:12px 0; }
+.verification-result { max-width:750px; margin-top:24px; overflow-wrap:anywhere; }.verification-result dt { font-weight:600; margin-top:18px; }.verification-result dd { margin:6px 0; }
+.summary-sheet { max-width:850px; }.summary-sheet > h2,.summary-title { text-align:center; }.summary-sheet > h3 { margin-top:28px; }
+.summary-metrics { margin:20px 0; }.summary-metrics > div { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:16px; padding:10px 0; border-bottom:1px solid #dce6df; }.summary-metrics dd { margin:0; font-weight:600; }
+.summary-timeline { padding-left:22px; }.summary-timeline li { padding:8px 0; }.summary-footer { border-top:1px solid #dce6df; margin-top:30px; padding-top:18px; font-size:12px; }
+@media(max-width:600px) { .document-sheet { padding:22px 16px; }.certificate-sheet h2 { font-size:23px; }.certificate-sheet .certificate-recipient { font-size:26px; }.certificate-bottom { grid-template-columns:1fr; }.certificate-bottom img { justify-self:center; }.summary-metrics > div { grid-template-columns:1fr; gap:5px; } }
+@media print {
+  @page vconnect-certificate { size:A4 landscape; margin:12mm; }
+  @page vconnect-summary { size:A4 portrait; margin:15mm; }
+  body:has(.certificate-page) { page:vconnect-certificate; }
+  body:has(.summary-document-page) { page:vconnect-summary; }
+  body:has(.document-page) { background:white; color:black; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+  body:has(.document-page) .site-header, body:has(.document-page) .site-footer, body:has(.document-page) .od-sidebar, body:has(.document-page) .od-topbar, body:has(.document-page) .vd-sidebar, body:has(.document-page) .vd-topbar, body:has(.document-page) .skip-link, .document-page .no-print { display:none !important; }
+  body:has(.document-page) .od-shell, body:has(.document-page) .vd-shell { display:block; }
+  body:has(.document-page) .od-workspace, body:has(.document-page) .vd-workspace { margin:0; min-height:0; }
+  body:has(.document-page) .od-content, body:has(.document-page) .om-content, body:has(.document-page) .vs-content { padding:0; max-width:none; }
+  body:has(.document-page) .od-footer { display:none !important; }
+  .document-page.section.interior { width:100%; max-width:none; padding:0; margin:0; min-height:0; }
+  .document-sheet { box-shadow:none; width:100%; max-width:none; margin:0; font-size:10pt; }
+  .certificate-sheet { padding:12mm; }.certificate-sheet h2 { font-size:24pt; margin:12px 0; }.certificate-sheet .certificate-recipient { font-size:25pt; margin:12px 0; }
+  .certificate-sheet h3 { font-size:16pt; }.certificate-sheet p { line-height:1.35; margin:8px 0; }.certificate-hours { padding:8px; font-size:15pt; }
+  .certificate-bottom { grid-template-columns:minmax(0,1fr) 110px; margin-top:14px; font-size:9pt; }.certificate-bottom img { width:110px; }.certificate-code { font-size:8pt; }
+  .summary-sheet { border:0; padding:0; }.summary-metrics > div { grid-template-columns:2fr 1fr; padding:6px 0; break-inside:avoid; }
+  .summary-sheet h3 { break-after:avoid; }.summary-timeline li { break-inside:avoid; }.summary-footer { break-inside:avoid; }
+}

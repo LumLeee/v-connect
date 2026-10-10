@@ -32,7 +32,7 @@ Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dù
 | Giai đoạn 8: thống kê và quản trị cơ bản | Đã đẩy lên `feature/reports-admin`, commit `f2a85f5`, ngày 26/09/2026 |
 | Giai đoạn 9: kiểm tra hoàn chỉnh nghiệp vụ chính | Hoàn thành; bàn giao trên `dev`, kế thừa giai đoạn 1–8 |
 | Giai đoạn 10: hồ sơ mở rộng | Đã bổ sung kỹ năng, sở thích và lịch rảnh; xem [chi tiết](HO_SO_MO_RONG.md) |
-| Giai đoạn 10: hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, bộ lọc và ảnh bìa; timeline để sau; xem [chi tiết](HOAT_DONG_MO_RONG.md) |
+| Giai đoạn 10: hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, bộ lọc, ảnh bìa và [timeline chương trình](TIMELINE_HOAT_DONG.md); xem [chi tiết](HOAT_DONG_MO_RONG.md) |
 | Giai đoạn 10: báo cáo mở rộng | Đã bổ sung biểu đồ, bộ lọc, Excel và in/lưu PDF cho Organizer/Admin; xem [chi tiết](BAO_CAO_MO_RONG.md) |
 | Chức năng phụ khác và AI | Chưa triển khai |
 
@@ -166,7 +166,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | Nhóm | Công việc chờ | Phụ thuộc |
 |---|---|---|
 | Hồ sơ mở rộng | Đã có kỹ năng liên kết với Volunteer, sở thích, lịch rảnh hằng tuần; chức năng kết nối giữa các tình nguyện viên chưa triển khai | Hồ sơ cơ bản; xem [kết quả](HO_SO_MO_RONG.md) |
-| Hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, lọc trạng thái/ngày/địa điểm/kỹ năng và ảnh bìa; timeline để sau | Quản lý hoạt động; xem [chi tiết](HOAT_DONG_MO_RONG.md) |
+| Hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, lọc trạng thái/ngày/địa điểm/kỹ năng, ảnh bìa và timeline chương trình | Quản lý hoạt động; xem [chi tiết](HOAT_DONG_MO_RONG.md) |
 | Địa điểm | Danh mục địa điểm, tọa độ, bản đồ, chỉ đường, dự phòng khi dịch vụ lỗi | Địa chỉ hoạt động |
 | Điểm danh nâng cao | Đã có Nhà tổ chức cấp QR/mã 8 chữ số có hạn 5 phút; Volunteer tự check-in, thu hồi/thay mã và dự phòng thủ công. Check-out để sau theo phạm vi đã chọn | Điểm danh cơ bản; xem [chi tiết](DIEM_DANH_NANG_CAO.md) |
 | Đóng góp | Nhà tổ chức xác nhận số phút cho người đã điểm danh sau khi hoạt động Hoàn thành; điều chỉnh có lý do, lưu lịch sử; Volunteer xem tổng thời gian và chi tiết | Không vượt thời lượng hoạt động; xem [chi tiết](DONG_GOP.md) |

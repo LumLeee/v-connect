@@ -37,3 +37,15 @@ class Activity(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ActivityMilestone(models.Model):
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='timeline')
+    title = models.CharField(max_length=200)
+    description = models.TextField(max_length=2000, blank=True)
+    starts_at = models.DateTimeField()
+    ends_at = models.DateTimeField()
+
+    class Meta:
+        ordering = ['starts_at', 'ends_at', 'id']
+        constraints = [models.CheckConstraint(condition=models.Q(ends_at__gt=models.F('starts_at')), name='milestone_valid_dates')]

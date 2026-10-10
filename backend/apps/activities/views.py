@@ -24,7 +24,7 @@ class IsOrganizer(BasePermission):
 
 
 def activities():
-    return Activity.objects.select_related('organizer', 'organizer__organizer_profile').prefetch_related('required_skills')
+    return Activity.objects.select_related('organizer', 'organizer__organizer_profile').prefetch_related('required_skills', 'timeline')
 
 
 def search(queryset, request):

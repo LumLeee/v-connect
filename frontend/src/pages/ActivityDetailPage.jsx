@@ -10,6 +10,7 @@ import { CalendarDays, MapPin, Users, UserRound } from 'lucide-react'
 import '../styles/activities.css'
 import ActivityCoverEditor from '../components/ActivityCoverEditor.jsx'
 import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
+import ActivityTimeline from '../components/ActivityTimeline.jsx'
 
 function RequiredSkills({ activity }) {
   return activity.skill_details?.length ? <section className="activity-required-skills"><h2>Kỹ năng yêu cầu</h2><div className="activity-skill-tags">{activity.skill_details.map(skill => <span key={skill.id}>{skill.name}</span>)}</div><p className="muted">Nhà tổ chức xét duyệt từng đơn; kỹ năng không tự động giới hạn quyền đăng ký.</p></section> : null
@@ -25,6 +26,7 @@ function PublicActivityDetail({ activity, refresh }) {
           <div className="activity-organizer-block"><span><UserRound size={22} aria-hidden="true" /></span><div><small>NHÀ TỔ CHỨC</small><p>{activity.organizer_name}</p></div></div>
           <RequiredSkills activity={activity} />
           <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
+          <ActivityTimeline items={activity.timeline} />
           {activity.status === 'cancelled' && <p className="activity-empty" role="status">Hoạt động này đã bị hủy.</p>}
         </section>
       </div>
@@ -63,6 +65,7 @@ function ActivityDetail({ activity, managed, refresh }) {
       <div><dt>Địa điểm</dt><dd>{activity.address}</dd></div><div><dt>Sức chứa</dt><dd>{activity.capacity} người</dd></div></dl>
     <p className="muted">Thời gian hiển thị theo giờ Việt Nam (UTC+7).</p>
     <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
+    <ActivityTimeline items={activity.timeline} />
     {activity.status === 'cancelled' && <p role="status">Hoạt động này đã bị hủy.</p>}
     <p>Đã được duyệt: {activity.approved_count}/{activity.capacity} người.</p>
     </div>

@@ -6,20 +6,24 @@ import { apiMutation } from '../api/client.js'
 import '../styles/activities.css'
 import { SkillPicker } from '../components/VolunteerProfileFields.jsx'
 import '../styles/profile.css'
+import { TimelineFields } from '../components/ActivityTimeline.jsx'
 
 const vietnamInput = value => value ? new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(value)).replace(' ', 'T') : ''
+const errorText = value => typeof value === 'string' ? value : Object.values(value || {}).map(errorText).join(' ')
 
 function Editor({ initial }) {
   const navigate = useNavigate()
   const [form, setForm] = useState({ title: initial?.title || '', description: initial?.description || '', address: initial?.address || '',
     starts_at: vietnamInput(initial?.starts_at), ends_at: vietnamInput(initial?.ends_at), capacity: initial?.capacity || 1, required_skills: initial?.required_skills || [] })
   const [busy, setBusy] = useState(false)
+  const [timeline, setTimeline] = useState((initial?.timeline || []).map(item => ({ ...item, starts_at: vietnamInput(item.starts_at), ends_at: vietnamInput(item.ends_at) })))
   const [errors, setErrors] = useState({})
   const [error, setError] = useState('')
   async function save(event) {
     event.preventDefault(); setBusy(true); setError(''); setErrors({})
     try {
       const payload = { ...form, capacity: Number(form.capacity), starts_at: new Date(`${form.starts_at}:00+07:00`).toISOString(), ends_at: new Date(`${form.ends_at}:00+07:00`).toISOString() }
+      payload.timeline = timeline.map(item => ({ ...item, starts_at: new Date(`${item.starts_at}:00+07:00`).toISOString(), ends_at: new Date(`${item.ends_at}:00+07:00`).toISOString() }))
       if (initial) {
         // Omit unchanged dates so editing text after the start remains possible.
         if (form.starts_at === vietnamInput(initial.starts_at)) delete payload.starts_at
@@ -58,6 +62,8 @@ function Editor({ initial }) {
       {errors.required_skills && <p className="field-error" role="alert">{[].concat(errors.required_skills).join(' ')}</p>}
       <p className="muted">Bạn có thể thêm hoặc thay ảnh bìa tại trang quản lý chi tiết sau khi lưu hoạt động.</p>
       </section>
+      <TimelineFields items={timeline} onChange={setTimeline} />
+      {errors.timeline && <p className="field-error" role="alert">{errorText(errors.timeline)}</p>}
     </fieldset>
     {error && <p role="alert" className="request-error">{error}</p>}
     <div className="activity-actions"><button className="button primary" disabled={busy}>{busy ? 'Đang lưu…' : initial ? 'Lưu thay đổi' : 'Lưu bản nháp'}</button>

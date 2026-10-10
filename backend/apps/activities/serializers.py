@@ -6,7 +6,21 @@ from rest_framework import serializers
 from apps.accounts.profile_serializers import StrictFieldsMixin
 from apps.core.models import Skill
 from apps.core.serializers import SkillSerializer
-from .models import Activity
+from .models import Activity, ActivityMilestone
+
+
+class MilestoneSerializer(StrictFieldsMixin, serializers.ModelSerializer):
+    class Meta:
+        model = ActivityMilestone
+        fields = ['title', 'description', 'starts_at', 'ends_at']
+
+    def validate(self, attrs):
+        missing = [name for name in ['title', 'starts_at', 'ends_at'] if name not in attrs]
+        if missing:
+            raise serializers.ValidationError({name: 'Trường này là bắt buộc.' for name in missing})
+        if attrs['ends_at'] <= attrs['starts_at']:
+            raise serializers.ValidationError('Mốc chương trình phải kết thúc sau thời gian bắt đầu.')
+        return attrs
 
 
 class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
@@ -16,12 +30,13 @@ class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
     required_skills = serializers.PrimaryKeyRelatedField(queryset=Skill.objects.all(), many=True, required=False)
     skill_details = SkillSerializer(source='required_skills', many=True, read_only=True)
     cover_url = serializers.SerializerMethodField()
+    timeline = MilestoneSerializer(many=True, required=False, max_length=50)
 
     class Meta:
         model = Activity
         fields = ['id', 'title', 'description', 'address', 'starts_at', 'ends_at', 'capacity',
                   'status', 'organizer_name', 'published_at', 'created_at', 'updated_at', 'approved_count',
-                  'required_skills', 'skill_details', 'cover_url']
+                  'required_skills', 'skill_details', 'cover_url', 'timeline']
         read_only_fields = ['id', 'status', 'organizer_name', 'published_at', 'created_at', 'updated_at']
 
     def get_organizer_name(self, activity):
@@ -51,7 +66,27 @@ class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
         changed_start = 'starts_at' in attrs and (self.instance is None or start != self.instance.starts_at)
         if changed_start and start < timezone.now() + timedelta(hours=24):
             raise serializers.ValidationError({'starts_at': 'Thời gian bắt đầu phải cách thời điểm hiện tại ít nhất 24 giờ.'})
+        milestones = attrs.get('timeline')
+        if milestones is None and self.instance:
+            milestones = list(self.instance.timeline.values('starts_at', 'ends_at'))
+        for milestone in milestones or []:
+            if milestone['starts_at'] < start or milestone['ends_at'] > end:
+                raise serializers.ValidationError({'timeline': 'Tất cả mốc chương trình phải nằm trong thời gian hoạt động. Hãy điều chỉnh các mốc khi đổi lịch.'})
         return attrs
+
+    def create(self, validated_data):
+        milestones = validated_data.pop('timeline', [])
+        activity = super().create(validated_data)
+        ActivityMilestone.objects.bulk_create([ActivityMilestone(activity=activity, **item) for item in milestones])
+        return activity
+
+    def update(self, instance, validated_data):
+        milestones = validated_data.pop('timeline', None)
+        activity = super().update(instance, validated_data)
+        if milestones is not None:
+            activity.timeline.all().delete()
+            ActivityMilestone.objects.bulk_create([ActivityMilestone(activity=activity, **item) for item in milestones])
+        return activity
 
 
 class TransitionSerializer(StrictFieldsMixin, serializers.Serializer):

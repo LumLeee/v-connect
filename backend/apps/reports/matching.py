@@ -64,7 +64,7 @@ def evaluate(activity, profile):
 
 def available_activities():
     return Activity.objects.filter(status='published', published_at__isnull=False, starts_at__gt=timezone.now(),
-        organizer__is_active=True).select_related('organizer', 'organizer__organizer_profile').prefetch_related('required_skills').annotate(
+        organizer__is_active=True).select_related('organizer', 'organizer__organizer_profile').prefetch_related('required_skills', 'timeline').annotate(
         matching_approved=Count('participations', filter=Q(participations__status='approved')))
 
 

@@ -1,6 +1,6 @@
 # Hoạt động mở rộng: kỹ năng, bộ lọc và ảnh bìa
 
-Phạm vi ngày 28/09/2026: bổ sung ba chức năng được chọn. Các mốc chương trình (timeline) để triển khai sau.
+Phạm vi ngày 28/09/2026: bổ sung kỹ năng yêu cầu, bộ lọc và ảnh bìa. Ngày 09/10/2026 bổ sung các mốc chương trình; xem [timeline hoạt động](TIMELINE_HOAT_DONG.md).
 
 ## 1. Kỹ năng yêu cầu
 

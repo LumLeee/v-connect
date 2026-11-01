@@ -86,24 +86,29 @@ class AttendanceCode(models.Model):
 
 class Contribution(models.Model):
     attendance = models.OneToOneField(Attendance, on_delete=models.PROTECT, related_name='contribution')
-    minutes = models.PositiveIntegerField()
+    score = models.PositiveIntegerField()
     revision = models.PositiveIntegerField(default=1)
     confirmed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-updated_at', '-pk']
+        constraints = [models.CheckConstraint(condition=models.Q(score__gte=0, score__lte=10), name='contribution_score_range')]
 
 
 class ContributionChange(models.Model):
     contribution = models.ForeignKey(Contribution, on_delete=models.PROTECT, related_name='changes')
     revision = models.PositiveIntegerField()
-    previous_minutes = models.PositiveIntegerField(null=True)
-    minutes = models.PositiveIntegerField()
+    previous_score = models.PositiveIntegerField(null=True)
+    score = models.PositiveIntegerField()
     reason = models.CharField(max_length=1000, blank=True)
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-revision']
-        constraints = [models.UniqueConstraint(fields=['contribution', 'revision'], name='contribution_unique_revision')]
+        constraints = [
+            models.UniqueConstraint(fields=['contribution', 'revision'], name='contribution_unique_revision'),
+            models.CheckConstraint(condition=models.Q(score__gte=0, score__lte=10), name='contribution_change_score_range'),
+            models.CheckConstraint(condition=models.Q(previous_score__isnull=True) | models.Q(previous_score__gte=0, previous_score__lte=10), name='contribution_previous_score_range'),
+        ]

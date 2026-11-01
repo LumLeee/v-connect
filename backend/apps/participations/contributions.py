@@ -19,16 +19,12 @@ from .models import Attendance, Contribution, ContributionChange
 from .views import IsVolunteer
 
 
-def max_minutes(activity):
-    return max(0, int((activity.ends_at - activity.starts_at).total_seconds() // 60))
-
-
 class ChangeSerializer(serializers.ModelSerializer):
     actor_name = serializers.CharField(source='actor.full_name')
 
     class Meta:
         model = ContributionChange
-        fields = ['revision', 'previous_minutes', 'minutes', 'reason', 'actor_name', 'created_at']
+        fields = ['revision', 'previous_score', 'score', 'reason', 'actor_name', 'created_at']
 
 
 class ContributionSerializer(serializers.ModelSerializer):
@@ -36,7 +32,7 @@ class ContributionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contribution
-        fields = ['minutes', 'revision', 'confirmed_by_name', 'updated_at']
+        fields = ['score', 'revision', 'confirmed_by_name', 'updated_at']
 
 
 class EntrySerializer(serializers.ModelSerializer):
@@ -51,7 +47,7 @@ class EntrySerializer(serializers.ModelSerializer):
     def get_activity(self, attendance):
         activity = attendance.participation.activity
         return dict(id=str(activity.pk), title=activity.title, starts_at=activity.starts_at,
-                    status=activity.status, max_minutes=max_minutes(activity), organizer_name=activity.organizer.full_name)
+                    status=activity.status, max_score=10, organizer_name=activity.organizer.full_name)
 
 
 def eligible_entries():
@@ -61,7 +57,7 @@ def eligible_entries():
 
 
 class ConfirmSerializer(StrictFieldsMixin, serializers.Serializer):
-    minutes = serializers.IntegerField(min_value=0, max_value=2147483647)
+    score = serializers.IntegerField(min_value=0, max_value=10)
     revision = serializers.IntegerField(min_value=0)
     reason = serializers.CharField(max_length=1000, required=False, allow_blank=True, default='')
 
@@ -73,36 +69,34 @@ def confirm(actor, activity_id, attendance_id, values):
         raise ValidationError('Chỉ xác nhận đóng góp sau khi hoạt động Hoàn thành và đã kết thúc.')
     attendance = get_object_or_404(Attendance.objects.select_related('participation__volunteer'),
         pk=attendance_id, participation__activity=activity, participation__status='approved')
-    if values['minutes'] > max_minutes(activity):
-        raise ValidationError({'minutes': f'Số phút không được vượt thời lượng hoạt động ({max_minutes(activity)} phút).'})
+    score_form = ConfirmSerializer(data=values)
+    score_form.is_valid(raise_exception=True)
+    values = score_form.validated_data
     record = Contribution.objects.filter(attendance=attendance).first()
     revision = record.revision if record else 0
     if values['revision'] != revision:
-        raise ValidationError('Số giờ đã được cập nhật. Hãy tải lại danh sách trước khi xác nhận.')
-    if record and record.minutes == values['minutes']:
+        raise ValidationError('Điểm đã được cập nhật. Hãy tải lại danh sách trước khi xác nhận.')
+    if record and record.score == values['score']:
         return record
     if record and not values['reason'].strip():
-        raise ValidationError({'reason': 'Nhập lý do khi điều chỉnh số phút đóng góp.'})
-    previous = record.minutes if record else None
+        raise ValidationError({'reason': 'Nhập lý do khi điều chỉnh điểm đóng góp.'})
+    previous = record.score if record else None
     if record:
-        from apps.reports.certificate_services import revoke_for_contribution
-        revoke_for_contribution(actor, attendance)
-    if record:
-        record.minutes = values['minutes']
+        record.score = values['score']
         record.revision += 1
         record.confirmed_by = actor
-        record.save(update_fields=['minutes', 'revision', 'confirmed_by', 'updated_at'])
+        record.save(update_fields=['score', 'revision', 'confirmed_by', 'updated_at'])
     else:
-        record = Contribution.objects.create(attendance=attendance, minutes=values['minutes'], confirmed_by=actor)
-    ContributionChange.objects.create(contribution=record, revision=record.revision, previous_minutes=previous,
-        minutes=record.minutes, reason=values['reason'], actor=actor)
+        record = Contribution.objects.create(attendance=attendance, score=values['score'], confirmed_by=actor)
+    ContributionChange.objects.create(contribution=record, revision=record.revision, previous_score=previous,
+        score=record.score, reason=values['reason'], actor=actor)
     AuditEvent.objects.create(actor=actor, subject=attendance.participation.volunteer, activity=activity,
         object_id=attendance.pk, action='contribution_confirmed' if previous is None else 'contribution_updated',
-        reason=values['reason'], before=None if previous is None else {'minutes': previous, 'revision': revision},
-        after={'minutes': record.minutes, 'revision': record.revision})
+        reason=values['reason'], before=None if previous is None else {'score': previous, 'revision': revision},
+        after={'score': record.score, 'revision': record.revision})
     notify(attendance.participation.volunteer, 'contribution_confirmed' if previous is None else 'contribution_updated',
-        'Đóng góp đã được xác nhận' if previous is None else 'Giờ đóng góp được điều chỉnh',
-        f'“{activity.title}”: {record.minutes} phút được công nhận.', activity, href='/tinh-nguyen-vien/dong-gop')
+        'Đóng góp đã được xác nhận' if previous is None else 'Điểm đóng góp được điều chỉnh',
+        f'“{activity.title}”: {record.score}/10 điểm được công nhận.', activity, href='/tinh-nguyen-vien/dong-gop')
     return record
 
 
@@ -138,7 +132,7 @@ class MyContributions(generics.ListAPIView):
         queryset = self.get_queryset()
         response = super().list(request, *args, **kwargs)
         response.data['summary'] = {
-            'minutes': queryset.aggregate(total=Sum('contribution__minutes'))['total'] or 0,
+            'score': queryset.aggregate(total=Sum('contribution__score'))['total'] or 0,
             'confirmed': queryset.filter(contribution__isnull=False).count(),
             'pending': queryset.filter(contribution__isnull=True).count(),
         }

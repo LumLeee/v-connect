@@ -140,7 +140,7 @@ Quy tắc đã chốt ngày 26/09/2026: “Đã tham gia” chỉ tính hoạt �
 
 Kiểm tra: 96 tests backend trên MySQL, 34 ca trình duyệt hồi quy và 4 ca thống kê/quản trị đạt sau khi sửa lỗi chờ dữ liệu trong bài test; 5 tests bảo vệ database và lint/build đạt. Migration đã áp dụng sau sao lưu, giữ nguyên dữ liệu cũ. Nhật ký riêng bắt đầu từ giai đoạn 8; không dựng lại những thao tác trước đây không còn dữ liệu nguồn.
 
-**Tiêu chí:** số liệu khớp danh sách chi tiết; kiểm tra quyền tại backend. Biểu đồ nâng cao, xuất PDF/Excel, mẫu báo cáo và chứng nhận làm sau.
+**Tiêu chí:** số liệu khớp danh sách chi tiết; kiểm tra quyền tại backend. Biểu đồ nâng cao, xuất PDF/Excel và mẫu báo cáo làm sau.
 
 ### Giai đoạn 9: Kiểm tra hoàn chỉnh đợt 1 — hoàn thành
 
@@ -169,14 +169,14 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | Hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, lọc trạng thái/ngày/địa điểm/kỹ năng, ảnh bìa và timeline chương trình | Quản lý hoạt động; xem [chi tiết](HOAT_DONG_MO_RONG.md) |
 | Địa điểm | Danh mục địa điểm, tọa độ, bản đồ, chỉ đường, dự phòng khi dịch vụ lỗi | Địa chỉ hoạt động |
 | Điểm danh nâng cao | Đã có Nhà tổ chức cấp QR/mã 8 chữ số có hạn 5 phút; Volunteer tự check-in, thu hồi/thay mã và dự phòng thủ công. Check-out để sau theo phạm vi đã chọn | Điểm danh cơ bản; xem [chi tiết](DIEM_DANH_NANG_CAO.md) |
-| Đóng góp | Nhà tổ chức xác nhận số phút cho người đã điểm danh sau khi hoạt động Hoàn thành; điều chỉnh có lý do, lưu lịch sử; Volunteer xem tổng thời gian và chi tiết | Không vượt thời lượng hoạt động; xem [chi tiết](DONG_GOP.md) |
+| Đóng góp | Nhà tổ chức chấm điểm nguyên 0–10 cho từng người đã điểm danh sau khi hoạt động Hoàn thành; điều chỉnh có lý do, lưu lịch sử; Volunteer xem tổng điểm và chi tiết. Báo cáo dùng điểm thay giờ | Giới hạn 0–10 mỗi lượt; xem [chi tiết](DONG_GOP.md) |
 | Thông báo | Đã có chuông, danh sách, đã đọc, liên kết, nhắc trước 1 giờ và hàng đợi email toàn bộ nghiệp vụ; bật/tắt email theo tài khoản | Cần tiến trình xử lý chạy; SMTP thật chưa cấu hình. Xem [chi tiết](THONG_BAO.md) |
 | Ghép nối | Đã triển khai quy tắc hai chiều: đối chiếu kỹ năng/sở thích/lịch, loại xung đột, giải thích điểm; người dùng chủ động cho phép được gợi ý. Bổ sung Nhà tổ chức gửi lời mời, Tình nguyện viên chấp nhận hợp lệ được tự động duyệt; có từ chối/thu hồi, thông báo và nhật ký. Xem [ghép nối](GHEP_NOI.md), [lời mời](LOI_MOI_THAM_GIA.md) | Kỹ năng, sở thích, lịch rảnh và hoạt động |
 | AI ghép nối | Embedding hoặc mô hình phù hợp, đo chất lượng | Baseline và dữ liệu đánh giá |
 | AI phản hồi | Chuẩn hóa nhãn, phân loại cảm xúc, hỗ trợ phát hiện spam/sự cố và rà soát | Phản hồi và dữ liệu đánh giá |
 | AI báo cáo | Tóm tắt từ số liệu, phản hồi hợp lệ; cho phép kiểm tra lại | Báo cáo cơ bản, không tự bịa kết quả |
 | Báo cáo mở rộng | Đã có biểu đồ, lọc thống kê, Excel và in/lưu PDF; các mẫu chuyên biệt bổ sung khi có nhu cầu | Thống kê và quyền xuất dữ liệu; xem [chi tiết](BAO_CAO_MO_RONG.md) |
-| Quản trị mở rộng | Đã bổ sung [nhật ký nâng cao](NHAT_KY_NANG_CAO.md) và [mẫu tổng kết/chứng nhận](MAU_BAO_CAO_CHUNG_NHAN.md): cấp, thu hồi, in PDF, QR tra cứu. Quyền chi tiết và câu chuyện tác động để sau | Nghiệp vụ chính; chốt yêu cầu từng mục |
+| Quản trị mở rộng | Đã bổ sung [nhật ký nâng cao](NHAT_KY_NANG_CAO.md) và [mẫu báo cáo tổng kết](MAU_BAO_CAO.md) có in/lưu PDF. Đã loại bỏ chứng nhận/chứng chỉ theo yêu cầu ngày 01/11/2026. Quyền chi tiết và câu chuyện tác động để sau | Nghiệp vụ chính; chốt yêu cầu từng mục |
 | Lưu trữ/vận hành | Lưu file bên ngoài, hosting/domain, cache chung và tối ưu theo tải | Nhu cầu triển khai thực tế |
 
 AI phải phân biệt kết quả quy tắc với mô hình, có timeout và dự phòng khi dịch vụ lỗi, ghi rõ nguồn kết quả và chất lượng đã đo. Không dùng kết quả kiểm thử của báo cáo cũ làm kết quả hệ thống mới.
@@ -208,6 +208,6 @@ Không tiếp tục chức năng phụ hoặc AI trước khi hoàn thành đợ
 
 - Chỉ đánh dấu hoàn thành khi đã triển khai và kiểm tra; mỗi chức năng gồm dữ liệu, API, giao diện, phân quyền và kiểm thử cần thiết.
 - Hỏi khi thiếu quy tắc nghiệp vụ ảnh hưởng phần đang làm; không hỏi lại công nghệ/vai trò đã chốt.
-- Chốt hướng QR, cách tính giờ, nhãn AI, dịch vụ ngoài và chứng nhận khi đến nhóm tương ứng ở đợt 2.
+- Chốt hướng QR điểm danh, chấm điểm đóng góp, nhãn AI và dịch vụ ngoài khi đến nhóm tương ứng ở đợt 2.
 - Ghi rõ phần ở local và phần đã commit/push. Sửa kế hoạch không đồng nghĩa triển khai code hoặc đẩy GitHub.
 - Đồng bộ kế hoạch, README và thiết kế khi đổi phạm vi; giữ nguyên báo cáo kết quả lịch sử.

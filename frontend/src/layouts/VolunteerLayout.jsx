@@ -16,7 +16,6 @@ const items = [
   ['checkin', '/tinh-nguyen-vien/check-in', 'Điểm danh của tôi', ScanLine],
   ['history', '/tinh-nguyen-vien/lich-su', 'Lịch sử hoạt động', History],
   ['contributions', '/tinh-nguyen-vien/dong-gop', 'Đóng góp của tôi', HeartHandshake],
-  ['certificates', '/tinh-nguyen-vien/chung-nhan', 'Chứng nhận của tôi', ClipboardList],
   ['feedback', '/tinh-nguyen-vien/phan-hoi', 'Đánh giá hoạt động', MessageSquare],
   ['reports', '/bao-cao', 'Thống kê', BarChart3],
   ['notifications', '/thong-bao', 'Thông báo', Bell],
@@ -25,7 +24,6 @@ const items = [
 
 function sectionFor(path) {
   if (path.endsWith('/loi-moi')) return 'invitations'
-  if (path.includes('/chung-nhan')) return 'certificates'
   if (path.endsWith('/ghep-noi')) return 'matching'
   if (path.endsWith('/dong-gop')) return 'contributions'
   if (path.endsWith('/check-in')) return 'checkin'

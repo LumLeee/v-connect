@@ -5,9 +5,9 @@ import { activityTime } from '../api/activityFormat.js'
 import '../styles/activities.css'
 import '../styles/audit.css'
 
-const labels = { title: 'Tên hoạt động / mốc', description: 'Mô tả', address: 'Địa điểm', starts_at: 'Bắt đầu', ends_at: 'Kết thúc', capacity: 'Sức chứa', status: 'Trạng thái', required_skills: 'Kỹ năng yêu cầu', timeline: 'Chương trình hoạt động', cover: 'Tệp ảnh bìa', is_active: 'Tài khoản hoạt động', attended: 'Có mặt', method: 'Cách điểm danh', is_hidden: 'Đã ẩn', minutes: 'Số phút đóng góp', revision: 'Lần xác nhận', issued_at: 'Thời điểm tạo mã', expires_at: 'Hết hạn mã', revoked_at: 'Thu hồi mã' }
+const labels = { title: 'Tên hoạt động / mốc', description: 'Mô tả', address: 'Địa điểm', starts_at: 'Bắt đầu', ends_at: 'Kết thúc', capacity: 'Sức chứa', status: 'Trạng thái', required_skills: 'Kỹ năng yêu cầu', timeline: 'Chương trình hoạt động', cover: 'Tệp ảnh bìa', is_active: 'Tài khoản hoạt động', attended: 'Có mặt', method: 'Cách điểm danh', is_hidden: 'Đã ẩn', score: 'Điểm đóng góp', minutes: 'Số phút đóng góp (lịch sử cũ)', revision: 'Lần xác nhận', issued_at: 'Thời điểm tạo mã', expires_at: 'Hết hạn mã', revoked_at: 'Thu hồi mã' }
 const statuses = { draft: 'Nháp', published: 'Công khai', completed: 'Hoàn thành', cancelled: 'Đã hủy', pending: 'Chờ duyệt', approved: 'Được duyệt', rejected: 'Bị từ chối', manual: 'Thủ công', qr: 'Quét QR', code: 'Nhập mã' }
-labels.certificate_status = 'Trạng thái chứng nhận'
+labels.certificate_status = 'Trạng thái chứng nhận (lịch sử cũ)'
 statuses.valid = 'Còn hiệu lực'
 statuses.revoked = 'Đã thu hồi'
 statuses.accepted = 'Đã chấp nhận'

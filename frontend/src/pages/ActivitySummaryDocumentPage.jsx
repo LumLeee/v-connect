@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
 import { activityTime } from '../api/activityFormat.js'
-import { duration } from '../api/documentFormat.js'
+import { points } from '../api/documentFormat.js'
 import '../styles/documents.css'
 
 export default function ActivitySummaryDocumentPage() {
@@ -20,9 +20,9 @@ export default function ActivitySummaryDocumentPage() {
       <h3>2. Kết quả tham gia và đóng góp</h3><dl className="summary-metrics">{[
         ['Tổng đơn đăng ký', data.metrics.registered], ['Được duyệt', data.metrics.approved], ['Chờ duyệt', data.metrics.pending], ['Bị từ chối', data.metrics.rejected], ['Đã hủy', data.metrics.cancelled],
         ['Đã tham gia (được duyệt và có điểm danh)', data.metrics.attended_completed], ['Số người đã xác nhận đóng góp', data.contributions.confirmed], ['Số người chờ xác nhận đóng góp', data.contributions.pending],
-        ['Tổng thời gian được công nhận', duration(data.contributions.minutes)], ['Chứng nhận đang hiệu lực', data.certificates],
+        ['Tổng điểm đóng góp', points(data.contributions.score)],
       ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
-      <h3>3. Phản hồi của người tham gia</h3><p>Số phản hồi hợp lệ: {data.metrics.feedback.count}. Điểm trung bình: {data.metrics.feedback.average_rating == null ? 'Chưa có đánh giá' : `${data.metrics.feedback.average_rating}/5`}.</p><p className="muted">Không tính phản hồi bị ẩn. Giờ đóng góp lấy từ xác nhận của Nhà tổ chức; không suy ra từ giờ điểm danh.</p>
+      <h3>3. Phản hồi của người tham gia</h3><p>Số phản hồi hợp lệ: {data.metrics.feedback.count}. Điểm trung bình: {data.metrics.feedback.average_rating == null ? 'Chưa có đánh giá' : `${data.metrics.feedback.average_rating}/5`}.</p><p className="muted">Không tính phản hồi bị ẩn. Điểm đóng góp do Nhà tổ chức chấm theo thang 0–10, độc lập với điểm phản hồi /5; tổng điểm được cộng qua các lượt tham gia.</p>
       {!!data.activity.timeline.length && <><h3>4. Chương trình hoạt động</h3><ol className="summary-timeline">{data.activity.timeline.map((item, index) => <li key={index}><strong>{item.title}</strong><p>{activityTime(item.starts_at)} — {activityTime(item.ends_at)}</p>{item.description && <p className="activity-description">{item.description}</p>}</li>)}</ol></>}
       <div className="summary-footer"><p>Người lập trên hệ thống: {data.prepared_by}</p><p>Thời điểm lấy số liệu: {activityTime(data.generated_at)} (giờ Việt Nam)</p><p>Mã hoạt động: {data.activity.id}</p></div>
     </article>}

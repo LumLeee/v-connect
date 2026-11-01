@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { BarChart3, Bell, ClipboardList, Compass, HeartHandshake, History, LayoutDashboard, LogOut, MessageSquare, ScanLine, UserRound } from 'lucide-react'
+import { Trophy, BarChart3, Bell, ClipboardList, Compass, HeartHandshake, History, LayoutDashboard, LogOut, MessageSquare, ScanLine, UserRound } from 'lucide-react'
 import { useAuth } from '../auth/context.js'
 import useApi from '../hooks/useApi.js'
 import NotificationBell from '../components/NotificationBell.jsx'
@@ -9,6 +9,7 @@ import '../styles/volunteer-workspace.css'
 
 const items = [
   ['overview', '/tinh-nguyen-vien', 'Tổng quan', LayoutDashboard],
+  ['leaderboard', '/bang-xep-hang', 'Bảng xếp hạng', Trophy],
   ['activities', '/hoat-dong', 'Khám phá', Compass],
   ['matching', '/tinh-nguyen-vien/ghep-noi', 'Gợi ý phù hợp', HeartHandshake],
   ['invitations', '/tinh-nguyen-vien/loi-moi', 'Lời mời của tôi', Bell],
@@ -23,6 +24,7 @@ const items = [
 ]
 
 function sectionFor(path) {
+  if (path === '/bang-xep-hang') return 'leaderboard'
   if (path.endsWith('/loi-moi')) return 'invitations'
   if (path.endsWith('/ghep-noi')) return 'matching'
   if (path.endsWith('/dong-gop')) return 'contributions'

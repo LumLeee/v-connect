@@ -32,6 +32,8 @@ Xác nhận hoặc điều chỉnh tạo thông báo trong website và hàng đ�
 
 Điểm được hiển thị ở trang đóng góp và mẫu tổng kết. Các biểu đồ/Excel thống kê lượt tham gia và phản hồi giữ các chỉ số hiện có. Chức năng chứng nhận/chứng chỉ đã được gỡ theo yêu cầu.
 
+Hệ thống tự cộng điểm đã chấm để lập **Top 20** và tính cấp bậc. Không tự cho điểm thay Nhà tổ chức. Tình nguyện viên xem thứ hạng/cấp bậc của mình, kể cả ngoài Top 20, qua liên kết trên trang đóng góp; xem [bảng xếp hạng và cấp bậc](BANG_XEP_HANG.md).
+
 Kết quả sau khi gỡ chức năng: 200 kiểm thử backend, 8 kiểm thử bảo vệ môi trường chạy, lint/build và 4 ca trình duyệt báo cáo đều đạt. Chấm/sửa điểm không còn phụ thuộc bảng hoặc dịch vụ chứng nhận. Xem [mẫu báo cáo tổng kết](MAU_BAO_CAO.md).
 
 ## Chuyển dữ liệu từ giờ sang điểm

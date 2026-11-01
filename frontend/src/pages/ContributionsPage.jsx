@@ -46,6 +46,7 @@ function Contributions({ managed = false }) {
     <Link className="activity-back" to={managed ? `/nha-to-chuc/hoat-dong/${id}` : '/tinh-nguyen-vien'}>← {managed ? 'Về hoạt động' : 'Về tổng quan'}</Link>
     <h1>{managed ? 'Xác nhận đóng góp' : 'Đóng góp của tôi'}</h1>
     <p>Chỉ tính người đã được duyệt, có điểm danh và hoạt động Hoàn thành. Nhà tổ chức chấm điểm nguyên từ 0–10 cho từng người, không tự suy ra từ thời lượng hoạt động.</p>
+    <p><Link className="button secondary" to="/bang-xep-hang">Xem bảng xếp hạng và cấp bậc</Link></p>
     {managed && <OrganizerActivityHeader id={id} selected="contributions" />}
     <button className="text-button" disabled={busy} onClick={refresh}>Cập nhật đóng góp</button>
     <RequestState loading={loading} error={error} retry={retry} />

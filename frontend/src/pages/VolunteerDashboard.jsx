@@ -49,6 +49,7 @@ export default function VolunteerDashboard() {
           <Link className="vd-action vd-primary" to="/hoat-dong"><Compass size={17} />Tìm hoạt động</Link>
           <Link className="vd-action" to="/tinh-nguyen-vien/dang-ky"><ClipboardList size={17} />Đăng ký của tôi</Link>
           <Link className="vd-action" to="/tinh-nguyen-vien/lich-su"><History size={17} />Lịch sử tham gia</Link>
+          <Link className="vd-action" to="/bang-xep-hang"><CheckCircle2 size={17} />Bảng xếp hạng đóng góp</Link>
           <Link className="vd-action" to="/ho-so"><UserRound size={17} />Chỉnh sửa hồ sơ</Link>
         </aside>
       </div>

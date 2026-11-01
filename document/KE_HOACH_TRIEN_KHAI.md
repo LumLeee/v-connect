@@ -170,6 +170,7 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | Địa điểm | Danh mục địa điểm, tọa độ, bản đồ, chỉ đường, dự phòng khi dịch vụ lỗi | Địa chỉ hoạt động |
 | Điểm danh nâng cao | Đã có Nhà tổ chức cấp QR/mã 8 chữ số có hạn 5 phút; Volunteer tự check-in, thu hồi/thay mã và dự phòng thủ công. Check-out để sau theo phạm vi đã chọn | Điểm danh cơ bản; xem [chi tiết](DIEM_DANH_NANG_CAO.md) |
 | Đóng góp | Nhà tổ chức chấm điểm nguyên 0–10 cho từng người đã điểm danh sau khi hoạt động Hoàn thành; điều chỉnh có lý do, lưu lịch sử; Volunteer xem tổng điểm và chi tiết. Báo cáo dùng điểm thay giờ | Giới hạn 0–10 mỗi lượt; xem [chi tiết](DONG_GOP.md) |
+| Bảng xếp hạng và cấp bậc | Top 20 theo tổng điểm Nhà tổ chức đã chấm, chỉ người đăng nhập xem; bằng điểm cùng hạng, có cấp bậc và tiến độ cá nhân | Điểm đóng góp; xem [chi tiết](BANG_XEP_HANG.md) |
 | Thông báo | Đã có chuông, danh sách, đã đọc, liên kết, nhắc trước 1 giờ và hàng đợi email toàn bộ nghiệp vụ; bật/tắt email theo tài khoản | Cần tiến trình xử lý chạy; SMTP thật chưa cấu hình. Xem [chi tiết](THONG_BAO.md) |
 | Ghép nối | Đã triển khai quy tắc hai chiều: đối chiếu kỹ năng/sở thích/lịch, loại xung đột, giải thích điểm; người dùng chủ động cho phép được gợi ý. Bổ sung Nhà tổ chức gửi lời mời, Tình nguyện viên chấp nhận hợp lệ được tự động duyệt; có từ chối/thu hồi, thông báo và nhật ký. Xem [ghép nối](GHEP_NOI.md), [lời mời](LOI_MOI_THAM_GIA.md) | Kỹ năng, sở thích, lịch rảnh và hoạt động |
 | AI ghép nối | Embedding hoặc mô hình phù hợp, đo chất lượng | Baseline và dữ liệu đánh giá |

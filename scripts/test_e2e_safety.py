@@ -11,6 +11,11 @@ from e2e_clock import TestClockWSGI, scoped_now, real_now, require_test_database
 
 
 class CleanupSafetyTests(unittest.TestCase):
+    def test_leaderboard_fixture_refuses_application_database(self):
+        from e2e_leaderboard import seed_leaderboard
+        with self.assertRaises(RuntimeError):
+            seed_leaderboard({}, 'v_connect', 'v_connect')
+
     def check_case(self, target, original, active_connection, active_settings, allowed=False):
         destroy = Mock()
         connection = SimpleNamespace(settings_dict={'NAME': active_connection}, creation=SimpleNamespace(destroy_test_db=destroy))

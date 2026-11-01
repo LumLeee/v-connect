@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { BarChart3, Bell, CalendarDays, ClipboardList, HeartHandshake, LayoutDashboard, LogOut, MessageSquare, Settings2, UserRound } from 'lucide-react'
+import { Trophy, BarChart3, Bell, CalendarDays, ClipboardList, HeartHandshake, LayoutDashboard, LogOut, MessageSquare, Settings2, UserRound } from 'lucide-react'
 import { useAuth } from '../auth/context.js'
 import useApi from '../hooks/useApi.js'
 import NotificationBell from '../components/NotificationBell.jsx'
@@ -10,6 +10,7 @@ import '../styles/admin-workspace.css'
 
 const items = [
   ['overview', '/quan-tri', 'Tổng quan', LayoutDashboard],
+  ['leaderboard', '/bang-xep-hang', 'Bảng xếp hạng', Trophy],
   ['accounts', '/quan-tri/tai-khoan', 'Tài khoản hệ thống', UserRound],
   ['activities', '/bao-cao/hoat-dong', 'Hoạt động toàn hệ thống', CalendarDays],
   ['feedback', '/quan-tri/phan-hoi', 'Kiểm duyệt phản hồi', MessageSquare],
@@ -20,6 +21,7 @@ const items = [
 ]
 
 function sectionFor(path) {
+  if (path === '/bang-xep-hang') return 'leaderboard'
   if (path.startsWith('/bao-cao/hoat-dong')) return 'activities'
   if (path.startsWith('/bao-cao')) return 'reports'
   if (path === '/ho-so') return 'profile'

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { BarChart3, Bell, CalendarDays, ClipboardList, HeartHandshake, LayoutDashboard, LogOut, MessageSquare, Settings2, UserRound, UserCheck } from 'lucide-react'
+import { Trophy, BarChart3, Bell, CalendarDays, ClipboardList, HeartHandshake, LayoutDashboard, LogOut, MessageSquare, Settings2, UserRound, UserCheck } from 'lucide-react'
 import { useAuth } from '../auth/context.js'
 import useApi from '../hooks/useApi.js'
 import NotificationBell from '../components/NotificationBell.jsx'
@@ -9,6 +9,7 @@ import '../styles/organizer-management.css'
 
 const items = [
   ['overview', '/nha-to-chuc', 'Tổng quan', LayoutDashboard],
+  ['leaderboard', '/bang-xep-hang', 'Bảng xếp hạng', Trophy],
   ['activities', '/nha-to-chuc/hoat-dong', 'Quản lý hoạt động', CalendarDays],
   ['matching', '/nha-to-chuc/ghep-noi', 'Ghép nối tình nguyện viên', HeartHandshake],
   ['registrations', '/nha-to-chuc/dang-ky', 'Đơn đăng ký', ClipboardList],
@@ -21,6 +22,7 @@ const items = [
 ]
 
 function sectionFor(path) {
+  if (path === '/bang-xep-hang') return 'leaderboard'
   if (path.endsWith('/ghep-noi')) return 'matching'
   if (path.endsWith('/dong-gop')) return 'contributions'
   if (path.startsWith('/bao-cao')) return 'reports'

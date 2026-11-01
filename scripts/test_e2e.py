@@ -109,6 +109,10 @@ def main():
         User.objects.create_superuser(env["E2E_ADMIN_USERNAME"], env["E2E_ADMIN_PASSWORD"], full_name="Quản trị kiểm thử")
         from e2e_attendance import seed_attendance
         seed_attendance(env, database, original_database)
+        selected_specs = [arg for arg in sys.argv[1:] if arg.endswith('.spec.js')]
+        if not selected_specs or any('leaderboard' in arg for arg in selected_specs):
+            from e2e_leaderboard import seed_leaderboard
+            seed_leaderboard(env, database, original_database)
         call_command("seed_data", verbosity=0)
         from apps.core.models import Skill
         from django.db.migrations.executor import MigrationExecutor

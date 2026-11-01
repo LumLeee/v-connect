@@ -18,13 +18,13 @@ export default function SiteLayout() {
     finally { setBusy(false) }
   }
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
-  if (user?.role === 'admin' && /^(\/quan-tri|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+  if (user?.role === 'admin' && /^(\/quan-tri|\/bao-cao|\/ho-so|\/thong-bao|\/bang-xep-hang)(\/|$)/.test(pathname)) {
     return <AdminLayout key={user.id}><Outlet /></AdminLayout>
   }
-  if (user?.role === 'volunteer' && /^(\/tinh-nguyen-vien|\/hoat-dong|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+  if (user?.role === 'volunteer' && /^(\/tinh-nguyen-vien|\/hoat-dong|\/bao-cao|\/ho-so|\/thong-bao|\/bang-xep-hang)(\/|$)/.test(pathname)) {
     return <VolunteerLayout key={user.id}><Outlet /></VolunteerLayout>
   }
-  if (user?.role === 'organizer' && /^(\/nha-to-chuc|\/bao-cao|\/ho-so|\/thong-bao)(\/|$)/.test(pathname)) {
+  if (user?.role === 'organizer' && /^(\/nha-to-chuc|\/bao-cao|\/ho-so|\/thong-bao|\/bang-xep-hang)(\/|$)/.test(pathname)) {
     return <OrganizerLayout key={user.id}><Outlet /></OrganizerLayout>
   }
   return (

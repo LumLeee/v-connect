@@ -29,6 +29,7 @@ import OrganizerDashboard from './pages/OrganizerDashboard.jsx'
 import VolunteerParticipations from './pages/VolunteerParticipations.jsx'
 import ContributionsPage from './pages/ContributionsPage.jsx'
 import MatchingPage from './pages/MatchingPage.jsx'
+import LeaderboardPage from './pages/LeaderboardPage.jsx'
 import InvitationsPage from './pages/InvitationsPage.jsx'
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
     <Routes>
       <Route element={<SiteLayout />}>
         <Route element={<RequireRole />}>
+          <Route path="bang-xep-hang" element={<LeaderboardPage key={user?.id} />} />
           <Route path="bao-cao/hoat-dong/:id/tong-ket" element={<ActivitySummaryDocumentPage key={user?.id} />} />
           <Route path="thong-bao" element={<NotificationsPage key={user?.id} />} />
           <Route path="bao-cao/mo-rong" element={<AdvancedReportsPage key={user?.id} />} />

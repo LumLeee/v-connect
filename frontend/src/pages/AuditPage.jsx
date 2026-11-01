@@ -10,6 +10,10 @@ const actions = { account_locked: 'Khóa tài khoản', account_unlocked: 'Mở 
 const errorText = value => typeof value === 'string' ? value : Object.values(value || {}).map(errorText).join(' ')
 actions.certificate_issued = 'Cấp chứng nhận'
 actions.certificate_revoked = 'Thu hồi chứng nhận'
+actions.invitation_sent = 'Gửi lời mời'
+actions.invitation_accepted = 'Chấp nhận lời mời'
+actions.invitation_declined = 'Từ chối lời mời'
+actions.invitation_withdrawn = 'Thu hồi lời mời'
 
 export default function AuditPage() {
   const [params, setParams] = useSearchParams()

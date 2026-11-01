@@ -2,6 +2,36 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
+
+
+class Invitation(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'pending', 'Chờ phản hồi'
+        ACCEPTED = 'accepted', 'Đã chấp nhận'
+        DECLINED = 'declined', 'Đã từ chối'
+        WITHDRAWN = 'withdrawn', 'Đã thu hồi'
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    activity = models.ForeignKey('activities.Activity', on_delete=models.PROTECT, related_name='invitations')
+    volunteer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='invitations')
+    sent_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='sent_invitations')
+    message = models.CharField(max_length=1000, blank=True)
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.PENDING)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+    responded_at = models.DateTimeField(null=True, blank=True)
+    invited_starts_at = models.DateTimeField()
+    invited_ends_at = models.DateTimeField()
+    invited_address = models.CharField(max_length=500)
+
+    class Meta:
+        ordering = ['-created_at', '-id']
+        constraints = [
+            models.UniqueConstraint(fields=['activity', 'volunteer'], name='invitation_unique_volunteer'),
+            models.CheckConstraint(condition=models.Q(status__in=['pending', 'accepted', 'declined', 'withdrawn']), name='invitation_valid_status'),
+            models.CheckConstraint(condition=(models.Q(status='pending', responded_at__isnull=True) |
+                (~models.Q(status='pending') & models.Q(responded_at__isnull=False))), name='invitation_response_state'),
+        ]
 
 
 class Participation(models.Model):

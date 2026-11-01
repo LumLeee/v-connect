@@ -32,6 +32,7 @@ import OrganizerDashboard from './pages/OrganizerDashboard.jsx'
 import VolunteerParticipations from './pages/VolunteerParticipations.jsx'
 import ContributionsPage from './pages/ContributionsPage.jsx'
 import MatchingPage from './pages/MatchingPage.jsx'
+import InvitationsPage from './pages/InvitationsPage.jsx'
 
 export default function App() {
   const { user } = useAuth()
@@ -62,6 +63,7 @@ export default function App() {
         <Route path="hoat-dong" element={<ActivitiesPage key="public" />} />
         <Route path="hoat-dong/:id" element={<ActivityDetailPage />} />
         <Route element={<RequireRole role="organizer" />}>
+          <Route path="nha-to-chuc/hoat-dong/:id/loi-moi" element={<InvitationsPage key={user?.id} managed />} />
           <Route path="nha-to-chuc/hoat-dong/:id/ghep-noi" element={<MatchingPage key={user?.id} managed />} />
           <Route path="nha-to-chuc/ghep-noi" element={<ActivitiesPage key={`matching-${user?.id}`} managed mode="matching" />} />
           <Route path="nha-to-chuc/hoat-dong/:id/dong-gop" element={<ContributionsPage key={user?.id} managed />} />
@@ -85,6 +87,7 @@ export default function App() {
         <Route element={<RequireRole role="volunteer" />}><Route path="tinh-nguyen-vien" element={<VolunteerDashboard key={user?.id} />} /></Route>
         <Route element={<RequireRole role="volunteer" />}>
           <Route path="tinh-nguyen-vien/chung-nhan" element={<CertificatesPage key={user?.id} />} />
+          <Route path="tinh-nguyen-vien/loi-moi" element={<InvitationsPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/ghep-noi" element={<MatchingPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/dong-gop" element={<ContributionsPage key={user?.id} />} />
           <Route path="tinh-nguyen-vien/dang-ky" element={<VolunteerParticipations key={`registrations-${user?.id}`} />} />

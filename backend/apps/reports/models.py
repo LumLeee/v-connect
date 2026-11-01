@@ -16,6 +16,8 @@ class AuditEvent(models.Model):
         ('activity_status_changed', 'Đổi trạng thái hoạt động'), ('activity_cover_changed', 'Đổi ảnh bìa'),
         ('contribution_confirmed', 'Xác nhận đóng góp'), ('contribution_updated', 'Điều chỉnh đóng góp'),
         ('certificate_issued', 'Cấp chứng nhận'), ('certificate_revoked', 'Thu hồi chứng nhận'),
+        ('invitation_sent', 'Gửi lời mời'), ('invitation_accepted', 'Chấp nhận lời mời'),
+        ('invitation_declined', 'Từ chối lời mời'), ('invitation_withdrawn', 'Thu hồi lời mời'),
     ])
     object_id = models.UUIDField()
     activity = models.ForeignKey('activities.Activity', on_delete=models.PROTECT, null=True, blank=True)

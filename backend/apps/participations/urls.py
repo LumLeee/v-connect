@@ -2,8 +2,13 @@ from django.urls import path
 from .views import MyList, MyHistory, MyParticipation, CancelParticipation, ApplicantList, ReviewParticipation, AttendanceList, ConfirmAttendance
 from .checkin_views import ManageAttendanceCode, RevokeAttendanceCode, SelfCheckIn
 from .contributions import ManagedContributions, ConfirmContribution, MyContributions, ContributionHistory
+from .invitation_views import MyInvitations, ManagedInvitations, RespondInvitation, WithdrawInvitation
 
 urlpatterns = [
+    path('invitations/', MyInvitations.as_view()),
+    path('invitations/<uuid:pk>/respond/', RespondInvitation.as_view()),
+    path('organizer/activities/<uuid:pk>/invitations/', ManagedInvitations.as_view()),
+    path('organizer/activities/<uuid:pk>/invitations/<uuid:invitation_id>/withdraw/', WithdrawInvitation.as_view()),
     path('contributions/', MyContributions.as_view()),
     path('contributions/<uuid:attendance_id>/history/', ContributionHistory.as_view()),
     path('organizer/activities/<uuid:pk>/contributions/', ManagedContributions.as_view()),

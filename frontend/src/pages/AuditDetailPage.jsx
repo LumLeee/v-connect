@@ -10,8 +10,13 @@ const statuses = { draft: 'Nháp', published: 'Công khai', completed: 'Hoàn th
 labels.certificate_status = 'Trạng thái chứng nhận'
 statuses.valid = 'Còn hiệu lực'
 statuses.revoked = 'Đã thu hồi'
+statuses.accepted = 'Đã chấp nhận'
+statuses.declined = 'Đã từ chối'
+statuses.withdrawn = 'Đã thu hồi'
+labels.source = 'Nguồn duyệt đăng ký'
+labels.invitation_id = 'Mã lời mời'
 
-function Value({ value, field }) {
+function Value({ value, field, invitation = false }) {
   if (value == null) return <span className="muted">Chưa có</span>
   if (typeof value === 'boolean') return value ? 'Có' : 'Không'
   if (Array.isArray(value)) return value.length ? <ol className="audit-value-list">{value.map((item, index) => <li key={index}><Value value={item} field={field} /></li>)}</ol> : 'Danh sách rỗng'
@@ -20,6 +25,8 @@ function Value({ value, field }) {
     return <dl>{Object.entries(value).sort(([a], [b]) => order.indexOf(a) - order.indexOf(b)).map(([key, item]) => <div key={key}><dt>{labels[key] || key}</dt><dd><Value value={item} field={key} /></dd></div>)}</dl>
   }
   if (field.endsWith('_at')) return activityTime(value)
+  if (field === 'status' && invitation && value === 'pending') return 'Chờ phản hồi'
+  if (field === 'source' && value === 'invitation') return 'Chấp nhận lời mời'
   if (field === 'status' || field === 'method' || field === 'certificate_status') return statuses[value] || String(value)
   return String(value) || 'Trống'
 }
@@ -42,7 +49,7 @@ export default function AuditDetailPage() {
       {!fields.length ? <p className="activity-empty">Bản ghi này chưa lưu dữ liệu trước–sau. Không thể dựng lại lịch sử từ dữ liệu hiện tại.</p> : <>
         <p className="muted">Hiển thị các trường được ghi nhận tại thời điểm thao tác. Với sửa hoạt động, chỉ hiển thị trường thay đổi.</p>
         <div className="audit-changes">{fields.map(field => <article className="activity-card audit-change" key={field}><h3>{labels[field] || field}</h3>
-          <div className="audit-comparison"><section><h4>Trước</h4><Value value={data.before?.[field]} field={field} /></section><section><h4>Sau</h4><Value value={data.after?.[field]} field={field} /></section></div>
+          <div className="audit-comparison"><section><h4>Trước</h4><Value value={data.before?.[field]} field={field} invitation={data.action.startsWith('invitation_')} /></section><section><h4>Sau</h4><Value value={data.after?.[field]} field={field} invitation={data.action.startsWith('invitation_')} /></section></div>
         </article>)}</div>
       </>}
     </>}

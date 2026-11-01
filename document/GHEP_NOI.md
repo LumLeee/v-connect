@@ -1,6 +1,6 @@
 # Ghép nối theo quy tắc hai chiều
 
-Ngày triển khai: 09/10/2026. Chức năng gợi ý hỗ trợ lựa chọn; không tự đăng ký, gửi lời mời hoặc xét duyệt. Đây là cách tính theo quy tắc, chưa sử dụng AI.
+Ngày triển khai: 09/10/2026. Chức năng gợi ý hỗ trợ lựa chọn theo quy tắc, chưa sử dụng AI. Đã bổ sung luồng [lời mời tham gia](LOI_MOI_THAM_GIA.md): Nhà tổ chức chủ động gửi, người nhận xác nhận hợp lệ sẽ được tự động duyệt đăng ký; việc xem gợi ý không tự gửi lời mời.
 
 ## Sử dụng
 

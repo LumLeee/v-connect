@@ -125,4 +125,4 @@ class RecommendedVolunteers(APIView):
             if match['score'] > 0:
                 results.append({'volunteer': {'id': str(profile.user_id), 'full_name': profile.user.full_name}, **match})
         results.sort(key=lambda row: (-row['score'], row['volunteer']['full_name'].casefold(), row['volunteer']['id']))
-        return ranked_response(request, results, 'Chỉ gồm người đã bật cho phép xuất hiện trong gợi ý. Gợi ý không tạo lời mời hoặc tự duyệt đăng ký.')
+        return ranked_response(request, results, 'Chỉ gồm người đã bật cho phép xuất hiện trong gợi ý. Bạn có thể gửi lời mời; khi người nhận chấp nhận trước giờ bắt đầu và còn chỗ, đăng ký sẽ được tự động duyệt.')

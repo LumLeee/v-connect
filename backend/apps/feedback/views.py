@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.activities.models import Activity
+from apps.activities.time_policy import ended
 from apps.activities.views import IsOrganizer
 from apps.participations.models import Attendance
 from apps.participations.views import IsVolunteer
@@ -31,7 +32,7 @@ class MyFeedback(APIView):
             attendance__participation__volunteer=request.user).first()
         attended = Attendance.objects.filter(participation__activity=activity, participation__volunteer=request.user,
                                              participation__status='approved').exists()
-        eligible = not entry and attended and activity.status == 'completed' and activity.ends_at <= timezone.now()
+        eligible = not entry and attended and activity.status == 'completed' and ended(activity)
         context = {'id': str(activity.pk), 'title': activity.title, 'starts_at': activity.starts_at,
                    'address': activity.address, 'status': activity.status} if attended or entry else None
         return Response({'feedback': OwnFeedbackSerializer(entry).data if entry else None,

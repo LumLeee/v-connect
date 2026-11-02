@@ -90,7 +90,12 @@ def main():
     # Browser tests share one loopback IP. Actual production limits are tested
     # separately by accounts/tests.py; CSRF and session checks stay enabled.
     rest["DEFAULT_THROTTLE_RATES"] = {"anon": "2000/minute", "user": "2000/minute", "auth": "2000/minute", "password_reset": "2000/minute"}
+    demo_time = "--demo-time" in sys.argv
+    if demo_time:
+        sys.argv.remove("--demo-time")
+    env["E2E_DEMO_TIME"] = "true" if demo_time else "false"
     overrides = override_settings(
+        ACTIVITY_TIME_CHECKS_ENABLED=not demo_time,
         DEBUG=False, ALLOWED_HOSTS=["127.0.0.1", "localhost"],
         CSRF_TRUSTED_ORIGINS=[env["E2E_BASE_URL"]], FRONTEND_URL=env["E2E_BASE_URL"],
         SECURE_SSL_REDIRECT=False, SESSION_COOKIE_SECURE=False, CSRF_COOKIE_SECURE=False,

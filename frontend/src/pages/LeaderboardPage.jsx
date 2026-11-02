@@ -19,7 +19,7 @@ export default function LeaderboardPage() {
   const { data, loading, error, retry } = useApi('/leaderboard/')
   return <section className="page-width section interior lb-page">
     <div className="lb-heading"><div><p className="lb-eyebrow">DẤU ẤN ĐÓNG GÓP</p><h1><Trophy size={30} aria-hidden="true" />Bảng xếp hạng tình nguyện viên</h1><p>Top 20 theo tổng điểm tích lũy toàn thời gian do Nhà tổ chức chấm.</p></div><button className="button secondary" onClick={retry} disabled={loading}>Cập nhật bảng xếp hạng</button></div>
-    <p className="lb-rule">Chỉ tính hoạt động Hoàn thành, đã kết thúc, có điểm danh và đăng ký Được duyệt. Tài khoản đang hoạt động có tổng điểm lớn hơn 0 mới được xếp hạng. Bằng điểm cùng hạng (1, 1, 3); danh sách tối đa 20 người, thứ tự khi bằng điểm dùng ngày tham gia rồi mã tài khoản.</p>
+    <p className="lb-rule">Chỉ tính hoạt động Hoàn thành, {data?.time_checks_disabled ? 'đang tạm bỏ điều kiện giờ kết thúc, ' : 'đã kết thúc, '}có điểm danh và đăng ký Được duyệt. Tài khoản đang hoạt động có tổng điểm lớn hơn 0 mới được xếp hạng. Bằng điểm cùng hạng (1, 1, 3); danh sách tối đa 20 người, thứ tự khi bằng điểm dùng ngày tham gia rồi mã tài khoản.</p>
     <RequestState loading={loading} error={error} retry={retry} />
     {data && <>
       {data.me && <article className="lb-personal" aria-label="Thứ hạng của tôi"><div className="lb-personal-main"><Avatar key={data.me.avatar_url} url={data.me.avatar_url} /><div><p className="lb-eyebrow">HÀNH TRÌNH CỦA BẠN</p><h2>{data.me.full_name}</h2><Level level={data.me.level} /></div></div>

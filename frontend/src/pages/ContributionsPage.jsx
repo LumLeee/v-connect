@@ -1,3 +1,4 @@
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
@@ -52,12 +53,12 @@ function Contributions({ managed = false }) {
     <RequestState loading={loading} error={error} retry={retry} />
     {message && <p role="status">{message}</p>}{failure && <p role="alert" className="request-error">{failure}</p>}
     {data?.summary && <div className="contribution-summary" aria-label="Tổng hợp đóng góp"><div><span>Tổng điểm đóng góp</span><strong>{points(data.summary.score)}</strong></div><div><span>Hoạt động đã xác nhận</span><strong>{data.summary.confirmed}</strong></div><div><span>Hoạt động chờ xác nhận</span><strong>{data.summary.pending}</strong></div></div>}
-    {pending && <form className="activity-confirm" aria-label="Xác nhận điểm đóng góp" onSubmit={save}><h2>{pending.contribution ? 'Điều chỉnh' : 'Xác nhận'} · {pending.volunteer_name}</h2>
+    {pending && <ConfirmationDialog title="Xác nhận điểm đóng góp" busy={busy} onClose={() => setPending(null)}><form className="activity-confirm" aria-label="Xác nhận điểm đóng góp" onSubmit={save}>{failure && <p role="alert" className="request-error">{failure}</p>}<h2>{pending.contribution ? 'Điều chỉnh' : 'Xác nhận'} · {pending.volunteer_name}</h2>
       <p>Chấm điểm nguyên từ 0 đến 10. Điểm 0 là đã chấm; chưa chấm được hiển thị riêng.</p>
       <div className="activity-field"><label htmlFor="contribution-score">Điểm đóng góp</label><input id="contribution-score" type="number" min="0" max={pending.activity.max_score} step="1" required disabled={busy} value={score} onChange={event => setScore(event.target.value)} /></div>
       <div className="activity-field"><label htmlFor="contribution-reason">Lý do {pending.contribution ? 'điều chỉnh (bắt buộc)' : 'xác nhận (không bắt buộc)'}</label><textarea id="contribution-reason" rows={3} maxLength={1000} required={Boolean(pending.contribution)} disabled={busy} value={reason} onChange={event => setReason(event.target.value)} /></div>
       <button className="button primary" disabled={busy || score === '' || (Boolean(pending.contribution) && !reason.trim())}>Lưu đóng góp</button>{' '}<button className="button secondary" type="button" disabled={busy} onClick={() => setPending(null)}>Hủy chỉnh sửa</button>
-    </form>}
+    </form></ConfirmationDialog>}
     {history && <History key={history.id} entry={history} close={() => setHistory(null)} />}
     {data && <><p>{data.count} lượt tham gia đủ điều kiện.</p>{!data.count && <p className="activity-empty">Chưa có lượt tham gia đủ điều kiện xác nhận đóng góp.</p>}
       <div className="activity-grid">{data.results.map(entry => <article className="activity-card" key={entry.id}><h2>{managed ? entry.volunteer_name : entry.activity.title}</h2><p>{managed ? entry.activity.title : entry.activity.organizer_name} · {activityTime(entry.activity.starts_at)}</p>

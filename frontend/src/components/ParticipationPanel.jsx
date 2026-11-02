@@ -1,3 +1,4 @@
+import ConfirmationDialog from './ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/context.js'
@@ -13,7 +14,7 @@ function VolunteerPanel({ activity, refresh }) {
   const [busy, setBusy] = useState(false)
   const [failure, setFailure] = useState('')
   const participation = data?.participation
-  const open = activity.status === 'published' && new Date(activity.starts_at) > new Date()
+  const open = activity.status === 'published' && (activity.time_checks_disabled || new Date(activity.starts_at) > new Date())
   const registerAllowed = !participation || (participation.status === 'cancelled' && participation.cancellation_reason === 'volunteer')
   async function submit(cancel = false) {
     setBusy(true); setFailure('')
@@ -25,6 +26,7 @@ function VolunteerPanel({ activity, refresh }) {
   }
   return <div className="activity-confirm" aria-label="Đăng ký tham gia">
     <h2>Đăng ký tham gia</h2><RequestState loading={loading} error={error} retry={retry} />
+    {activity.time_checks_disabled && <p>Đang thử nghiệm: tạm bỏ giới hạn thời gian đăng ký, hủy và xét duyệt.</p>}
     <button className="text-button" disabled={busy} onClick={() => { retry(); refresh() }}>Cập nhật trạng thái</button>
     {data && <>
       <p role="status">{participation ? `Trạng thái: ${participationLabels[participation.status]}` : 'Bạn chưa đăng ký hoạt động này.'}</p>
@@ -39,9 +41,9 @@ function VolunteerPanel({ activity, refresh }) {
         {activity.approved_count >= activity.capacity && <p>Hoạt động đã đủ số lượng người được duyệt.</p>}</>}
       {open && ['pending', 'approved'].includes(participation?.status) && <button className="button secondary" disabled={busy} onClick={() => setConfirm(true)}>Hủy đăng ký</button>}
       {participation?.status === 'rejected' && <p>Đơn đã bị từ chối; bạn không thể đăng ký lại hoạt động này.</p>}
-      {confirm && <div role="region" aria-label="Xác nhận hủy đăng ký"><p>Bạn muốn hủy đăng ký? Nếu đăng ký lại, đơn sẽ trở về chờ duyệt.</p>
+      {confirm && <ConfirmationDialog title="Xác nhận hủy đăng ký" busy={busy} onClose={() => setConfirm(false)}><div aria-label="Xác nhận hủy đăng ký">{failure && <p role="alert" className="request-error">{failure}</p>}<p>Bạn muốn hủy đăng ký? Nếu đăng ký lại, đơn sẽ trở về chờ duyệt.</p>
         <button className="button primary" disabled={busy} onClick={() => submit(true)}>Xác nhận hủy đăng ký</button>{' '}
-        <button className="button secondary" disabled={busy} onClick={() => setConfirm(false)}>Quay lại</button></div>}
+        <button className="button secondary" disabled={busy} onClick={() => setConfirm(false)}>Quay lại</button></div></ConfirmationDialog>}
     </>}
     {busy && <p role="status">Đang xử lý…</p>}{failure && <p className="request-error" role="alert">{failure}</p>}
     <p><Link to="/tinh-nguyen-vien/dang-ky">Xem các đăng ký của tôi</Link></p>

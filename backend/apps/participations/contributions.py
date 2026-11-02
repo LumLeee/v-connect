@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 
 from apps.accounts.profile_serializers import StrictFieldsMixin
 from apps.activities.models import Activity
+from apps.activities.time_policy import enabled, ended
 from apps.activities.views import IsOrganizer
 from apps.notifications.services import notify
 from apps.reports.models import AuditEvent
@@ -51,8 +52,10 @@ class EntrySerializer(serializers.ModelSerializer):
 
 
 def eligible_entries():
-    return Attendance.objects.filter(participation__status='approved', participation__activity__status='completed',
-        participation__activity__ends_at__lte=timezone.now()).select_related('participation__volunteer',
+    entries = Attendance.objects.filter(participation__status='approved', participation__activity__status='completed')
+    if enabled():
+        entries = entries.filter(participation__activity__ends_at__lte=timezone.now())
+    return entries.select_related('participation__volunteer',
         'participation__activity__organizer', 'contribution__confirmed_by')
 
 
@@ -65,7 +68,7 @@ class ConfirmSerializer(StrictFieldsMixin, serializers.Serializer):
 @transaction.atomic
 def confirm(actor, activity_id, attendance_id, values):
     activity = get_object_or_404(Activity.objects.select_for_update(), pk=activity_id, organizer=actor)
-    if activity.status != 'completed' or activity.ends_at > timezone.now():
+    if activity.status != 'completed' or not ended(activity):
         raise ValidationError('Chỉ xác nhận đóng góp sau khi hoạt động Hoàn thành và đã kết thúc.')
     attendance = get_object_or_404(Attendance.objects.select_related('participation__volunteer'),
         pk=attendance_id, participation__activity=activity, participation__status='approved')

@@ -1,0 +1,23 @@
+.confirmation-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(560px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 24px;
+  border: 1px solid #dce5e0;
+  border-radius: 18px;
+  background: #fff;
+  color: #233d32;
+  box-shadow: 0 24px 80px #102c3540;
+}
+.confirmation-dialog::backdrop { background: #102c3570; }
+.confirmation-dialog-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.confirmation-dialog-heading h2 { margin: 0; font-size: 1.3rem; }
+.confirmation-dialog-close { border: 0; background: transparent; color: inherit; font-size: 28px; line-height: 1; cursor: pointer; padding: 0 4px; }
+.confirmation-dialog-close:disabled { opacity: .5; cursor: wait; }
+.confirmation-dialog .activity-confirm, .confirmation-dialog .activity-empty { margin: 0; padding: 0; border: 0; background: transparent; }
+.confirmation-dialog p { overflow-wrap: anywhere; }
+@media (max-width: 480px) { .confirmation-dialog { padding: 20px; } }

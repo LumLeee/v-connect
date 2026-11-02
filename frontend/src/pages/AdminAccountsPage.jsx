@@ -1,3 +1,4 @@
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
@@ -37,12 +38,12 @@ export default function AdminAccountsPage() {
     </form>
     <RequestState loading={loading} error={error} retry={retry} />
     {message && <p role="status">{message}</p>}{failure && <p role="alert" className="request-error">{failure}</p>}
-    {pending && <form className="activity-confirm" aria-label="Xác nhận trạng thái tài khoản" onSubmit={save}>
+    {pending && <ConfirmationDialog title="Xác nhận trạng thái tài khoản" busy={busy} onClose={() => setPending(null)}><form className="activity-confirm" aria-label="Xác nhận trạng thái tài khoản" onSubmit={save}>{failure && <p role="alert" className="request-error">{failure}</p>}
       <p>{pending.is_active ? 'Khóa' : 'Mở khóa'} tài khoản {pending.full_name} ({pending.email || pending.username})?</p>
       <div className="activity-field"><label htmlFor="account-reason">Lý do thay đổi trạng thái</label><textarea id="account-reason" required maxLength={1000} rows={4} disabled={busy} value={reason} onChange={event => setReason(event.target.value)} /></div>
       <button className="button primary" disabled={busy || !reason.trim()}>Xác nhận thay đổi</button>{' '}
       <button className="button secondary" type="button" disabled={busy} onClick={() => setPending(null)}>Quay lại</button>
-    </form>}
+    </form></ConfirmationDialog>}
     {data && <><p>{data.count} tài khoản.</p>{!data.count && <p className="activity-empty">Chưa có tài khoản phù hợp.</p>}
       <div className="activity-grid">{data.results.map(entry => <article className="activity-card ad-account-row" key={entry.id}>
         <div><h2>{entry.full_name}</h2><p>{entry.email || entry.username}</p></div><div><p>{roleLabels[entry.role]}</p><span className={`ad-account-state${entry.is_active ? '' : ' locked'}`}>Trạng thái: {entry.is_active ? 'Hoạt động' : 'Bị khóa'}</span>{entry.role === 'admin' && <p>Tài khoản được bảo vệ</p>}</div>

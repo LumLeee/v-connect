@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.accounts.models import User
+from apps.activities.time_policy import enabled
 
 
 LEVELS = [
@@ -34,8 +35,9 @@ def level_for(score):
 
 def totals():
     # Same completed/approved/attended eligibility as personal contribution totals.
-    eligible = Q(participations__status='approved', participations__activity__status='completed',
-                 participations__activity__ends_at__lte=timezone.now())
+    eligible = Q(participations__status='approved', participations__activity__status='completed')
+    if enabled():
+        eligible &= Q(participations__activity__ends_at__lte=timezone.now())
     return User.objects.filter(role='volunteer', is_active=True).annotate(
         total_score=Coalesce(Sum('participations__attendance__contribution__score', filter=eligible), 0))
 
@@ -74,7 +76,7 @@ class Leaderboard(APIView):
             if user is not None:
                 rank = totals().filter(total_score__gt=user.total_score).count() + 1 if user.total_score > 0 else None
                 mine = person(user, rank, request.user)
-        return Response({'results': rows, 'me': mine, 'limit': 20,
+        return Response({'results': rows, 'me': mine, 'limit': 20, 'time_checks_disabled': not enabled(),
                          'levels': [{'key': key, 'name': name, 'min_score': minimum,
                                      'max_score': LEVELS[i + 1][2] - 1 if i + 1 < len(LEVELS) else None}
                                     for i, (key, name, minimum) in enumerate(LEVELS)],

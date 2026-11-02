@@ -21,12 +21,12 @@ function ActiveCode({ data }) {
       .catch(() => { if (!cancelled) setError('Không tạo được ảnh QR. Bạn vẫn có thể dùng mã nhập bên dưới.') })
     return () => { cancelled = true }
   }, [data.qr_value])
-  if (!remaining) return <p role="status">Mã đã hết hạn. Hãy tạo mã mới để tiếp tục điểm danh.</p>
+  if (!data.time_checks_disabled && !remaining) return <p role="status">Mã đã hết hạn. Hãy tạo mã mới để tiếp tục điểm danh.</p>
   return <div className="active-attendance-code">
     {image && <img src={image} alt="QR check-in hoạt động" width="320" height="320" />}
     {error && <p role="alert">{error}</p>}
     <div><p>Mã nhập dự phòng</p><strong className="attendance-short-code" data-testid="attendance-code">{data.code}</strong>
-      <p>Còn {Math.floor(remaining / 60)} phút {remaining % 60} giây.</p><p>Hết hạn: {activityTime(data.expires_at)} (giờ Việt Nam).</p></div>
+      {data.time_checks_disabled ? <p>Đang thử nghiệm: tạm bỏ giới hạn thời gian mã. Tạo lại hoặc thu hồi vẫn vô hiệu hóa mã cũ.</p> : <><p>Còn {Math.floor(remaining / 60)} phút {remaining % 60} giây.</p><p>Hết hạn: {activityTime(data.expires_at)} (giờ Việt Nam).</p></>}</div>
   </div>
 }
 
@@ -42,7 +42,7 @@ export default function AttendanceCodePanel({ id, open }) {
   }
   return <section className="attendance-code-panel" aria-label="Mã check-in">
     <h2>Check-in bằng QR hoặc mã</h2>
-    <p>Hiển thị mã tại hoạt động để người đã được duyệt tự check-in trên website. Mã có hạn tối đa 5 phút; tạo mã mới sẽ vô hiệu hóa mã cũ.</p>
+    <p>Hiển thị mã tại hoạt động để người đã được duyệt tự check-in trên website. {data?.time_checks_disabled ? 'Giới hạn thời gian đang tạm tắt; tạo mã mới vẫn vô hiệu hóa mã cũ.' : 'Mã có hạn tối đa 5 phút; tạo mã mới sẽ vô hiệu hóa mã cũ.'}</p>
     <RequestState loading={loading} error={error} retry={retry} />
     {failure && <p className="request-error" role="alert">{failure}</p>}
     {data?.active && open && <ActiveCode key={data.qr_value + data.server_time} data={data} />}

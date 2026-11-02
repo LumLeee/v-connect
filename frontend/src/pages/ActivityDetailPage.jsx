@@ -1,3 +1,4 @@
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
@@ -69,25 +70,21 @@ function ActivityDetail({ activity, managed, refresh }) {
     {activity.status === 'cancelled' && <p role="status">Hoạt động này đã bị hủy.</p>}
     <p>Đã được duyệt: {activity.approved_count}/{activity.capacity} người.</p>
     </div>
+    {activity.time_checks_disabled && <p className="activity-empty" role="note">Đang thử nghiệm: các giới hạn thời gian hoạt động đang tạm tắt.</p>}
     {!managed && <ParticipationPanel activity={activity} refresh={refresh} />}
     {managed && <div className="activity-actions">
-      <Link className="button primary" to={`/nha-to-chuc/hoat-dong/${activity.id}/dang-ky`}>Xem danh sách đăng ký</Link>
-      <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/diem-danh`}>Điểm danh người tham gia</Link>
-      <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/phan-hoi`}>Xem phản hồi hoạt động</Link>
-      {activity.status === 'completed' && <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/dong-gop`}>Chấm điểm đóng góp</Link>}
-      <Link className="button secondary" to={`/bao-cao/hoat-dong/${activity.id}`}>Xem kết quả hoạt động</Link>
       {editable && <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/sua`}>Chỉnh sửa hoạt động</Link>}
       {activity.status === 'draft' && <button className="button primary" onClick={() => { setPending('published'); setError('') }}>Công khai hoạt động</button>}
-      {activity.status === 'published' && <button className="button primary" disabled={new Date(activity.ends_at) > new Date()} onClick={() => { setPending('completed'); setError('') }}>Hoàn thành hoạt động</button>}
+      {activity.status === 'published' && <button className="button primary" disabled={!activity.time_checks_disabled && new Date(activity.ends_at) > new Date()} onClick={() => { setPending('completed'); setError('') }}>Hoàn thành hoạt động</button>}
       {editable && <button className="button secondary" onClick={() => { setPending('cancelled'); setError('') }}>Hủy hoạt động</button>}
     </div>}
     {managed && activity.status === 'published' && <p className="muted">Chỉ có thể hoàn thành sau thời gian kết thúc.</p>}
-    {pending && <div className="activity-confirm" role="region" aria-label="Xác nhận chuyển trạng thái">
+    {pending && <ConfirmationDialog title="Xác nhận chuyển trạng thái" busy={busy} onClose={() => setPending(null)}><div className="activity-confirm" aria-label="Xác nhận chuyển trạng thái">
       <p>Chuyển hoạt động sang “{activityStatuses[pending]}”?{pending !== 'published' && ' Sau đó bạn không thể chỉnh sửa hoạt động.'}</p>
       {error && <p role="alert" className="request-error">{error}</p>}
       <button className="button primary" disabled={busy} onClick={transition}>{busy ? 'Đang cập nhật…' : 'Xác nhận'}</button>{' '}
       <button className="button secondary" disabled={busy} onClick={() => setPending(null)}>Quay lại</button>
-    </div>}
+    </div></ConfirmationDialog>}
   </>
 }
 

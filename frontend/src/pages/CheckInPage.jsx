@@ -52,7 +52,7 @@ function CheckInForm({ entry }) {
   if (attendance) return <><p role="status">Bạn đã check-in thành công.</p><AttendanceStatus entry={{ ...entry, attendance }} /><Link to="/tinh-nguyen-vien/lich-su">Xem lịch sử tham gia</Link></>
   if (entry.status !== 'approved') return <p>Bạn cần có đăng ký được duyệt để check-in.</p>
   if (entry.activity.status !== 'published') return <p>Hoạt động không còn mở check-in.</p>
-  if (now < new Date(entry.activity.starts_at) || now >= new Date(entry.activity.ends_at)) return <p>Check-in chỉ mở từ {activityTime(entry.activity.starts_at)} đến {activityTime(entry.activity.ends_at)} (giờ Việt Nam).</p>
+  if (!entry.activity.time_checks_disabled && (now < new Date(entry.activity.starts_at) || now >= new Date(entry.activity.ends_at))) return <p>Check-in chỉ mở từ {activityTime(entry.activity.starts_at)} đến {activityTime(entry.activity.ends_at)} (giờ Việt Nam).</p>
   return <form className="checkin-form" onSubmit={submit}>
     <p>Tại hoạt động, quét QR hoặc nhập mã 8 chữ số do Nhà tổ chức cung cấp, sau đó xác nhận check-in.</p>
     <div className="activity-actions"><button type="button" className="button secondary" disabled={busy || scanning} onClick={() => { setError(''); setScanning(true) }}>Mở camera quét QR</button>

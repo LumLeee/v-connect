@@ -2,6 +2,8 @@
 
 Ngày cập nhật: 01/11/2026. Điểm nguyên 0–10 thay thế hoàn toàn số giờ/phút đóng góp.
 
+Ngày 02/11/2026: local đang bật [chế độ thử bỏ giới hạn thời gian](CHE_DO_THU_THOI_GIAN.md), cho phép chấm sau khi chuyển sang Hoàn thành mà không chờ giờ kết thúc. Vẫn cần đăng ký được duyệt, điểm danh và các điều kiện điểm/lịch sử bên dưới.
+
 ## Quy tắc
 
 - Nhà tổ chức sở hữu hoạt động xác nhận cho từng người đã được duyệt và có bản ghi điểm danh.

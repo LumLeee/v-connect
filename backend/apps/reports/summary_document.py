@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.activities.serializers import ActivitySerializer
+from apps.activities.time_policy import ended
 from apps.participations.models import Attendance, Contribution
 from .views import IsManager
 from .services import activities_for, metrics_for
@@ -20,7 +21,7 @@ class ActivitySummaryDocument(APIView):
 
     def get(self, request, pk):
         activity = get_object_or_404(activities_for(request.user).prefetch_related('timeline', 'required_skills'), pk=pk)
-        if activity.status != 'completed' or activity.ends_at > timezone.now():
+        if activity.status != 'completed' or not ended(activity):
             raise ValidationError('Báo cáo tổng kết chỉ lập cho hoạt động Hoàn thành và đã kết thúc.')
         attendance = Attendance.objects.filter(participation__activity=activity, participation__status='approved')
         contributions = Contribution.objects.filter(attendance__in=attendance)

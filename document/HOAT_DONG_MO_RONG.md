@@ -2,6 +2,12 @@
 
 Phạm vi ngày 28/09/2026: bổ sung kỹ năng yêu cầu, bộ lọc và ảnh bìa. Ngày 09/10/2026 bổ sung các mốc chương trình; xem [timeline hoạt động](TIMELINE_HOAT_DONG.md).
 
+Cập nhật ngày 02/11/2026: Khám phá (`GET /api/v1/activities/`) chỉ hiển thị hoạt động Công khai đã công bố, chưa đến giờ bắt đầu và số người Được duyệt còn thấp hơn sức chứa. Hoạt động đã đến giờ bắt đầu, kết thúc hoặc đủ chỗ được ẩn ngay từ truy vấn trước khi phân trang; đơn Chờ duyệt không giữ chỗ. Khi có người hủy hoặc tăng sức chứa, hoạt động chưa bắt đầu có thể xuất hiện lại. Danh sách dùng `no-store` để kiểm tra lại thời gian và số chỗ khi tải. Trang chi tiết hoạt động Công khai vẫn truy cập được để phục vụ người đã đăng ký; danh sách quản lý của Nhà tổ chức vẫn giữ các hoạt động đã đóng.
+
+Local hiện tạm [bỏ giới hạn thời gian để thử luồng](CHE_DO_THU_THOI_GIAN.md). Trong chế độ này, Khám phá bỏ điều kiện giờ bắt đầu nhưng vẫn giữ trạng thái Công khai và còn chỗ. Bật lại `ACTIVITY_TIME_CHECKS_ENABLED=true` để áp dụng quy tắc thời gian bình thường ở trên.
+
+Kiểm chứng thay đổi ngày 02/11/2026: 210 kiểm thử backend, 9 kiểm thử bảo vệ môi trường chạy, lint/build đều đạt. 6 ca trình duyệt desktop/narrow đạt, gồm hồi quy tạo/sửa/công khai/hủy, ẩn hoạt động đã đóng hoặc đủ chỗ, hiện lại khi tăng sức chứa và ẩn sau mốc bắt đầu. Không cần migration hoặc thay đổi dữ liệu database.
+
 ## 1. Kỹ năng yêu cầu
 
 - Nhà tổ chức chọn tối đa 20 kỹ năng từ danh mục chung khi tạo hoặc sửa hoạt động. Có thể không chọn hoặc bỏ toàn bộ.

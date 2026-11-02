@@ -1,12 +1,10 @@
-from datetime import timedelta
-
-from django.utils import timezone
 from rest_framework import serializers
 
 from apps.accounts.profile_serializers import StrictFieldsMixin
 from apps.core.models import Skill
 from apps.core.serializers import SkillSerializer
 from .models import Activity, ActivityMilestone
+from .time_policy import enabled
 
 
 class MilestoneSerializer(StrictFieldsMixin, serializers.ModelSerializer):
@@ -24,6 +22,7 @@ class MilestoneSerializer(StrictFieldsMixin, serializers.ModelSerializer):
 
 
 class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
+    time_checks_disabled = serializers.SerializerMethodField()
     organizer_name = serializers.SerializerMethodField()
     capacity = serializers.IntegerField(min_value=1, max_value=100000)
     approved_count = serializers.SerializerMethodField()
@@ -36,8 +35,11 @@ class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
         model = Activity
         fields = ['id', 'title', 'description', 'address', 'starts_at', 'ends_at', 'capacity',
                   'status', 'organizer_name', 'published_at', 'created_at', 'updated_at', 'approved_count',
-                  'required_skills', 'skill_details', 'cover_url', 'timeline']
+                  'required_skills', 'skill_details', 'cover_url', 'timeline', 'time_checks_disabled']
         read_only_fields = ['id', 'status', 'organizer_name', 'published_at', 'created_at', 'updated_at']
+
+    def get_time_checks_disabled(self, activity):
+        return not enabled()
 
     def get_organizer_name(self, activity):
         profile = getattr(activity.organizer, 'organizer_profile', None)
@@ -63,9 +65,6 @@ class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
         end = attrs.get('ends_at', getattr(self.instance, 'ends_at', None))
         if start and end and end <= start:
             raise serializers.ValidationError({'ends_at': 'Thời gian kết thúc phải sau thời gian bắt đầu.'})
-        changed_start = 'starts_at' in attrs and (self.instance is None or start != self.instance.starts_at)
-        if changed_start and start < timezone.now() + timedelta(hours=24):
-            raise serializers.ValidationError({'starts_at': 'Thời gian bắt đầu phải cách thời điểm hiện tại ít nhất 24 giờ.'})
         milestones = attrs.get('timeline')
         if milestones is None and self.instance:
             milestones = list(self.instance.timeline.values('starts_at', 'ends_at'))

@@ -1,3 +1,4 @@
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
@@ -37,19 +38,19 @@ export default function InvitationsPage({ managed = false }) {
 
   return <section className="page-width section interior activity-page">
     <h1>{managed ? 'Lời mời tham gia hoạt động' : 'Lời mời của tôi'}</h1>
-    <p>Lời mời không giữ chỗ. Chấp nhận trước giờ bắt đầu và khi còn chỗ sẽ tạo đăng ký Đã duyệt, không cần chờ xét duyệt.</p>
+    <p>Lời mời không giữ chỗ. Chấp nhận lời mời còn hiệu lực và khi còn chỗ sẽ tạo đăng ký Đã duyệt, không cần chờ xét duyệt.</p>
     {managed && <><OrganizerActivityHeader id={id} selected="invitations" /><p><Link className="button primary" to={`/nha-to-chuc/hoat-dong/${id}/ghep-noi`}>Tìm người phù hợp để gửi lời mời</Link></p></>}
     <button className="text-button" onClick={retry} disabled={busy}>Cập nhật lời mời</button>
     <RequestState loading={loading} error={error} retry={retry} />
     {problem && <p role="alert" className="request-error">{problem}</p>}
     {success && <p role="status">{success}</p>}
-    {confirmation && <div className="activity-empty" role="region" aria-label="Xác nhận xử lý lời mời">
+    {confirmation && <ConfirmationDialog title="Xác nhận xử lý lời mời" busy={busy} onClose={() => setConfirmation(null)}><div className="activity-empty" aria-label="Xác nhận xử lý lời mời">{problem && <p role="alert" className="request-error">{problem}</p>}
       <h2>{confirmation.action === 'accepted' ? 'Xác nhận tham gia hoạt động?' : confirmation.action === 'declined' ? 'Từ chối lời mời này?' : 'Thu hồi lời mời này?'}</h2>
       <p>{confirmation.item.activity.title}</p>
       <p>{activityTime(confirmation.item.activity.starts_at)} – {activityTime(confirmation.item.activity.ends_at)} · {confirmation.item.activity.address}</p>
       <p>{confirmation.action === 'accepted' ? 'Bạn đồng ý tham gia theo thời gian, địa điểm hiện tại ở trên. Hệ thống sẽ kiểm tra số chỗ và tự động duyệt đăng ký.' : 'Phản hồi đã xác nhận không thể đổi; Nhà tổ chức không gửi lại cùng lời mời.'}</p>
       <div className="activity-actions"><button className="button primary" disabled={busy} onClick={submit}>Xác nhận {confirmation.action === 'accepted' ? 'tham gia' : confirmation.action === 'declined' ? 'từ chối' : 'thu hồi'}</button><button className="button secondary" disabled={busy} onClick={() => { setConfirmation(null); setProblem('') }}>Quay lại</button></div>
-    </div>}
+    </div></ConfirmationDialog>}
     {data && <><p>{data.count} lời mời.</p>{!data.count && <p className="activity-empty">Chưa có lời mời.</p>}
       <div className="activity-grid">{data.results.map(item => <article className="activity-card" key={item.id}>
         <span className={`activity-status status-${item.status}`}>{statuses[item.status]}</span>

@@ -14,6 +14,7 @@ from rest_framework.views import APIView
 
 from apps.accounts.models import VolunteerProfile
 from apps.activities.models import Activity
+from apps.activities.time_policy import enabled
 from apps.activities.serializers import ActivitySerializer
 from apps.activities.views import IsOrganizer
 from apps.core.pagination import StandardPagination
@@ -63,12 +64,16 @@ def evaluate(activity, profile):
 
 
 def available_activities():
-    return Activity.objects.filter(status='published', published_at__isnull=False, starts_at__gt=timezone.now(),
-        organizer__is_active=True).select_related('organizer', 'organizer__organizer_profile').prefetch_related('required_skills', 'timeline').annotate(
+    entries = Activity.objects.filter(status='published', published_at__isnull=False, organizer__is_active=True)
+    if enabled():
+        entries = entries.filter(starts_at__gt=timezone.now())
+    return entries.select_related('organizer', 'organizer__organizer_profile').prefetch_related('required_skills', 'timeline').annotate(
         matching_approved=Count('participations', filter=Q(participations__status='approved')))
 
 
 def conflicts(activity, entries):
+    if not enabled():
+        return False
     return any(entry.activity_id != activity.pk and entry.activity.starts_at < activity.ends_at
                and entry.activity.ends_at > activity.starts_at for entry in entries)
 
@@ -108,7 +113,7 @@ class RecommendedVolunteers(APIView):
 
     def get(self, request, pk):
         activity = get_object_or_404(Activity.objects.prefetch_related('required_skills'), pk=pk, organizer=request.user)
-        if activity.status != 'published' or not activity.published_at or activity.starts_at <= timezone.now():
+        if activity.status != 'published' or not activity.published_at or (enabled() and activity.starts_at <= timezone.now()):
             return ranked_response(request, [], 'Chỉ gợi ý người tham gia cho hoạt động Công khai chưa bắt đầu.')
         if activity.participations.filter(status='approved').count() >= activity.capacity:
             return ranked_response(request, [], 'Hoạt động đã đủ số người được duyệt.')

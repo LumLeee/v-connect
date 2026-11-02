@@ -1,3 +1,4 @@
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
@@ -30,14 +31,14 @@ export default function ParticipationsPage({ managed = false, history = false })
     <Link className="activity-back" to={managed ? `/nha-to-chuc/hoat-dong/${id}` : '/tinh-nguyen-vien'}>← {managed ? 'Về hoạt động' : 'Về tài khoản'}</Link>
     <h1>{managed ? 'Danh sách đăng ký' : history ? 'Lịch sử tham gia' : 'Đăng ký của tôi'}</h1>
     {managed && <OrganizerActivityHeader key={`${id}-${data?.results?.map(entry => entry.status).join()}`} id={id} selected="registrations" />}
-    <p>{history ? 'Các hoạt động đã được Nhà tổ chức xác nhận có mặt, mới nhất trước.' : 'Đăng ký, hủy và xét duyệt chỉ thực hiện trước giờ bắt đầu hoạt động.'}</p>
+    <p>{history ? 'Các hoạt động đã được Nhà tổ chức xác nhận có mặt, mới nhất trước.' : 'Theo dõi đăng ký và kết quả xét duyệt của từng người tham gia.'}</p>
     <button className="text-button" disabled={busy} onClick={retry}>Cập nhật danh sách</button>
     <RequestState loading={loading} error={error} retry={retry} />
     {message && <p role="status">{message}</p>}
     {failure && <p className="request-error" role="alert">{failure}</p>}
-    {pending && <div className="activity-confirm" role="region" aria-label="Xác nhận xét duyệt"><p>{pending.status === 'approved' ? 'Duyệt' : 'Từ chối'} đơn của {pending.name}? Kết quả này không thể sửa lại tại đây.</p>
+    {pending && <ConfirmationDialog title="Xác nhận xét duyệt" busy={busy} onClose={() => setPending(null)}><div className="activity-confirm" aria-label="Xác nhận xét duyệt">{failure && <p role="alert" className="request-error">{failure}</p>}<p>{pending.status === 'approved' ? 'Duyệt' : 'Từ chối'} đơn của {pending.name}? Kết quả này không thể sửa lại tại đây.</p>
       <button className="button primary" disabled={busy} onClick={review}>Xác nhận xét duyệt</button>{' '}
-      <button className="button secondary" disabled={busy} onClick={() => setPending(null)}>Quay lại</button></div>}
+      <button className="button secondary" disabled={busy} onClick={() => setPending(null)}>Quay lại</button></div></ConfirmationDialog>}
     {data && <>
       <p>{data.count} {history ? 'lượt ghi nhận có mặt' : 'đơn đăng ký'}.</p>
       {!data.count && <p className="activity-empty">{history ? 'Chưa có hoạt động được xác nhận có mặt.' : 'Chưa có đơn đăng ký.'}</p>}
@@ -47,8 +48,8 @@ export default function ParticipationsPage({ managed = false, history = false })
           <p>Hoạt động: {activityStatuses[entry.activity.status]}</p><p>Đã duyệt: {entry.activity.approved_count}/{entry.activity.capacity}</p>
           {entry.activity_changed && <p>Lịch hoặc địa điểm đã thay đổi từ lúc đăng ký.</p>}
           {entry.cancellation_reason === 'activity_cancelled' && <p>Đơn bị hủy do hoạt động bị hủy.</p>}
-          {entry.status === 'pending' && new Date(entry.activity.starts_at) <= new Date() && <p>Đã hết hạn xét duyệt.</p>}</div>
-        <div>{entry.status === 'pending' && entry.activity.status === 'published' && new Date(entry.activity.starts_at) > new Date() && <div className="activity-actions">
+          {entry.status === 'pending' && !entry.activity.time_checks_disabled && new Date(entry.activity.starts_at) <= new Date() && <p>Đã hết hạn xét duyệt.</p>}</div>
+        <div>{entry.status === 'pending' && entry.activity.status === 'published' && (entry.activity.time_checks_disabled || new Date(entry.activity.starts_at) > new Date()) && <div className="activity-actions">
           <button className="button primary" disabled={busy || entry.activity.approved_count >= entry.activity.capacity} onClick={() => { setPending({ id: entry.id, name: entry.volunteer_name, status: 'approved' }); setFailure('') }}>Duyệt</button>
           <button className="button secondary" disabled={busy} onClick={() => { setPending({ id: entry.id, name: entry.volunteer_name, status: 'rejected' }); setFailure('') }}>Từ chối</button>
         </div>}</div>
@@ -62,8 +63,8 @@ export default function ParticipationsPage({ managed = false, history = false })
           <p>Đã duyệt: {entry.activity.approved_count}/{entry.activity.capacity}</p></>}
         {entry.activity_changed && <p className="activity-empty">Lịch hoặc địa điểm đã thay đổi từ lúc đăng ký. Thông tin trên là mới nhất.</p>}
         {entry.cancellation_reason === 'activity_cancelled' && <p>Đơn bị hủy do hoạt động bị hủy.</p>}
-        {entry.status === 'pending' && new Date(entry.activity.starts_at) <= new Date() && <p>Đã hết hạn xét duyệt.</p>}
-        {managed && entry.status === 'pending' && entry.activity.status === 'published' && new Date(entry.activity.starts_at) > new Date() && <div className="activity-actions">
+        {entry.status === 'pending' && !entry.activity.time_checks_disabled && new Date(entry.activity.starts_at) <= new Date() && <p>Đã hết hạn xét duyệt.</p>}
+        {managed && entry.status === 'pending' && entry.activity.status === 'published' && (entry.activity.time_checks_disabled || new Date(entry.activity.starts_at) > new Date()) && <div className="activity-actions">
           <button className="button primary" disabled={busy || entry.activity.approved_count >= entry.activity.capacity} onClick={() => { setPending({ id: entry.id, name: entry.volunteer_name, status: 'approved' }); setFailure('') }}>Duyệt</button>
           <button className="button secondary" disabled={busy} onClick={() => { setPending({ id: entry.id, name: entry.volunteer_name, status: 'rejected' }); setFailure('') }}>Từ chối</button>
         </div>}

@@ -1,4 +1,5 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { apiPost } from '../api/client.js'
 import useApi from '../hooks/useApi.js'
@@ -25,11 +26,14 @@ function InviteButton({ activityId, volunteer }) {
     } catch (failure) { setError(errorText(failure.details?.error?.details) || failure.message) }
     finally { setBusy(false) }
   }
-  return <div>{error && <p role="alert">{error}</p>}{sent ? <p role="status">Lời mời đã được ghi nhận. <Link to={`/nha-to-chuc/hoat-dong/${activityId}/loi-moi`}>Xem lời mời đã gửi</Link></p> : open ? <form onSubmit={submit}>
+  return <div>{!open && error && <p role="alert">{error}</p>}{sent ? <p role="status">Lời mời đã được ghi nhận. <Link to={`/nha-to-chuc/hoat-dong/${activityId}/loi-moi`}>Xem lời mời đã gửi</Link></p> : <button className="button primary" onClick={() => setOpen(true)}>Gửi lời mời</button>}
+    {open && <ConfirmationDialog title="Xác nhận gửi lời mời" busy={busy} onClose={() => setOpen(false)}><form onSubmit={submit}>
+    <p>Gửi lời mời cho {volunteer.full_name || volunteer.name}?</p>
+    {error && <p role="alert">{error}</p>}
     <label>Lời nhắn (không bắt buộc)<textarea value={message} maxLength={1000} onChange={event => setMessage(event.target.value)} disabled={busy} /></label>
     <p>Lời mời không giữ chỗ. Người nhận chấp nhận đúng hạn và còn chỗ sẽ được tự động duyệt.</p>
     <div className="activity-actions"><button className="button primary" disabled={busy}>Xác nhận gửi lời mời</button><button type="button" className="button secondary" disabled={busy} onClick={() => setOpen(false)}>Quay lại</button></div>
-  </form> : <button className="button primary" onClick={() => setOpen(true)}>Gửi lời mời</button>}</div>
+  </form></ConfirmationDialog>}</div>
 }
 
 export default function MatchingPage({ managed = false }) {

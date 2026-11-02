@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from apps.activities.models import Activity
+from apps.activities.time_policy import ended
 from apps.reports.models import AuditEvent
 from apps.participations.models import Attendance
 from .models import Feedback
@@ -31,7 +32,7 @@ def summary(queryset):
 @transaction.atomic
 def submit(activity_id, volunteer, data):
     activity = get_object_or_404(Activity.objects.select_for_update(), pk=activity_id, published_at__isnull=False)
-    if activity.status != 'completed' or activity.ends_at > timezone.now():
+    if activity.status != 'completed' or not ended(activity):
         raise ValidationError('Chỉ gửi phản hồi sau khi hoạt động đã kết thúc và được đánh dấu Hoàn thành.')
     attendance = Attendance.objects.filter(participation__activity=activity, participation__volunteer=volunteer,
                                             participation__status='approved').first()

@@ -39,7 +39,7 @@ export default function VolunteerParticipations({ mode = 'registrations' }) {
         <div><p>{activityTime(entry.activity.starts_at)} (giờ Việt Nam)</p><p>Trạng thái đơn: <strong>{participationLabels[entry.status]}</strong></p><AttendanceStatus entry={entry} />
           {entry.activity_changed && <p className="vs-change-note">Lịch hoặc địa điểm đã thay đổi từ lúc đăng ký. Thông tin trên là mới nhất.</p>}
           {entry.cancellation_reason === 'activity_cancelled' && <p>Đơn bị hủy do hoạt động bị hủy.</p>}
-          {entry.status === 'pending' && new Date(entry.activity.starts_at) <= new Date() && <p>Đã hết hạn xét duyệt.</p>}</div>
+          {entry.status === 'pending' && !entry.activity.time_checks_disabled && new Date(entry.activity.starts_at) <= new Date() && <p>Đã hết hạn xét duyệt.</p>}</div>
         <div className="vs-row-actions">{entry.activity.status === 'published' ? <Link to={`/hoat-dong/${entry.activity.id}`}>Xem hoạt động và quản lý đăng ký</Link> : <p>Hoạt động không còn công khai. Thông tin tham gia của bạn được giữ trong lịch sử.</p>}
           {entry.status === 'approved' && entry.activity.status === 'published' && !entry.attendance && <Link className="button secondary" to={`/hoat-dong/${entry.activity.id}/check-in`}>Check-in hoạt động</Link>}
           {entry.attendance && entry.activity.status === 'completed' && <Link className="button secondary" to={`/hoat-dong/${entry.activity.id}/phan-hoi`}>Gửi hoặc xem phản hồi của tôi</Link>}

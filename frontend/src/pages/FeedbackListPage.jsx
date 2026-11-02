@@ -1,3 +1,4 @@
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
@@ -39,13 +40,13 @@ function FeedbackList({ id, admin }) {
     <button className="text-button" disabled={busy} onClick={() => { setPending(null); retry() }}>Cập nhật phản hồi</button>
     <RequestState loading={loading} error={error} retry={retry} />
     {message && <p role="status">{message}</p>}{failure && <p role="alert" className="request-error">{failure}</p>}
-    {pending && <form className="activity-confirm" onSubmit={hide} aria-label="Ẩn phản hồi">
+    {pending && <ConfirmationDialog title="Ẩn phản hồi" busy={busy} onClose={() => setPending(null)}><form className="activity-confirm" onSubmit={hide} aria-label="Ẩn phản hồi">{failure && <p role="alert" className="request-error">{failure}</p>}
       <p>Ẩn phản hồi của {pending.name}? Nhà tổ chức sẽ không thấy nội dung này và điểm đánh giá sẽ không được tính.</p>
       <div className="activity-field"><label htmlFor="hidden-reason">Lý do ẩn phản hồi</label>
         <textarea id="hidden-reason" required maxLength={1000} rows={4} value={reason} disabled={busy} onChange={event => setReason(event.target.value)} /></div>
       <button className="button primary" disabled={busy || !reason.trim()}>Xác nhận ẩn phản hồi</button>{' '}
       <button type="button" className="button secondary" disabled={busy} onClick={() => setPending(null)}>Quay lại</button>
-    </form>}
+    </form></ConfirmationDialog>}
     {data && <>
       {!admin && <p className="activity-empty" role="status">{data.summary.count} phản hồi hợp lệ. Điểm trung bình: {data.summary.average_rating === null ? 'Chưa có đánh giá' : `${data.summary.average_rating}/5`}.</p>}
       {admin && <p>{data.count} phản hồi.</p>}

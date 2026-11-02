@@ -1,6 +1,5 @@
-from datetime import timedelta
-
 from django.db import transaction
+from django.db.models import Count, F, Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -12,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Activity
+from .time_policy import enabled, ended
 from .serializers import ActivitySerializer, TransitionSerializer
 from .filters import filter_activities
 from apps.notifications.services import notify_participants
@@ -35,12 +35,18 @@ def search(queryset, request):
     return queryset.filter(title__icontains=term) if term else queryset
 
 
+@method_decorator(never_cache, name='dispatch')
 class PublicList(generics.ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = ActivitySerializer
 
     def get_queryset(self):
-        return filter_activities(search(activities().filter(published_at__isnull=False, status='published'), self.request), self.request)
+        open_activities = activities().filter(published_at__isnull=False, status='published').annotate(
+            discovery_approved=Count('participations', filter=Q(participations__status='approved'), distinct=True),
+        ).filter(discovery_approved__lt=F('capacity'))
+        if enabled():
+            open_activities = open_activities.filter(starts_at__gt=timezone.now())
+        return filter_activities(search(open_activities, self.request), self.request)
 
 
 class PublicDetail(generics.RetrieveAPIView):
@@ -82,7 +88,7 @@ class ManagedDetail(APIView):
             before = activity_snapshot(activity)
             if serializer.validated_data.get('capacity', activity.capacity) < activity.participations.filter(status='approved').count():
                 raise ValidationError({'capacity': 'Sức chứa không được thấp hơn số người đã được duyệt.'})
-            if activity.starts_at <= timezone.now() and activity.participations.exists() and any(
+            if enabled() and activity.starts_at <= timezone.now() and activity.participations.exists() and any(
                 name in serializer.validated_data and serializer.validated_data[name] != getattr(activity, name)
                 for name in ['starts_at', 'ends_at']
             ):
@@ -113,10 +119,10 @@ class TransitionView(APIView):
                 raise ValidationError({'status': 'Không thể chuyển trạng thái hoạt động theo yêu cầu.'})
             now = timezone.now()
             if target == 'published':
-                if activity.starts_at < now + timedelta(hours=24):
-                    raise ValidationError({'starts_at': 'Thời gian bắt đầu phải cách thời điểm công khai ít nhất 24 giờ. Vui lòng cập nhật lịch hoạt động.'})
+                if enabled() and activity.starts_at <= now:
+                    raise ValidationError({'starts_at': 'Thời gian bắt đầu phải ở tương lai khi công khai hoạt động.'})
                 activity.published_at = now
-            if target == 'completed' and activity.ends_at > now:
+            if target == 'completed' and not ended(activity):
                 raise ValidationError({'status': 'Chỉ hoàn thành hoạt động sau thời gian kết thúc.'})
             before = {'status': activity.status}
             activity.status = target

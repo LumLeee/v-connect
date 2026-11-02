@@ -4,13 +4,14 @@ from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from apps.activities.models import Activity
+from apps.activities.time_policy import registration_open, attendance_open
 from apps.reports.models import AuditEvent
 from apps.notifications.services import notify
 from .models import Attendance, Participation
 
 
 def require_open(activity):
-    if activity.status != 'published' or activity.starts_at <= timezone.now():
+    if not registration_open(activity):
         raise ValidationError('Hoạt động không còn mở đăng ký, hủy đăng ký hoặc xét duyệt.')
 
 
@@ -91,7 +92,7 @@ def confirm_attendance(activity_id, entry_id, organizer):
     activity = get_object_or_404(Activity.objects.select_for_update(), pk=activity_id, organizer=organizer)
     entry = get_object_or_404(Participation, pk=entry_id, activity=activity)
     now = timezone.now()
-    if activity.status != 'published' or not (activity.starts_at <= now <= activity.ends_at):
+    if not attendance_open(activity, now):
         raise ValidationError('Chỉ điểm danh từ giờ bắt đầu đến giờ kết thúc khi hoạt động còn công khai.')
     if entry.status != 'approved':
         raise ValidationError('Chỉ điểm danh người đã được duyệt và chưa hủy đăng ký.')

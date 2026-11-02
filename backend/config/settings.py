@@ -20,6 +20,7 @@ def env_list(name, default=""):
 
 
 SECRET_KEY = required_env("DJANGO_SECRET_KEY")
+ACTIVITY_TIME_CHECKS_ENABLED = os.environ.get("ACTIVITY_TIME_CHECKS_ENABLED", "true").lower() == "true"
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")

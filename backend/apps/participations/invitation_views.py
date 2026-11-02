@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 
 from apps.accounts.profile_serializers import StrictFieldsMixin
 from apps.activities.models import Activity
+from apps.activities.time_policy import enabled
 from apps.activities.views import IsOrganizer
 from . import invitations
 from .models import Invitation, Participation
@@ -53,7 +54,7 @@ class InvitationSerializer(serializers.ModelSerializer):
         a = obj.activity
         if a.status != 'published' or not a.published_at:
             return 'Hoạt động không còn mở đăng ký.'
-        if a.starts_at <= timezone.now():
+        if enabled() and a.starts_at <= timezone.now():
             return 'Đã hết hạn xác nhận lời mời.'
         if not a.organizer.is_active or not obj.volunteer.is_active:
             return 'Tài khoản không còn khả dụng.'

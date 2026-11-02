@@ -7,6 +7,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 env = os.environ.copy()
+env["ACTIVITY_TIME_CHECKS_ENABLED"] = "true"
 npm = shutil.which("npm.cmd" if os.name == "nt" else "npm")
 if not npm:
     raise SystemExit("npm is not on PATH; install Node.js first.")

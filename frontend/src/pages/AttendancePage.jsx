@@ -1,3 +1,4 @@
+import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
@@ -20,7 +21,7 @@ function AttendanceList({ id }) {
   const [failure, setFailure] = useState('')
   const [message, setMessage] = useState('')
   const now = useNow()
-  const open = activity.data?.status === 'published' && new Date(activity.data.starts_at) <= now && now <= new Date(activity.data.ends_at)
+  const open = activity.data?.status === 'published' && (activity.data.time_checks_disabled || (new Date(activity.data.starts_at) <= now && now <= new Date(activity.data.ends_at)))
   function refresh() { setPending(null); activity.retry(); list.retry() }
   async function confirm() {
     setBusy(true); setFailure(''); setMessage('')
@@ -45,11 +46,11 @@ function AttendanceList({ id }) {
     <RequestState loading={list.loading} error={list.error} retry={list.retry} />
     {message && <p role="status">{message}</p>}
     {failure && <p role="alert" className="request-error">{failure}</p>}
-    {pending && <div className="activity-confirm" role="region" aria-label="Xác nhận có mặt">
+    {pending && <ConfirmationDialog title="Xác nhận có mặt" busy={busy} onClose={() => setPending(null)}><div className="activity-confirm" aria-label="Xác nhận có mặt">{failure && <p role="alert" className="request-error">{failure}</p>}
       <p>Xác nhận {pending.name} có mặt tại hoạt động? Hãy kiểm tra đúng người trước khi ghi nhận. Bản ghi không thể sửa hoặc xóa tại đây.</p>
       <button className="button primary" disabled={busy} onClick={confirm}>Xác nhận có mặt</button>{' '}
       <button className="button secondary" disabled={busy} onClick={() => setPending(null)}>Quay lại</button>
-    </div>}
+    </div></ConfirmationDialog>}
     {list.data && <>
       <p>{list.data.count} người trong danh sách.</p>
       {!list.data.count && <p className="activity-empty">Chưa có người được duyệt để điểm danh.</p>}

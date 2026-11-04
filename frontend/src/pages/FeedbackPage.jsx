@@ -19,13 +19,13 @@ function FeedbackForm({ id }) {
       await apiPost(`/activities/${id}/feedback/`, { rating: Number(rating), content })
       retry()
     } catch (problem) {
-      setFailure(Object.values(problem.details?.error?.details || {}).flat().join(' ') || problem.message)
+      setFailure(problem.message)
       // Fetch any successful submission whose response was lost, without erasing the draft.
       retry()
     } finally { setBusy(false) }
   }
   return <section className="page-width section interior activity-page">
-    <Link className="activity-back" to="/tinh-nguyen-vien/lich-su">← Lịch sử tham gia</Link>
+
     <h1>Phản hồi của tôi</h1>
     {data?.activity && <h2>{data.activity.title}</h2>}
     {data?.activity && <p className="vs-feedback-context">{activityTime(data.activity.starts_at)} · {data.activity.address}</p>}
@@ -35,7 +35,7 @@ function FeedbackForm({ id }) {
       <p role="status">Bạn đã gửi phản hồi cho hoạt động này.</p>
       <p><strong>Điểm đánh giá: {data.feedback.rating}/5</strong></p>
       <p className="activity-description">{data.feedback.content}</p>
-      <p>Đã gửi: {activityTime(data.feedback.created_at)} (giờ Việt Nam).</p>
+      <p>Đã gửi: {activityTime(data.feedback.created_at)}.</p>
       {data.feedback.is_hidden && <div className="activity-empty"><p>Phản hồi đã bị Admin ẩn và không được tính vào điểm trung bình.</p><p>Lý do: {data.feedback.hidden_reason}</p></div>}
     </article> : data?.can_submit ? <form className="activity-editor" onSubmit={submit}>
       <p>Chia sẻ trải nghiệm thực tế của bạn với Nhà tổ chức. Mỗi người chỉ gửi một lần, không sửa hoặc xóa sau khi gửi.</p>

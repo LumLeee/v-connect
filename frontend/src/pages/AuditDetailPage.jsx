@@ -1,4 +1,4 @@
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
 import { activityTime } from '../api/activityFormat.js'
@@ -33,13 +33,12 @@ function Value({ value, field, invitation = false }) {
 
 export default function AuditDetailPage() {
   const { id } = useParams()
-  const [params] = useSearchParams()
   const { data, loading, error, retry } = useApi(`/admin/audit/${id}/`)
   const fields = data ? [...new Set([...Object.keys(data.before || {}), ...Object.keys(data.after || {})])] : []
   return <section className="page-width section interior activity-page audit-detail">
-    <Link className="activity-back" to={`/quan-tri/nhat-ky?${params}`}>← Về nhật ký thao tác</Link><h1>Chi tiết thao tác</h1>
+    <h1>Chi tiết thao tác</h1>
     <RequestState loading={loading} error={error} retry={retry} />
-    {data && <><article className="activity-card"><h2>{data.action_label}</h2><p>{activityTime(data.created_at)} (giờ Việt Nam)</p>
+    {data && <><article className="activity-card"><h2>{data.action_label}</h2><p>{activityTime(data.created_at)}</p>
       <dl className="audit-meta"><dt>Người thực hiện</dt><dd>{data.actor_name} <Link to={`/quan-tri/nhat-ky?actor=${data.actor}`}>Xem các thao tác của người này</Link></dd>
         {data.subject && <><dt>Tài khoản liên quan</dt><dd>{data.subject_name} <Link to={`/quan-tri/nhat-ky?subject=${data.subject}`}>Xem lịch sử tài khoản</Link></dd></>}
         {data.activity && <><dt>Hoạt động</dt><dd>{data.activity_title} <Link to={`/quan-tri/nhat-ky?activity=${data.activity}`}>Xem lịch sử hoạt động</Link></dd></>}

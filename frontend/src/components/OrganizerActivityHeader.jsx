@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
 import RequestState from './RequestState.jsx'
-import { activityStatuses, activityTime } from '../api/activityFormat.js'
+import { activityStatuses } from '../api/activityFormat.js'
 
 function Summary({ activity, selected }) {
   const base = `/nha-to-chuc/hoat-dong/${activity.id}`
@@ -9,7 +9,7 @@ function Summary({ activity, selected }) {
     ['attendance', `${base}/diem-danh`, 'Bảng điểm danh'], ['feedback', `${base}/phan-hoi`, 'Đánh giá'],
     ['matching', `${base}/ghep-noi`, 'Người phù hợp'], ['invitations', `${base}/loi-moi`, 'Lời mời'], ['contributions', `${base}/dong-gop`, 'Điểm đóng góp'], ['reports', `/bao-cao/hoat-dong/${activity.id}`, 'Báo cáo kết quả']]
   return <div className="om-activity-context">
-    <div className="om-context-main"><div><span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span><strong>{activity.title}</strong><p>{activityTime(activity.starts_at)} · {activity.address}</p></div>
+    <div className="om-context-main"><div><span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span><strong>{activity.title}</strong></div>
       <div className="om-capacity"><strong>{activity.approved_count}/{activity.capacity}</strong><span>người được duyệt</span><progress value={activity.approved_count} max={activity.capacity} aria-label="Tỷ lệ người được duyệt" /></div></div>
     <nav className="om-activity-tabs" aria-label="Quản lý hoạt động đã chọn">{links.map(([key, to, label]) => <Link key={key} to={to} aria-current={selected === key ? 'page' : undefined}>{label}</Link>)}</nav>
   </div>

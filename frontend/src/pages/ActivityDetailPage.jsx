@@ -19,7 +19,7 @@ function RequiredSkills({ activity }) {
 
 function PublicActivityDetail({ activity, refresh }) {
   return <>
-    <div className="activity-detail-heading"><h1>{activity.title}</h1><p>{activity.organizer_name} · {activityTime(activity.starts_at)} (giờ Việt Nam)</p></div>
+    <div className="activity-detail-heading"><h1>{activity.title}</h1><p>{activity.organizer_name} · {activityTime(activity.starts_at)}</p></div>
     <div className="activity-detail-layout">
       <div className="activity-main-column">
         <ActivityVisual id={activity.id} coverUrl={activity.cover_url} large />
@@ -50,7 +50,7 @@ function ActivityDetail({ activity, managed, refresh }) {
   async function transition() {
     setBusy(true); setError('')
     try { await apiPost(`/organizer/activities/${activity.id}/status/`, { status: pending }); setPending(null); refresh() }
-    catch (failure) { setError(Object.values(failure.details?.error?.details || {}).flat().join(' ') || failure.message) }
+    catch (failure) { setError(failure.message) }
     finally { setBusy(false) }
   }
   const editable = ['draft', 'published'].includes(activity.status)
@@ -92,7 +92,7 @@ export default function ActivityDetailPage({ managed = false }) {
   const { id } = useParams()
   const { data, loading, error, retry } = useApi(`${managed ? '/organizer' : ''}/activities/${id}/`)
   return <section className={`page-width section interior activity-page${managed ? '' : ' activity-public-detail'}`}>
-    <Link className="activity-back" to={managed ? '/nha-to-chuc/hoat-dong' : '/hoat-dong'}>← Danh sách hoạt động</Link>
+
     {!managed && error?.status === 404 ? <p className="activity-empty" role="alert">Hoạt động không tồn tại hoặc không còn công khai.</p> : <RequestState loading={loading} error={error} retry={retry} />}
     {data && <ActivityDetail key={`${id}-${data.status}`} activity={data} managed={managed} refresh={retry} />}
   </section>

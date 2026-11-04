@@ -36,6 +36,33 @@ class ActivityTests(APITestCase):
     def change(self, activity, target):
         return self.mutate('post', f'{self.url}{activity.pk}/status/', {'status': target})
 
+    def test_managed_list_metrics_are_scoped_and_do_not_double_count(self):
+        from apps.participations.models import Participation, Attendance, Contribution, Invitation
+        from apps.feedback.models import Feedback
+
+        activity = self.create()
+        second = User.objects.create_user('metrics@example.invalid', full_name='Second')
+        for volunteer in [self.volunteer, second]:
+            entry = Participation.objects.create(activity=activity, volunteer=volunteer, status='approved',
+                registered_starts_at=activity.starts_at, registered_ends_at=activity.ends_at,
+                registered_address=activity.address)
+            attendance = Attendance.objects.create(participation=entry, confirmed_by=self.owner)
+            Feedback.objects.create(attendance=attendance, rating=5, content='Good')
+            Contribution.objects.create(attendance=attendance, score=8, confirmed_by=self.owner)
+            Invitation.objects.create(activity=activity, volunteer=volunteer, sent_by=self.owner,
+                invited_starts_at=activity.starts_at, invited_ends_at=activity.ends_at,
+                invited_address=activity.address)
+        response = self.client.get(self.url)
+        row = response.data['results'][0]
+        for name in ['registration_count', 'attendance_count', 'feedback_count', 'contribution_count', 'invitation_count', 'approved_count']:
+            self.assertEqual(row[name], 2, name)
+        self.assertEqual(row['pending_count'], 0)
+        Feedback.objects.filter(attendance__participation__volunteer=second).update(
+            is_hidden=True, hidden_by=self.owner, hidden_at=timezone.now(), hidden_reason='Test')
+        self.assertEqual(self.client.get(self.url).data['results'][0]['feedback_count'], 1)
+        self.client.force_login(self.other)
+        self.assertEqual(self.client.get(self.url).data['count'], 0)
+
     def test_draft_private_and_publication_search_pagination(self):
         activity = self.create()
         guest = APIClient()

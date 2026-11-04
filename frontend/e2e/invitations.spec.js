@@ -63,7 +63,9 @@ test('Nhà tổ chức gửi lời mời, Tình nguyện viên xác nhận và �
     await volunteer.unroute('**/api/v1/invitations/?*')
     await volunteer.getByRole('button', { name: 'Thử lại', exact: true }).click()
     await expect(volunteer.getByRole('heading', { name: title, exact: true })).toBeVisible()
-    await expect(volunteer.getByText('Lời nhắn: Mời bạn đồng hành cùng chương trình.', { exact: true })).toBeVisible()
+    await volunteer.getByRole('button', { name: 'Xem chi tiết', exact: true }).click()
+    await expect(volunteer.getByRole('dialog').getByText('Lời nhắn: Mời bạn đồng hành cùng chương trình.', { exact: true })).toBeVisible()
+    await volunteer.getByRole('dialog').getByRole('button', { name: 'Đóng', exact: true }).click()
     await capture(volunteer, info, 'invitations-volunteer')
     await volunteer.getByRole('button', { name: 'Chấp nhận lời mời', exact: true }).click()
     await volunteer.getByRole('button', { name: 'Xác nhận tham gia', exact: true }).click()
@@ -73,7 +75,7 @@ test('Nhà tổ chức gửi lời mời, Tình nguyện viên xác nhận và �
     expect(entries.results.find(row => row.activity.id === id).status).toBe('approved')
     await volunteer.reload()
     await expect(volunteer.getByText('Đã chấp nhận', { exact: true })).toBeVisible()
-    await page.getByRole('button', { name: 'Cập nhật lời mời', exact: true }).click()
+    await page.getByRole('button', { name: 'Làm mới', exact: true }).click()
     await expect(page.getByText('Đã chấp nhận', { exact: true })).toBeVisible()
   } finally { await context.close() }
 })
@@ -111,7 +113,7 @@ test('Từ chối và thu hồi lời mời không tạo đăng ký', async ({ p
     await page.getByRole('button', { name: 'Thu hồi lời mời', exact: true }).click()
     await page.getByRole('button', { name: 'Xác nhận thu hồi', exact: true }).click()
     await expect(page.getByText('Đã thu hồi', { exact: true })).toBeVisible()
-    await volunteer.getByRole('button', { name: 'Cập nhật lời mời', exact: true }).click()
+    await volunteer.getByRole('button', { name: 'Làm mới', exact: true }).click()
     await expect(volunteer.getByText('Đã thu hồi', { exact: true })).toBeVisible()
     expect((await (await context.request.get('/api/v1/participations/')).json()).count).toBe(0)
   } finally { await context.close() }

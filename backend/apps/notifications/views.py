@@ -49,7 +49,10 @@ class UnreadCount(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response({'count': Notification.objects.filter(recipient=request.user, read_at__isnull=True).count()})
+        entries = Notification.objects.filter(recipient=request.user)
+        latest = entries.order_by('-created_at', '-id').values('id', 'created_at').first()
+        return Response({'count': entries.filter(read_at__isnull=True).count(),
+                         'latest_id': str(latest['id']) if latest else None})
 
 
 @method_decorator(never_cache, name='dispatch')

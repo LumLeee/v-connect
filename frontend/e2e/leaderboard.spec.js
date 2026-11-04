@@ -48,7 +48,7 @@ test('Top 20, cấp bậc cá nhân, đồng hạng và cập nhật khi Nhà t�
     expect((await post(context.request, `/api/v1/organizer/activities/${fixture.activity}/contributions/${fixture.attendance}/`, {
       score: 8, revision: 1, reason: 'Đối chiếu điểm xếp hạng',
     })).status()).toBe(200)
-    await page.getByRole('button', { name: 'Cập nhật bảng xếp hạng', exact: true }).click()
+    await page.getByRole('button', { name: 'Làm mới', exact: true }).click()
     await expect(personal).toContainText('18 điểm')
     await expect(personal.locator('.lb-level')).toHaveText('Khởi đầu')
     await expect(personal).toContainText('Còn 2 điểm để đạt cấp Đồng hành.')
@@ -70,7 +70,7 @@ test('Admin xem bảng trống; người chưa có điểm có cấp Khởi đ�
   await expect(page.getByRole('article', { name: 'Thứ hạng của tôi' })).toHaveCount(0)
   await capture(page, info, 'leaderboard-empty')
   await page.setExtraHTTPHeaders({})
-  await page.getByRole('button', { name: 'Cập nhật bảng xếp hạng', exact: true }).click()
+  await page.getByRole('button', { name: 'Làm mới', exact: true }).click()
   await expect(page.locator('.lb-row')).toHaveCount(20)
   const context = await browser.newContext({ baseURL: process.env.E2E_BASE_URL, viewport: info.project.use.viewport })
   try {

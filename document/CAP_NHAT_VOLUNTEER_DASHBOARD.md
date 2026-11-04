@@ -2,7 +2,7 @@
 
 Ngày: 26/09/2026. Trang: `/tinh-nguyen-vien`.
 
-Tham khảo bố cục hình **Volunteer Dashboard**, mục 2.3.1 trong `C2SE.14 Project Document.pdf` (trang PDF 127–128). Theo yêu cầu người dùng, lấy cách sắp xếp thông tin và giữ phong cách màu xanh, kiểu chữ của V-Connect hiện tại; không sao chép toàn bộ giao diện mẫu.
+Theo yêu cầu người dùng, sắp xếp thông tin trong không gian tình nguyện viên và giữ phong cách màu xanh, kiểu chữ của V-Connect hiện tại.
 
 ## Nội dung
 

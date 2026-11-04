@@ -37,7 +37,7 @@
 .om-content .activity-search input, .om-content .activity-search select { background: #fbfcfb; }
 .om-list-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 24px; }
 .om-list-toolbar h2 { margin: 0; }
-.om-table-labels, .om-activity-row { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.25fr) minmax(0, .8fr) minmax(0, .8fr); gap: 20px; padding: 20px; }
+.om-table-labels, .om-activity-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, .8fr) minmax(0, .8fr); gap: 20px; padding: 20px; }
 .om-table-labels { background: #edf3ef; border: 1px solid #e0e8e3; border-radius: 10px 10px 0 0; font-size: 10px; font-weight: 600; letter-spacing: .5px; color: #6d8376; padding-block: 13px; }
 .om-activity-rows { border: 1px solid #e0e8e3; border-top: 0; border-radius: 0 0 10px 10px; overflow: hidden; }
 .om-activity-rows:empty { display: none; }
@@ -50,6 +50,7 @@
 .om-activity-row .activity-skill-tags span { padding: 3px 6px; font-size: 10px; }
 .om-row-time p { font-size: 12px; margin: 5px 0; }.om-row-time small { font-size: 10px; color: #6d8376; }
 .om-capacity { display: grid; gap: 7px; min-width: 0; }.om-capacity strong { font-size: 18px; }.om-capacity span { font-size: 11px; color: #687f70; }
+.om-activity-row .om-capacity span { font-size: 13px; line-height: 1.6; }
 .om-capacity progress { width: 100%; height: 6px; accent-color: #4d9371; border: 0; border-radius: 5px; overflow: hidden; }
 .om-capacity progress::-webkit-progress-bar { background: #e8efeb; }.om-capacity progress::-webkit-progress-value { background: #4d9371; }
 .om-row-actions { display: grid; gap: 13px; font-size: 12px; color: #356c54; }.om-action-link { display: flex; align-items: center; gap: 5px; font-weight: 600; }
@@ -123,3 +124,5 @@
   .om-content { max-width: none; padding: 0 !important; margin: 0; }
   .om-content h1 { font-size: 20pt; }
 }
+.om-content .om-registration-row { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+@media (max-width: 560px) { .om-content .om-activity-row.om-registration-row { grid-template-columns: 1fr; } }

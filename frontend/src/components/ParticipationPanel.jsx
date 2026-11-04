@@ -21,13 +21,13 @@ function VolunteerPanel({ activity, refresh }) {
     try {
       await apiPost(`/activities/${activity.id}/participation/${cancel ? 'cancel/' : ''}`, {})
       setConfirm(false); retry(); refresh()
-    } catch (problem) { setFailure(Object.values(problem.details?.error?.details || {}).flat().join(' ') || problem.message) }
+    } catch (problem) { setFailure(problem.message) }
     finally { setBusy(false) }
   }
   return <div className="activity-confirm" aria-label="Đăng ký tham gia">
     <h2>Đăng ký tham gia</h2><RequestState loading={loading} error={error} retry={retry} />
     {activity.time_checks_disabled && <p>Đang thử nghiệm: tạm bỏ giới hạn thời gian đăng ký, hủy và xét duyệt.</p>}
-    <button className="text-button" disabled={busy} onClick={() => { retry(); refresh() }}>Cập nhật trạng thái</button>
+    <button type="button" className="button secondary refresh-button" disabled={busy} onClick={() => { retry(); refresh() }}>Làm mới</button>
     {data && <>
       <p role="status">{participation ? `Trạng thái: ${participationLabels[participation.status]}` : 'Bạn chưa đăng ký hoạt động này.'}</p>
       {participation && <AttendanceStatus entry={participation} />}

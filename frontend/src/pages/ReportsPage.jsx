@@ -1,3 +1,5 @@
+import ActionRow from '../components/ActionRow.jsx'
+import RecordDetails from '../components/RecordDetails.jsx'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/context.js'
 import useApi from '../hooks/useApi.js'
@@ -21,8 +23,8 @@ export default function ReportsPage({ mode = 'overview' }) {
   const title = mode === 'overview' ? 'Thống kê của tôi' : mode === 'activities' ? 'Báo cáo hoạt động' : mode === 'result' ? 'Kết quả hoạt động' : metricLabels[params.get('metric') || 'registered'] || 'Chi tiết đăng ký'
   function changePage(value) { setParams(previous => { const next = new URLSearchParams(previous); next.set('page', String(value)); return next }) }
   return <section className="page-width section interior activity-page">
-    <Link className="activity-back" to={mode === 'overview' ? ({ volunteer: '/tinh-nguyen-vien', organizer: '/nha-to-chuc', admin: '/quan-tri' }[user.role]) : '/bao-cao'}>← {mode === 'overview' ? 'Về tài khoản' : 'Về thống kê'}</Link>
-    <h1>{title}</h1><button className="text-button" onClick={retry}>Cập nhật số liệu</button>
+
+    <h1>{title}</h1><div className="list-results-toolbar">{data && ['activities', 'participations'].includes(mode) && <p>{data.count} {mode === 'activities' ? 'hoạt động' : 'đơn đăng ký'}.</p>}<button type="button" className="button secondary refresh-button" onClick={retry}>Làm mới</button></div>
     {user.role === 'organizer' && mode === 'result' && <OrganizerActivityHeader id={id} selected="reports" />}
     {user.role !== 'volunteer' && <p><Link className="button primary" to="/bao-cao/mo-rong">Báo cáo mở rộng</Link></p>}
     <RequestState loading={loading} error={error} retry={retry} />
@@ -33,7 +35,7 @@ export default function ReportsPage({ mode = 'overview' }) {
       <ReportMetrics metrics={data.metrics} />
     </>}
     {data && mode === 'result' && <>
-      <h2>{data.activity.title}</h2><p>{activityStatuses[data.activity.status]} · {activityTime(data.activity.starts_at)} (giờ Việt Nam)</p>
+      <h2>{data.activity.title}</h2><p>{activityStatuses[data.activity.status]} · {activityTime(data.activity.starts_at)}</p>
       {data.activity.status !== 'completed' && <p className="activity-empty">Đây là số liệu hiện tại. Hoạt động chưa hoàn thành hoặc đã bị hủy.</p>}
       <ReportMetrics metrics={data.metrics} activity={id} />
       {user.role !== 'volunteer' && <div className="activity-actions">{data.activity.status === 'completed' && <Link className="button primary" to={`/bao-cao/hoat-dong/${id}/tong-ket`}>Mẫu báo cáo tổng kết</Link>}</div>}
@@ -45,16 +47,17 @@ export default function ReportsPage({ mode = 'overview' }) {
       <button className="button secondary">Lọc hoạt động</button>
     </form>}
     {data && ['activities', 'participations'].includes(mode) && <>
-      <p>{data.count} {mode === 'activities' ? 'hoạt động' : 'đơn đăng ký'}.</p>
+
       {!data.count && <p className="activity-empty">Chưa có dữ liệu phù hợp.</p>}
-      <div className="activity-grid">{data.results.map(entry => mode === 'activities' ? <article className="activity-card" key={entry.id}>
+      <div className="activity-grid">{data.results.map(entry => mode === 'activities' ? <ActionRow className="activity-card" key={entry.id}>
         <h2><Link to={`/bao-cao/hoat-dong/${entry.id}`}>{entry.title}</Link></h2><p>{activityStatuses[entry.status]}</p><p>Nhà tổ chức: {entry.organizer_name}</p>
-      </article> : <article className="activity-card" key={entry.id}>
+        <Link className="button secondary" to={`/bao-cao/hoat-dong/${entry.id}`}>Xem chi tiết</Link>
+      </ActionRow> : <ActionRow className="activity-card" key={entry.id}>
         <h2>{entry.activity.title}</h2>{entry.volunteer_name && <p>Người đăng ký: {entry.volunteer_name}</p>}
         <p>Đơn: {participationLabels[entry.status]}</p><p>Hoạt động: {activityStatuses[entry.activity.status]}</p>
-        <AttendanceStatus entry={entry} />
+        <RecordDetails title={entry.activity.title}><p>Trạng thái đơn: {participationLabels[entry.status]}</p><p>Trạng thái hoạt động: {activityStatuses[entry.activity.status]}</p><AttendanceStatus entry={entry} /></RecordDetails>
         {(user.role !== 'volunteer' || entry.activity.status === 'published') && <Link to={user.role === 'volunteer' ? `/hoat-dong/${entry.activity.id}` : `/bao-cao/hoat-dong/${entry.activity.id}`}>Xem hoạt động</Link>}
-      </article>)}</div>
+      </ActionRow>)}</div>
       <ReportPagination data={data} page={page} onPage={changePage} />
     </>}
   </section>

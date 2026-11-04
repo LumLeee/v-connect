@@ -141,7 +141,7 @@ test('Camera không khả dụng, mã hết hạn và check-in bằng mã dự p
     await volunteer.screenshot({ path: path.join(process.env.E2E_ARTIFACT_DIR, `${info.project.name}-checkin-code-form.png`), fullPage: true })
     await volunteer.getByRole('button', { name: 'Xác nhận check-in', exact: true }).click()
     await expect(volunteer.getByText('Hình thức: Nhập mã')).toBeVisible()
-    await page.getByRole('button', { name: 'Cập nhật danh sách điểm danh' }).click()
+    await page.getByRole('button', { name: 'Làm mới', exact: true }).last().click()
     await expect(page.getByText('Hình thức: Nhập mã')).toBeVisible()
   } finally { await context.close() }
 })

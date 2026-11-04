@@ -1,10 +1,10 @@
+import ActionRow from '../components/ActionRow.jsx'
 import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
 import useNow from '../hooks/useNow.js'
 import RequestState from '../components/RequestState.jsx'
-import AttendanceStatus from '../components/AttendanceStatus.jsx'
 import AttendanceCodePanel from '../components/AttendanceCodePanel.jsx'
 import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
 import { apiPost } from '../api/client.js'
@@ -29,20 +29,17 @@ function AttendanceList({ id }) {
       await apiPost(`/organizer/activities/${id}/attendance/${pending.id}/`, {})
       setMessage(`Đã xác nhận có mặt cho ${pending.name}.`); refresh()
     } catch (error) {
-      setFailure(Object.values(error.details?.error?.details || {}).flat().join(' ') || error.message)
-      refresh()
+      setFailure(error.message)
+      activity.retry(); list.retry()
     } finally { setBusy(false) }
   }
   return <section className="page-width section interior activity-page">
-    <Link className="activity-back" to={`/nha-to-chuc/hoat-dong/${id}`}>← Về hoạt động</Link>
+
     <h1>Điểm danh người tham gia</h1>
     {activity.data && <OrganizerActivityHeader activity={activity.data} selected="attendance" />}
     <RequestState loading={activity.loading} error={activity.error} retry={activity.retry} />
-    {activity.data && <><h2>{activity.data.title}</h2>
-      <p>Thời gian điểm danh: {activityTime(activity.data.starts_at)} đến {activityTime(activity.data.ends_at)} (giờ Việt Nam).</p>
-      <p>{open ? 'Đang mở điểm danh cho người đã được duyệt.' : 'Chưa mở hoặc đã đóng điểm danh. Hoạt động phải còn công khai và đang trong thời gian diễn ra.'}</p></>}
     {activity.data && <AttendanceCodePanel id={id} open={open} />}
-    <button className="text-button" disabled={busy} onClick={refresh}>Cập nhật danh sách điểm danh</button>
+    <div className="list-results-toolbar">{list.data && <p>{list.data.count} người trong danh sách.</p>}<button type="button" className="button secondary refresh-button" disabled={busy} onClick={refresh}>Làm mới</button></div>
     <RequestState loading={list.loading} error={list.error} retry={list.retry} />
     {message && <p role="status">{message}</p>}
     {failure && <p role="alert" className="request-error">{failure}</p>}
@@ -52,16 +49,18 @@ function AttendanceList({ id }) {
       <button className="button secondary" disabled={busy} onClick={() => setPending(null)}>Quay lại</button>
     </div></ConfirmationDialog>}
     {list.data && <>
-      <p>{list.data.count} người trong danh sách.</p>
+
       {!list.data.count && <p className="activity-empty">Chưa có người được duyệt để điểm danh.</p>}
-      <div className="activity-grid om-people-list">{list.data.results.map(entry => <article className="activity-card om-person-row" key={entry.id}>
-        <div><h2>{entry.volunteer_name}</h2><p>Email: {entry.volunteer_email}</p><p>Điện thoại: {entry.volunteer_phone || 'Chưa cung cấp'}</p></div>
-        <div><AttendanceStatus entry={entry} />{!entry.attendance && <p>Chưa ghi nhận có mặt.</p>}</div>
+      <div className="activity-grid om-people-list">{list.data.results.map(entry => <ActionRow className="activity-card om-person-row" key={entry.id}>
+        <div><h2><Link data-row-primary to={`/ho-so?hoat-dong=${id}&ung-vien=${entry.id}`}>{entry.volunteer_name}</Link></h2></div>
+        <div><p>{entry.attendance ? "Đã có mặt" : "Chưa ghi nhận có mặt"}</p>
+          {entry.attendance && <p>Điểm danh lúc: {activityTime(entry.attendance.confirmed_at)}</p>}
+        </div>
         <div>
         {!entry.attendance && entry.status === 'approved' && <button className="button primary" disabled={busy || !open}
           onClick={() => { setPending({ id: entry.id, name: entry.volunteer_name }); setFailure(''); setMessage('') }}>Ghi nhận có mặt</button>}
         </div>
-      </article>)}</div>
+      </ActionRow>)}</div>
       {(list.data.previous || list.data.next) && <nav className="activity-pagination" aria-label="Phân trang điểm danh">
         <button className="button secondary" disabled={busy || !list.data.previous} onClick={() => { setPending(null); setParams({ page: String(page - 1) }) }}>Trang trước</button>
         <span>Trang {page}</span>

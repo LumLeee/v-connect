@@ -41,7 +41,7 @@ export default function SiteLayout() {
       </header>
       {logoutError && <div className="page-width request-error" role="alert">{logoutError}</div>}
       <main id="main-content" className={pathname === '/tinh-nguyen-vien' ? 'volunteer-dashboard-main' : undefined}><Outlet /></main>
-      <footer className="site-footer"><span>V-Connect · Kết nối để sẻ chia.</span><Link to="/trang-thai">Trạng thái hệ thống</Link><span>Dự án C2SE.14</span></footer>
+      <footer className="site-footer"><span>V-Connect · Kết nối để sẻ chia.</span><Link to="/trang-thai">Trạng thái hệ thống</Link></footer>
     </>
   )
 }

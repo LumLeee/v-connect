@@ -1,0 +1,12 @@
+.image-paste-input { margin-block: 14px; min-width: 0; }
+.image-paste-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.image-paste-zone { margin-top: 10px; border: 1px dashed #9cb9a8; border-radius: 10px; padding: 16px; background: #f5f9f6; color: #526f60; font-size: 12px; line-height: 1.6; text-align: center; cursor: text; overflow-wrap: anywhere; }
+.image-paste-zone:focus-visible { outline: 2px solid #37785f; outline-offset: 3px; border-style: solid; }
+.image-paste-zone[aria-disabled="true"] { opacity: .55; cursor: default; }
+.image-paste-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.image-paste-compact { margin-block: 14px 0; border-radius: 8px; }
+.image-paste-compact:focus-visible { outline: 2px solid #37785f; outline-offset: 5px; }
+.image-paste-hint { margin: 10px 0 0; font-size: 12px; line-height: 1.6; color: #687f70; }
+.image-cover-remove { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 8px; background: transparent; color: #9b4540; padding: 10px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+.image-cover-remove:hover { background: #fff0ee; }
+.image-cover-remove:disabled { opacity: .5; cursor: wait; }

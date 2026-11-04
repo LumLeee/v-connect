@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import MyList, MyHistory, MyParticipation, CancelParticipation, ApplicantList, ReviewParticipation, AttendanceList, ConfirmAttendance
+from .views import MyList, MyCheckIn, MyHistory, MyParticipation, CancelParticipation, ApplicantList, ReviewParticipation, AttendanceList, ConfirmAttendance
 from .checkin_views import ManageAttendanceCode, RevokeAttendanceCode, SelfCheckIn
 from .contributions import ManagedContributions, ConfirmContribution, MyContributions, ContributionHistory
 from .invitation_views import MyInvitations, ManagedInvitations, RespondInvitation, WithdrawInvitation
+from .views import ApplicantDetail, ApplicantAvatar
 
 urlpatterns = [
     path('invitations/', MyInvitations.as_view()),
@@ -17,10 +18,13 @@ urlpatterns = [
     path('organizer/activities/<uuid:pk>/attendance-code/revoke/', RevokeAttendanceCode.as_view()),
     path('activities/<uuid:pk>/check-in/', SelfCheckIn.as_view()),
     path('participations/', MyList.as_view()),
+    path('participations/check-in/', MyCheckIn.as_view()),
     path('participations/history/', MyHistory.as_view()),
     path('activities/<uuid:pk>/participation/', MyParticipation.as_view()),
     path('activities/<uuid:pk>/participation/cancel/', CancelParticipation.as_view()),
     path('organizer/activities/<uuid:pk>/applicants/', ApplicantList.as_view()),
+    path('organizer/activities/<uuid:pk>/applicants/<uuid:entry_id>/', ApplicantDetail.as_view()),
+    path('organizer/activities/<uuid:pk>/applicants/<uuid:entry_id>/avatar/', ApplicantAvatar.as_view()),
     path('organizer/activities/<uuid:pk>/applicants/<uuid:entry_id>/review/', ReviewParticipation.as_view()),
     path('organizer/activities/<uuid:pk>/attendance/', AttendanceList.as_view()),
     path('organizer/activities/<uuid:pk>/attendance/<uuid:entry_id>/', ConfirmAttendance.as_view()),

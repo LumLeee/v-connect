@@ -70,15 +70,15 @@ function Results({ data, query, refresh }) {
   ])
   return <>
     <div className="analytics-heading no-print">
-      <div className="analytics-actions"><button className="button secondary" onClick={refresh} disabled={busy}>Cập nhật số liệu</button>
+      <div className="analytics-actions"><button type="button" className="button secondary refresh-button" onClick={refresh} disabled={busy}>Làm mới</button>
         <button className="button primary" onClick={download} disabled={busy}><Download size={17} aria-hidden="true" />{busy ? 'Đang xuất…' : 'Xuất Excel'}</button>
         <button className="button secondary" onClick={() => window.print()} disabled={busy}><Printer size={17} aria-hidden="true" />In / Lưu PDF</button></div>
     </div>
     {downloadError && <p className="request-error no-print" role="alert">{downloadError}</p>}
     <div className="analytics-context"><p><strong>Phạm vi:</strong> {data.scope}</p>
-      <p><strong>Ngày bắt đầu:</strong> {data.filters.date_from || 'Không giới hạn'} → {data.filters.date_to || 'Không giới hạn'} (giờ Việt Nam).</p>
+      <p><strong>Ngày bắt đầu:</strong> {data.filters.date_from || 'Không giới hạn'} → {data.filters.date_to || 'Không giới hạn'}.</p>
       <p><strong>Trạng thái:</strong> {activityStatuses[data.filters.status] || 'Tất cả'}{data.filters.search && <> · <strong>Từ khóa:</strong> {data.filters.search}</>}</p>
-      <p><strong>Số liệu lúc:</strong> {activityTime(data.generated_at)} (giờ Việt Nam).</p>
+      <p><strong>Số liệu lúc:</strong> {activityTime(data.generated_at)}.</p>
     </div>
     <p className="analytics-note no-print">Excel lấy số liệu mới theo bộ lọc đang áp dụng. Bản in dùng số liệu đang xem, gồm toàn bộ hoạt động đã lọc. Để lưu PDF, chọn “Lưu dưới dạng PDF” trong hộp thoại in.</p>
     <div className="analytics-summary">{[['Hoạt động', data.activity_count], ['Tổng đơn đăng ký', data.metrics.registered], ['Đã tham gia (hoàn thành)', data.metrics.attended_completed], ['Phản hồi hợp lệ', data.feedback.count]].map(([label, value]) => <article key={label}><h2>{label}</h2><strong>{number(value)}</strong></article>)}</div>
@@ -90,12 +90,12 @@ function Results({ data, query, refresh }) {
       <BarGroup title={`Phân bố đánh giá · ${average(data.feedback.average_rating)}`} values={Object.entries(data.feedback.distribution).map(([key, value]) => ({ key, label: `${key} sao`, value, tone: 'gold' }))} />
       <BarGroup title="Trạng thái hoạt động" values={Object.entries(activityStatuses).map(([key, label]) => ({ key, label, value: data.activity_statuses[key] }))} />
     </div>
-    {data.months.length > 0 && <><p className="analytics-rules">Theo tháng bắt đầu hoạt động (giờ Việt Nam), không phải tháng gửi đơn hay gửi phản hồi. Chỉ hiển thị tháng có hoạt động phù hợp.</p><BarGroup title="Đăng ký, tham gia và phản hồi theo tháng" values={monthValues} className="analytics-months" /></>}
+    {data.months.length > 0 && <><p className="analytics-rules">Theo tháng bắt đầu hoạt động, không phải tháng gửi đơn hay gửi phản hồi. Chỉ hiển thị tháng có hoạt động phù hợp.</p><BarGroup title="Đăng ký, tham gia và phản hồi theo tháng" values={monthValues} className="analytics-months" /></>}
     <section className="analytics-details"><div className="analytics-heading"><h2>Chi tiết {number(data.activity_count)} hoạt động</h2><span className="no-print">Trang {page}/{Math.max(1, Math.ceil(data.rows.length / size))}</span></div>
-      <div className="analytics-table-wrap" tabIndex="0" role="region" aria-label="Bảng số liệu hoạt động"><table><caption className="sr-only">Số liệu của từng hoạt động trong bộ lọc</caption><thead><tr><th scope="col">Hoạt động / Nhà tổ chức</th><th scope="col">Bắt đầu / Trạng thái</th><th scope="col">Đơn đăng ký</th><th scope="col">Được duyệt</th><th scope="col">Đã tham gia</th><th scope="col">Phản hồi</th><th scope="col">Điểm TB</th></tr></thead>
+      <div className="analytics-table-wrap" tabIndex="0" role="region" aria-label="Bảng số liệu hoạt động"><table><caption className="sr-only">Số liệu của từng hoạt động trong bộ lọc</caption><thead><tr><th scope="col">Hoạt động / Nhà tổ chức</th><th scope="col">Bắt đầu / Trạng thái</th><th scope="col">Đơn đăng ký</th><th scope="col">Thao tác</th></tr></thead>
         <tbody>{data.rows.map((row, index) => <tr key={row.id} className={index < (page - 1) * size || index >= page * size ? 'analytics-other-page' : ''}>
           <td><Link to={`/bao-cao/hoat-dong/${row.id}`}>{row.title}</Link><small>{row.organizer_name}</small></td><td>{activityTime(row.starts_at)}<small>{activityStatuses[row.status]}</small></td>
-          <td>{number(row.metrics.registered)}</td><td>{number(row.metrics.approved)}</td><td>{number(row.metrics.attended_completed)}</td><td>{number(row.feedback.count)}</td><td>{row.feedback.average_rating === null ? '—' : number(row.feedback.average_rating)}</td>
+          <td>{number(row.metrics.registered)}</td><td><Link className="button secondary" to={`/bao-cao/hoat-dong/${row.id}`}>Xem chi tiết</Link></td>
         </tr>)}</tbody></table></div>
       {data.rows.length > size && <nav className="analytics-actions no-print" aria-label="Phân trang báo cáo"><button className="button secondary" disabled={page === 1} onClick={() => setPage(page - 1)}>Trang trước</button><button className="button secondary" disabled={page * size >= data.rows.length} onClick={() => setPage(page + 1)}>Trang sau</button></nav>}
     </section>
@@ -114,14 +114,11 @@ function ReportPage({ admin, params, setParams }) {
   const query = new URLSearchParams()
   for (const key of filterNames) if (params.get(key)) query.set(key, params.get(key))
   const { data, loading, error, retry } = useApi(`/reports/analytics/?${query}`)
-  const details = error?.details?.error?.details
-  const explanation = details ? Object.values(details).flat().filter(value => typeof value === 'string').join(' ') : ''
   return <section className="page-width section interior analytics-page">
-    <Link className="activity-back no-print" to="/bao-cao">← Về thống kê</Link>
+
     <p className="eyebrow">V-CONNECT · BÁO CÁO HOẠT ĐỘNG</p><h1>Báo cáo mở rộng</h1>
     <Filters key={params.toString()} params={params} setParams={setParams} admin={admin} organizers={organizers} />
     <RequestState loading={loading} error={error} retry={retry} />
-    {error && explanation && <p className="field-error" role="alert">{explanation}</p>}
     {data && <Results key={`${query}-${data.generated_at}`} data={data} query={query.toString()} refresh={retry} />}
     <p className="analytics-note no-print"><BarChart3 size={16} aria-hidden="true" /> Mỗi báo cáo tối đa 2.000 hoạt động. Dùng bộ lọc để thu hẹp phạm vi nếu cần.</p>
   </section>

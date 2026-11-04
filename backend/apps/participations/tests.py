@@ -39,6 +39,34 @@ class ParticipationTests(APITestCase):
         token = self.client.get('/api/v1/auth/csrf/').data['csrfToken']
         return self.client.post(url, data or {}, format='json', HTTP_X_CSRFTOKEN=token)
 
+    def test_applicant_details_are_only_visible_to_activity_owner(self):
+        from apps.accounts.models import VolunteerProfile
+        from apps.accounts.profile_serializers import ProfileSerializer
+        entry = services.register(self.activity.pk, self.one)
+        self.one.bio = 'Muốn đóng góp cho cộng đồng.'
+        self.one.save(update_fields=['bio'])
+        VolunteerProfile.objects.update_or_create(user=self.one, defaults={'interests': ['Môi trường']})
+        url = f'{self.managed}applicants/{entry.pk}/'
+        self.assertEqual(self.client.get(url).status_code, 403)
+        self.assertEqual(self.client.get(url + 'avatar/').status_code, 403)
+        other = User.objects.create_user('detail.other@example.invalid', role='organizer', full_name='Tổ chức khác')
+        self.client.force_login(other)
+        self.assertEqual(self.client.get(url).status_code, 404)
+        self.assertEqual(self.client.get(url + 'avatar/').status_code, 404)
+        self.client.force_login(self.owner)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['profile'], ProfileSerializer(User.objects.get(pk=self.one.pk)).data)
+        self.assertNotIn('password', response.data['profile'])
+        self.assertEqual(self.client.get(url + 'avatar/').status_code, 404)
+        self.assertEqual(response.data['volunteer_bio'], self.one.bio)
+        self.assertEqual(response.data['interests'], ['Môi trường'])
+        self.assertEqual(response.data['skills'], [])
+        for private in ['password', 'availability', 'matching_visible']:
+            self.assertNotIn(private, response.data)
+        self.client.logout()
+        self.assertEqual(self.client.get(url).status_code, 401)
+
     def test_register_duplicate_cancel_and_reregister(self):
         first = self.post(self.url)
         self.assertEqual(first.status_code, 201)

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CalendarDays, CheckCircle2, ClipboardList, Compass, History, Mail, UserRound } from 'lucide-react'
+import { CalendarDays, CheckCircle2, ClipboardList, Compass, History, Mail, UserRound } from 'lucide-react'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
 import { activityTime, activityStatuses } from '../api/activityFormat.js'
@@ -20,7 +20,7 @@ function ActivityRow({ entry, history = false }) {
     <span className={`vd-row-icon ${history ? 'green' : 'blue'}`}>{history ? <CheckCircle2 size={20} /> : <CalendarDays size={20} />}</span>
     <div className="vd-row-content">{entry.activity.status === 'published' ? <Link to={`/hoat-dong/${entry.activity.id}`}>{entry.activity.title}</Link> : <strong>{entry.activity.title}</strong>}
       <p>{entry.activity.organizer_name}</p>
-      <p>{activityTime(history ? entry.attendance.confirmed_at : entry.activity.starts_at)} (giờ Việt Nam)</p>
+      <p>{activityTime(history ? entry.attendance.confirmed_at : entry.activity.starts_at)}</p>
     </div>
     <span className={`vd-badge ${history && entry.activity.status === 'cancelled' ? 'muted' : history ? 'green' : 'blue'}`}>
       {history ? activityStatuses[entry.activity.status] : 'Sắp diễn ra'}
@@ -32,8 +32,8 @@ export default function VolunteerDashboard() {
   const { data, loading, error, retry } = useApi('/reports/volunteer-dashboard/')
   return <section className="vd-page" aria-labelledby="vd-title">
     <div className="vd-heading"><div><p className="vd-eyebrow">KHÔNG GIAN TÌNH NGUYỆN VIÊN</p>
-      <h1 id="vd-title">Tổng quan</h1><p>Theo dõi hoạt động đã đăng ký, lịch sắp tới và hành trình đóng góp của bạn.</p></div>
-      <Link className="vd-text-link" to="/hoat-dong">Khám phá hoạt động <ArrowRight size={16} /></Link>
+      <h1 id="vd-title">Tổng quan</h1></div>
+      <Link className="button secondary arrow-link-button" to="/hoat-dong">Khám phá hoạt động </Link>
     </div>
     <RequestState loading={loading} error={error} retry={retry} />
     {data && <>
@@ -58,15 +58,15 @@ export default function VolunteerDashboard() {
         <a className="vd-stat" href="#vd-upcoming"><span className="vd-row-icon blue"><CalendarDays /></span><div><span>HOẠT ĐỘNG SẮP TỚI</span><strong>{data.upcoming_count}</strong></div></a>
         <Link className="vd-stat" to="/bao-cao/dang-ky?metric=attended_completed"><span className="vd-row-icon green"><CheckCircle2 /></span><div><span>ĐÃ THAM GIA · HOÀN THÀNH</span><strong>{data.metrics.attended_completed}</strong></div></Link>
       </div>
-      <section className="vd-panel" id="vd-upcoming" aria-labelledby="vd-upcoming-title"><div className="vd-panel-heading"><div><h2 id="vd-upcoming-title">Hoạt động sắp tới</h2><p>Những hoạt động bạn đã được duyệt, sắp đến giờ bắt đầu.</p></div><Link className="vd-text-link" to="/tinh-nguyen-vien/dang-ky">Xem đăng ký <ArrowRight size={16} /></Link></div>
+      <section className="vd-panel" id="vd-upcoming" aria-labelledby="vd-upcoming-title"><div className="vd-panel-heading"><div><h2 id="vd-upcoming-title">Hoạt động sắp tới</h2><p>Những hoạt động bạn đã được duyệt, sắp đến giờ bắt đầu.</p></div><Link className="button secondary arrow-link-button" to="/tinh-nguyen-vien/dang-ky">Xem đăng ký </Link></div>
         {data.upcoming.length ? <ul className="vd-list">{data.upcoming.map(entry => <ActivityRow key={entry.id} entry={entry} />)}</ul>
-          : <div className="vd-empty"><CalendarDays size={28} /><h3>Chưa có hoạt động sắp tới</h3><p>Khám phá hoạt động và đăng ký để bắt đầu hành trình của bạn.</p><Link className="vd-text-link" to="/hoat-dong">Khám phá ngay <ArrowRight size={16} /></Link></div>}
+          : <div className="vd-empty"><CalendarDays size={28} /><h3>Chưa có hoạt động sắp tới</h3><p>Khám phá hoạt động và đăng ký để bắt đầu hành trình của bạn.</p><Link className="button secondary arrow-link-button" to="/hoat-dong">Khám phá ngay </Link></div>}
       </section>
-      <section className="vd-panel" aria-labelledby="vd-history-title"><div className="vd-panel-heading"><div><h2 id="vd-history-title">Lịch sử tham gia gần đây</h2><p>Các lượt có mặt đã được Nhà tổ chức xác nhận. Hoạt động bị hủy được ghi rõ.</p></div><Link className="vd-text-link" to="/tinh-nguyen-vien/lich-su">Xem toàn bộ lịch sử <ArrowRight size={16} /></Link></div>
+      <section className="vd-panel" aria-labelledby="vd-history-title"><div className="vd-panel-heading"><div><h2 id="vd-history-title">Lịch sử tham gia gần đây</h2><p>Các lượt có mặt đã được Nhà tổ chức xác nhận. Hoạt động bị hủy được ghi rõ.</p></div><Link className="button secondary arrow-link-button" to="/tinh-nguyen-vien/lich-su">Xem toàn bộ lịch sử </Link></div>
         {data.history.length ? <ul className="vd-list">{data.history.map(entry => <ActivityRow key={entry.id} entry={entry} history />)}</ul>
           : <div className="vd-empty"><History size={28} /><h3>Hành trình của bạn đang bắt đầu</h3><p>Lịch sử sẽ xuất hiện sau khi bạn được xác nhận có mặt tại hoạt động.</p></div>}
       </section>
-      <div className="vd-bottom"><span>Mỗi lần tham gia, thêm một điều ý nghĩa.</span><Link className="vd-text-link" to="/bao-cao">Xem thống kê <ArrowRight size={16} /></Link></div>
+      <div className="vd-bottom"><span>Mỗi lần tham gia, thêm một điều ý nghĩa.</span><Link className="button secondary arrow-link-button" to="/bao-cao">Xem thống kê </Link></div>
     </>}
   </section>
 }

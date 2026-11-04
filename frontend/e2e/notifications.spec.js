@@ -31,7 +31,7 @@ test('Thông báo nghiệp vụ giữa hai vai trò, đọc, bộ lọc, liên k
     await page.goto('/thong-bao')
     await expect(page.getByRole('heading', { name: 'Có đơn đăng ký mới' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Thông báo, 1 chưa đọc', exact: true })).toBeVisible()
-    await page.getByRole('button', { name: 'Xem chi tiết', exact: true }).click()
+    await page.getByRole('button', { name: 'Mở nội dung liên quan', exact: true }).click()
     await expect(page).toHaveURL(new RegExp(`/nha-to-chuc/hoat-dong/${activity.id}/dang-ky`))
     await expect(page.getByRole('link', { name: 'Thông báo, 0 chưa đọc', exact: true })).toBeVisible()
     await mutate(page.request, `/api/v1/organizer/activities/${activity.id}/applicants/${entry.participation.id}/review/`, { status: 'approved' })
@@ -60,7 +60,7 @@ test('Thông báo nghiệp vụ giữa hai vai trò, đọc, bộ lọc, liên k
     await expect(volunteer.getByRole('link', { name: 'Thông báo, 0 chưa đọc', exact: true })).toBeVisible()
     await volunteer.getByLabel('Hiển thị').selectOption('read')
     await expect(volunteer.getByRole('article')).toHaveCount(2)
-    await volunteer.getByRole('button', { name: 'Xem chi tiết', exact: true }).first().click()
+    await volunteer.getByRole('button', { name: 'Mở nội dung liên quan', exact: true }).first().click()
     await expect(volunteer).toHaveURL(new RegExp(`/hoat-dong/${activity.id}$`))
   } finally { await context.close() }
 })

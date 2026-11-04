@@ -36,3 +36,12 @@
 @media (max-width: 500px) { .profile-skill-options { grid-template-columns: 1fr; } .availability-slot { padding: 12px; gap: 10px; } }
 @media (max-width: 800px) { .profile-layout { grid-template-columns: 1fr; } .profile-summary { max-width: none; } .profile-file { width: auto; } }
 @media (max-width: 420px) { .profile-card { padding: 20px; } .profile-actions .button { width: 100%; } }
+.profile-preview { border: 0; padding: 0; margin: 0; min-width: 0; }
+.applicant-profile-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.applicant-profile-heading h1 { margin: 0; min-width: 0; }
+.applicant-profile-heading > .button { flex-shrink: 0; }
+@media (max-width: 560px) {
+  .profile-page .applicant-profile-heading h1 { font-size: 26px; }
+  .applicant-profile-heading { gap: 12px; }
+  .applicant-profile-heading > .button { flex-shrink: 1; padding: 10px 12px; text-align: center; }
+}

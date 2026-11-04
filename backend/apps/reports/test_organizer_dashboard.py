@@ -1,6 +1,7 @@
 from datetime import timedelta
 from unittest.mock import patch
 
+from django.test import override_settings
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
@@ -9,6 +10,7 @@ from apps.activities.models import Activity
 from apps.participations.models import Participation
 
 
+@override_settings(ACTIVITY_TIME_CHECKS_ENABLED=True)
 class OrganizerDashboardTests(APITestCase):
     url = '/api/v1/reports/organizer-dashboard/'
 
@@ -68,6 +70,24 @@ class OrganizerDashboardTests(APITestCase):
         self.assertEqual({row['id'] for row in data['ongoing']}, {str(starting.pk), str(ending.pk)})
         self.assertEqual(data['pending_count'], 0)
         self.assertEqual(data['upcoming_count'], 0)
+
+    @override_settings(ACTIVITY_TIME_CHECKS_ENABLED=False)
+    def test_pending_includes_started_activities_when_time_checks_disabled(self):
+        actionable = [self.activity(offset) for offset in (-10, -3, -1, 0, 2)]
+        entries = [self.entry(activity) for activity in actionable]
+        for status in ('draft', 'cancelled', 'completed'):
+            self.entry(self.activity(-12, status))
+        self.entry(self.activity(-15, owner=self.other))
+        self.entry(self.activity(-4), 'approved')
+        self.entry(self.activity(-5), 'rejected')
+        with patch('django.utils.timezone.now', return_value=self.now):
+            response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        data = response.data
+        self.assertEqual(data['pending_count'], 5)
+        self.assertEqual([row['id'] for row in data['pending']], [str(entry.pk) for entry in entries[:4]])
+        self.assertEqual(data['upcoming_count'], 1)
+        self.assertEqual(data['ongoing_count'], 2)
 
     def test_empty_and_role_permissions(self):
         data = self.client.get(self.url).data

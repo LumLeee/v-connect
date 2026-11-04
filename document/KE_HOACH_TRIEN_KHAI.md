@@ -16,7 +16,7 @@ Người dùng đã xác nhận ba chức năng AI — gợi ý ghép nối, ph�
 - Phân quyền, kiểm tra dữ liệu, chống thao tác trùng và kiểm thử đi cùng từng chức năng chính, không dời sang đợt phụ.
 - Không quản lý quyên góp tài chính, không xây ứng dụng desktop hoặc mô hình dự đoán nâng cao ngoài phạm vi đã thống nhất.
 
-Tham chiếu: `C2SE.14 Project Document.pdf`. Quyết định của người dùng là cơ sở xác định phạm vi. Giữ số giai đoạn 1–10 để đối chiếu lịch sử, nhưng sắp xếp lại nội dung tương lai theo hai đợt bên dưới.
+Quyết định của người dùng là cơ sở xác định phạm vi. Giữ số giai đoạn 1–10 để đối chiếu lịch sử, nhưng sắp xếp lại nội dung tương lai theo hai đợt bên dưới.
 
 ## 2. Tiến độ hiện tại
 

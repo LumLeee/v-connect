@@ -1,0 +1,8 @@
+.action-row .row-redundant-action,
+.action-row .row-empty-actions { display: none !important; }
+.om-content .om-activity-row:has(> .om-row-actions.row-empty-actions) {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+@media (max-width: 560px) {
+  .om-content .om-activity-row:has(> .om-row-actions.row-empty-actions) { grid-template-columns: 1fr; }
+}

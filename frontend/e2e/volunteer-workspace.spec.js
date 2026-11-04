@@ -46,18 +46,21 @@ test('Không gian Tình nguyện viên: các trang, lịch sử thật và gửi
       ['/tinh-nguyen-vien/lich-su', 'Lịch sử tham gia', 'Lịch sử hoạt động', 'history'],
       ['/tinh-nguyen-vien/check-in', 'Điểm danh của tôi', 'Điểm danh của tôi', 'checkin-hub'],
       [`/hoat-dong/${activity.id}/check-in`, 'Check-in hoạt động', 'Điểm danh của tôi', 'checkin'],
-      ['/tinh-nguyen-vien/phan-hoi', 'Đánh giá hoạt động', 'Đánh giá hoạt động', 'feedback-hub'],
-      [`/hoat-dong/${activity.id}/phan-hoi`, 'Phản hồi của tôi', 'Đánh giá hoạt động', 'feedback'],
+      [`/hoat-dong/${activity.id}/phan-hoi`, 'Phản hồi của tôi', 'Lịch sử hoạt động', 'feedback'],
       ['/ho-so', 'Hồ sơ của tôi', 'Hồ sơ cá nhân', 'profile'],
       ['/thong-bao', 'Thông báo', 'Thông báo', 'notifications'],
-      ['/bao-cao', 'Thống kê của tôi', 'Thống kê', 'reports'],
+      ['/bao-cao', 'Đóng góp của tôi', 'Đóng góp của tôi', 'reports'],
     ]
     await mkdir(process.env.E2E_ARTIFACT_DIR, { recursive: true })
     for (const [url, heading, active, name] of pages) {
       await page.goto(url)
       await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible()
       await expect(page.getByText('Đang tải dữ liệu…', { exact: true })).toHaveCount(0)
-      await expect(page.getByRole('navigation', { name: 'Điều hướng Tình nguyện viên' }).getByRole('link', { name: active, exact: true })).toHaveAttribute('aria-current', 'page')
+      if (['Hồ sơ cá nhân', 'Thông báo'].includes(active)) {
+        await expect(page.locator('.vs-breadcrumb strong')).toHaveText(active)
+      } else {
+        await expect(page.getByRole('navigation', { name: 'Điều hướng Tình nguyện viên' }).getByRole('link', { name: active, exact: true })).toHaveAttribute('aria-current', 'page')
+      }
       for (const width of [320, 390, 768, 1280]) {
         await page.setViewportSize({ width, height: 900 })
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1), `${url} at ${width}px`).toBe(true)
@@ -65,8 +68,8 @@ test('Không gian Tình nguyện viên: các trang, lịch sử thật và gửi
       await page.setViewportSize(info.project.use.viewport)
       await page.screenshot({ path: path.join(process.env.E2E_ARTIFACT_DIR, `${info.project.name}-volunteer-${name}.png`), fullPage: true })
     }
-    await page.goto('/tinh-nguyen-vien/phan-hoi')
-    await page.getByRole('link', { name: 'Gửi hoặc xem phản hồi của tôi', exact: true }).click()
+    await page.goto('/tinh-nguyen-vien/lich-su')
+    await page.getByRole('link', { name: 'Gửi phản hồi', exact: true }).click()
     await page.getByRole('button', { name: '5 sao', exact: true }).click()
     await expect(page.getByLabel('Điểm đánh giá (1–5)', { exact: true })).toHaveValue('5')
     await page.getByLabel('Nội dung phản hồi', { exact: true }).fill('Hoạt động thiết thực, mọi người hỗ trợ nhau rất tốt.')
@@ -86,7 +89,7 @@ test('Danh sách cá nhân: lỗi có thể thử lại, trạng thái trống v
   await expect(page).toHaveURL(/\/dang-nhap$/)
   await register(page.request, 'volunteer')
   await page.route('**/api/v1/participations/history/?*', route => route.abort())
-  await page.goto('/tinh-nguyen-vien/phan-hoi')
+  await page.goto('/tinh-nguyen-vien/lich-su')
   await expect(page.getByRole('alert')).toContainText('Không kết nối được máy chủ')
   await page.unroute('**/api/v1/participations/history/?*')
   await page.getByRole('button', { name: 'Thử lại' }).click()

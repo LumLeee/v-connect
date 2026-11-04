@@ -58,7 +58,7 @@ test('Ghép nối hai chiều, tự nguyện xuất hiện và thu hồi quyền
     await consent.check()
     await volunteer.getByRole('button', { name: 'Lưu hồ sơ', exact: true }).click()
     await expect(volunteer.getByText('Đã lưu hồ sơ của bạn.', { exact: true })).toBeVisible()
-    await page.getByRole('button', { name: 'Cập nhật gợi ý', exact: true }).click()
+    await page.getByRole('button', { name: 'Làm mới', exact: true }).click()
     await expect(page.getByRole('heading', { name, exact: true })).toBeVisible()
     const response = await (await page.request.get(`/api/v1/organizer/activities/${id}/matching/`)).json()
     const candidate = response.results.find(row => row.volunteer.full_name === name)
@@ -76,7 +76,7 @@ test('Ghép nối hai chiều, tự nguyện xuất hiện và thu hồi quyền
     await consent.uncheck()
     await volunteer.getByRole('button', { name: 'Lưu hồ sơ', exact: true }).click()
     await expect(volunteer.getByText('Đã lưu hồ sơ của bạn.', { exact: true })).toBeVisible()
-    await page.getByRole('button', { name: 'Cập nhật gợi ý', exact: true }).click()
+    await page.getByRole('button', { name: 'Làm mới', exact: true }).click()
     await expect(page.getByRole('heading', { name, exact: true })).toHaveCount(0)
   } finally { await context.close() }
 })

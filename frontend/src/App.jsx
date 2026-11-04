@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import SiteLayout from './layouts/SiteLayout.jsx'
 import HomePage from './pages/HomePage.jsx'
 import AboutPage from './pages/AboutPage.jsx'
@@ -31,8 +31,11 @@ import ContributionsPage from './pages/ContributionsPage.jsx'
 import MatchingPage from './pages/MatchingPage.jsx'
 import LeaderboardPage from './pages/LeaderboardPage.jsx'
 import InvitationsPage from './pages/InvitationsPage.jsx'
+import ApplicantProfilePage from './pages/ApplicantProfilePage.jsx'
+import useTimeRefresh from './hooks/useTimeRefresh.js'
 
 export default function App() {
+  useTimeRefresh()
   const { user } = useAuth()
   return (
     <Routes>
@@ -42,7 +45,7 @@ export default function App() {
           <Route path="bao-cao/hoat-dong/:id/tong-ket" element={<ActivitySummaryDocumentPage key={user?.id} />} />
           <Route path="thong-bao" element={<NotificationsPage key={user?.id} />} />
           <Route path="bao-cao/mo-rong" element={<AdvancedReportsPage key={user?.id} />} />
-          <Route path="bao-cao" element={<ReportsPage key={`overview-${user?.id}`} />} />
+          <Route path="bao-cao" element={user?.role === 'volunteer' ? <Navigate to="/tinh-nguyen-vien/dong-gop" replace /> : <ReportsPage key={`overview-${user?.id}`} />} />
           <Route path="bao-cao/hoat-dong" element={<ReportsPage key={`activities-${user?.id}`} mode="activities" />} />
           <Route path="bao-cao/hoat-dong/:id" element={<ReportsPage key={`result-${user?.id}`} mode="result" />} />
           <Route path="bao-cao/dang-ky" element={<ReportsPage key={`participations-${user?.id}`} mode="participations" />} />
@@ -58,6 +61,7 @@ export default function App() {
         <Route path="hoat-dong" element={<ActivitiesPage key="public" />} />
         <Route path="hoat-dong/:id" element={<ActivityDetailPage />} />
         <Route element={<RequireRole role="organizer" />}>
+          <Route path="nha-to-chuc/hoat-dong/:id/ung-vien/:entryId/ho-so" element={<ApplicantProfilePage key={user?.id} />} />
           <Route path="nha-to-chuc/hoat-dong/:id/loi-moi" element={<InvitationsPage key={user?.id} managed />} />
           <Route path="nha-to-chuc/hoat-dong/:id/ghep-noi" element={<MatchingPage key={user?.id} managed />} />
           <Route path="nha-to-chuc/ghep-noi" element={<ActivitiesPage key={`matching-${user?.id}`} managed mode="matching" />} />
@@ -87,7 +91,6 @@ export default function App() {
           <Route path="tinh-nguyen-vien/dang-ky" element={<VolunteerParticipations key={`registrations-${user?.id}`} />} />
           <Route path="tinh-nguyen-vien/lich-su" element={<VolunteerParticipations key={`history-${user?.id}`} mode="history" />} />
           <Route path="tinh-nguyen-vien/check-in" element={<VolunteerParticipations key={`checkin-${user?.id}`} mode="checkin" />} />
-          <Route path="tinh-nguyen-vien/phan-hoi" element={<VolunteerParticipations key={`feedback-${user?.id}`} mode="feedback" />} />
         </Route>
         <Route element={<RequireRole role="volunteer" />}><Route path="hoat-dong/:id/phan-hoi" element={<FeedbackPage key={user?.id} />} /></Route>
         <Route element={<RequireRole role="admin" />}><Route path="quan-tri/phan-hoi" element={<FeedbackListPage key={user?.id} admin />} /></Route>

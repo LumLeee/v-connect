@@ -7,6 +7,7 @@ import { apiPost } from '../api/client.js'
 import RequestState from '../components/RequestState.jsx'
 import AttendanceStatus from '../components/AttendanceStatus.jsx'
 import CheckInCamera from '../components/CheckInCamera.jsx'
+import ImagePasteInput from '../components/ImagePasteInput.jsx'
 import '../styles/checkin.css'
 
 function CheckInForm({ entry }) {
@@ -27,6 +28,10 @@ function CheckInForm({ entry }) {
   async function readImage(event) {
     const file = event.target.files?.[0]
     event.target.value = ''
+    await scanImage(file)
+  }
+  async function scanImage(file) {
+    if (busy || scanning) return
     if (!file) return
     setError(''); setToken(''); setScanning(false)
     if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
@@ -46,17 +51,18 @@ function CheckInForm({ entry }) {
       const result = await apiPost(`/activities/${id}/check-in/`, token ? { token } : { code })
       setAttendance(result); setToken(''); setCode('')
       window.dispatchEvent(new Event('notifications:changed'))
-    } catch (problem) { setError(Object.values(problem.details?.error?.details || {}).flat().join(' ') || problem.message) }
+    } catch (problem) { setError(problem.message) }
     finally { setBusy(false) }
   }
   if (attendance) return <><p role="status">Bạn đã check-in thành công.</p><AttendanceStatus entry={{ ...entry, attendance }} /><Link to="/tinh-nguyen-vien/lich-su">Xem lịch sử tham gia</Link></>
   if (entry.status !== 'approved') return <p>Bạn cần có đăng ký được duyệt để check-in.</p>
   if (entry.activity.status !== 'published') return <p>Hoạt động không còn mở check-in.</p>
-  if (!entry.activity.time_checks_disabled && (now < new Date(entry.activity.starts_at) || now >= new Date(entry.activity.ends_at))) return <p>Check-in chỉ mở từ {activityTime(entry.activity.starts_at)} đến {activityTime(entry.activity.ends_at)} (giờ Việt Nam).</p>
+  if (!entry.activity.time_checks_disabled && (now < new Date(entry.activity.starts_at) || now >= new Date(entry.activity.ends_at))) return <p>Check-in chỉ mở từ {activityTime(entry.activity.starts_at)} đến {activityTime(entry.activity.ends_at)}.</p>
   return <form className="checkin-form" onSubmit={submit}>
     <p>Tại hoạt động, quét QR hoặc nhập mã 8 chữ số do Nhà tổ chức cung cấp, sau đó xác nhận check-in.</p>
     <div className="activity-actions"><button type="button" className="button secondary" disabled={busy || scanning} onClick={() => { setError(''); setScanning(true) }}>Mở camera quét QR</button>
       <label className="button secondary checkin-file">Chọn ảnh QR<input type="file" accept="image/png,image/jpeg,image/webp" disabled={busy || scanning} onChange={readImage} /></label></div>
+    <ImagePasteInput label="Dán ảnh QR" onImage={scanImage} disabled={busy || scanning} />
     {scanning && <CheckInCamera onRead={acceptQR} onClose={() => setScanning(false)} />}
     {token ? <div className="activity-empty"><p>Đã nhận QR của hoạt động. Bấm xác nhận để check-in.</p><button className="text-button" type="button" disabled={busy} onClick={() => setToken('')}>Dùng mã nhập thay thế</button></div>
       : <div className="activity-field"><label htmlFor="checkin-code">Mã check-in (8 chữ số)</label><input id="checkin-code" value={code} inputMode="numeric" autoComplete="off" maxLength={8} pattern="[0-9]{8}" required disabled={busy} onChange={event => { setCode(event.target.value.replace(/[^0-9]/g, '')); setError('') }} /></div>}
@@ -69,7 +75,7 @@ export default function CheckInPage() {
   const { id } = useParams()
   const { data, loading, error, retry } = useApi(`/activities/${id}/participation/`)
   return <section className="page-width section interior checkin-page">
-    <Link to="/tinh-nguyen-vien/check-in">← Điểm danh của tôi</Link><h1>Check-in hoạt động</h1>
+    <h1>Check-in hoạt động</h1>
     <RequestState loading={loading} error={error} retry={retry} />
     {data?.participation ? <><h2>{data.participation.activity.title}</h2><CheckInForm key={id} entry={data.participation} /></>
       : data && <p>Bạn chưa đăng ký hoạt động này.</p>}

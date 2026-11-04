@@ -82,7 +82,7 @@ test('Toàn bộ luồng chính qua giao diện với Guest, Volunteer, Organize
     await page.getByRole('button', { name: 'Xác nhận', exact: true }).click()
     await expect(page.locator('.activity-status')).toHaveText('Hoàn thành')
     await volunteer.goto('/tinh-nguyen-vien/lich-su')
-    await volunteer.getByRole('link', { name: 'Gửi hoặc xem phản hồi của tôi', exact: true }).click()
+    await volunteer.getByRole('link', { name: 'Gửi phản hồi', exact: true }).click()
     await volunteer.getByLabel('Điểm đánh giá (1–5)', { exact: true }).fill('5')
     const feedback = `Hoạt động thiết thực ${info.project.name} ${id}`
     await volunteer.getByLabel('Nội dung phản hồi', { exact: true }).fill(feedback)
@@ -122,6 +122,7 @@ test('Mất kết nối có thể thử lại; thay bộ lọc không giữ dữ
   const term = `empty-${randomUUID()}`
   await page.route(`**/api/v1/activities/?*search=${term}*`, async route => { await gate; await route.continue() })
   try {
+    if (await page.locator('.activity-filter-panel').getAttribute('open') === null) await page.locator('.activity-filter-panel > summary').click()
     await page.getByLabel('Tìm theo tên hoạt động', { exact: true }).fill(term)
     await page.getByRole('button', { name: 'Tìm kiếm', exact: true }).click()
     await expect(page.getByText('Đang tải dữ liệu…', { exact: true })).toBeVisible()

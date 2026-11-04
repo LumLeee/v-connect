@@ -26,7 +26,7 @@ function ActiveCode({ data }) {
     {image && <img src={image} alt="QR check-in hoạt động" width="320" height="320" />}
     {error && <p role="alert">{error}</p>}
     <div><p>Mã nhập dự phòng</p><strong className="attendance-short-code" data-testid="attendance-code">{data.code}</strong>
-      {data.time_checks_disabled ? <p>Đang thử nghiệm: tạm bỏ giới hạn thời gian mã. Tạo lại hoặc thu hồi vẫn vô hiệu hóa mã cũ.</p> : <><p>Còn {Math.floor(remaining / 60)} phút {remaining % 60} giây.</p><p>Hết hạn: {activityTime(data.expires_at)} (giờ Việt Nam).</p></>}</div>
+      {data.time_checks_disabled ? <p>Đang thử nghiệm: tạm bỏ giới hạn thời gian mã. Tạo lại hoặc thu hồi vẫn vô hiệu hóa mã cũ.</p> : <><p>Còn {Math.floor(remaining / 60)} phút {remaining % 60} giây.</p><p>Hết hạn: {activityTime(data.expires_at)}.</p></>}</div>
   </div>
 }
 
@@ -37,7 +37,7 @@ export default function AttendanceCodePanel({ id, open }) {
   async function change(revoke = false) {
     setBusy(true); setFailure('')
     try { await apiPost(`/organizer/activities/${id}/attendance-code/${revoke ? 'revoke/' : ''}`, {}); retry() }
-    catch (problem) { setFailure(Object.values(problem.details?.error?.details || {}).flat().join(' ') || problem.message) }
+    catch (problem) { setFailure(problem.message) }
     finally { setBusy(false) }
   }
   return <section className="attendance-code-panel" aria-label="Mã check-in">
@@ -49,6 +49,6 @@ export default function AttendanceCodePanel({ id, open }) {
     {data && !data.active && <p>Hiện không có mã còn hiệu lực.</p>}
     <div className="activity-actions"><button className="button primary" disabled={busy || !open} onClick={() => change()}>Tạo mã mới</button>
       <button className="button secondary" disabled={busy || !data?.active} onClick={() => change(true)}>Thu hồi mã</button>
-      <button className="text-button" disabled={busy} onClick={retry}>Cập nhật mã hiện tại</button></div>
+      <button type="button" className="button secondary refresh-button" disabled={busy} onClick={retry}>Làm mới</button></div>
   </section>
 }

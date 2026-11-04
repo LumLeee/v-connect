@@ -1,4 +1,25 @@
 .matching-score { display:inline-block; background:#e9f3ec; color:#2c6849; border-radius:20px; padding:7px 12px; font-size:12px; font-weight:700; margin-bottom:16px; }
 .matching-card ul { padding-left:20px; font-size:13px; line-height:1.8; color:#526e5e; overflow-wrap:anywhere; }.matching-card li + li { margin-top:8px; }
 .matching-breakdown { border-top:1px solid #e1e9e4; padding-top:14px; }.matching-page .activity-empty p:last-child { margin-bottom:0; }
-.matching-card textarea { display:block; width:100%; min-height:90px; margin-top:8px; padding:10px; border:1px solid #cbd8cf; border-radius:8px; resize:vertical; font:inherit; box-sizing:border-box; }
+.matching-invitation-form label { display: block; }
+.matching-invitation-form textarea { display:block; width:100%; min-height:110px; margin-top:8px; padding:12px; border:1px solid #cbd8cf; border-radius:8px; resize:vertical; font:inherit; box-sizing:border-box; }
+.matching-card-actions { display: flex; align-items: flex-start; gap: 12px; }
+.matching-card-actions > * { min-width: 0; }
+.matching-card-actions > .button, .matching-card-actions > div > .button { white-space: normal; }
+.matching-toolbar { display: flex; align-items: center; gap: 12px; }
+.activity-grid.matching-activity-list { grid-template-columns: minmax(0, 1fr); }
+.matching-activity-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; }
+.matching-activity-row .matching-score { margin: 0; }
+.matching-activity-row .matching-card-info { min-width: 0; overflow-wrap: anywhere; }
+.matching-activity-row .matching-card-info h2 { margin-top: 0; }
+.matching-activity-row .matching-card-info p { margin-bottom: 0; }
+.matching-activity-row .matching-card-actions { align-items: center; justify-content: flex-end; justify-self: end; max-width: 300px; }
+@media (max-width: 1000px) {
+  .matching-activity-row { grid-template-columns: auto minmax(0, 1fr); gap: 16px; }
+  .matching-activity-row .matching-card-actions { grid-column: 1 / -1; max-width: none; }
+}
+@media (max-width: 560px) {
+  .matching-activity-row { grid-template-columns: minmax(0, 1fr); }
+  .matching-activity-row .matching-score { justify-self: start; }
+  .matching-activity-row .matching-card-actions { justify-self: start; justify-content: flex-start; }
+}

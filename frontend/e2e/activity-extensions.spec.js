@@ -47,6 +47,7 @@ test('Kỹ năng, ảnh bìa và bộ lọc kết hợp hoạt động', async (
     await expect(page.getByRole('button', { name: 'Công khai hoạt động', exact: true })).toHaveCount(0)
     const publicPage = await guest.newPage()
     await publicPage.goto('/hoat-dong')
+    if (await publicPage.locator('.activity-filter-panel').getAttribute('open') === null) await publicPage.locator('.activity-filter-panel > summary').click()
     await publicPage.getByLabel('Tìm theo tên hoạt động').fill(title)
     await expect(publicPage.getByLabel('Trạng thái hoạt động')).toHaveCount(0)
     await publicPage.getByLabel('Ngày bắt đầu từ').fill(day)
@@ -57,6 +58,7 @@ test('Kỹ năng, ảnh bìa và bộ lọc kết hợp hoạt động', async (
     await expect(publicPage.locator('.activity-card')).toHaveCount(1)
     await expect(publicPage.getByRole('img', { name: 'Ảnh bìa hoạt động' })).toBeVisible()
     await publicPage.reload()
+    await publicPage.locator('.activity-filter-panel > summary').click()
     await expect(publicPage.getByLabel('Kỹ năng yêu cầu', { exact: true })).toContainText('Giao tiếp')
     const skill = (await (await publicPage.request.get('/api/v1/skills/?page_size=100')).json()).results.find(item => item.name === 'Giao tiếp')
     await expect(publicPage.getByLabel('Kỹ năng yêu cầu', { exact: true })).toHaveValue(String(skill.id))
@@ -80,6 +82,7 @@ test('Kỹ năng, ảnh bìa và bộ lọc kết hợp hoạt động', async (
     await page.getByRole('button', { name: 'Xóa ảnh bìa' }).click()
     await expect(page.getByRole('img', { name: 'Ảnh bìa hoạt động' })).toHaveCount(0)
     await publicPage.reload()
+    await publicPage.locator('.activity-filter-panel > summary').click()
     await expect(publicPage.getByRole('heading', { name: title, exact: true })).toBeVisible()
     await expect(publicPage.getByRole('img', { name: 'Ảnh bìa hoạt động' })).toHaveCount(0)
   } finally { await guest.close() }

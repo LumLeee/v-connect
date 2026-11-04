@@ -30,3 +30,12 @@
   .notification-card-title { flex-direction: column; gap: 8px; }
   .site-header .header-auth { flex-wrap: wrap; }
 }
+.notification-bell-ringing { transform-origin: 50% 15%; animation: notification-ring 1s ease-in-out; }
+@keyframes notification-ring {
+  0%, 100% { transform: rotate(0); }
+  15%, 45% { transform: rotate(18deg); }
+  30%, 60% { transform: rotate(-18deg); }
+  75% { transform: rotate(10deg); }
+  90% { transform: rotate(-6deg); }
+}
+@media (prefers-reduced-motion: reduce) { .notification-bell-ringing { animation: none; } }

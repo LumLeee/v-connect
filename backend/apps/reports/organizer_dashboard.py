@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.accounts.profile_serializers import ProfileSerializer
+from apps.activities import time_policy
 from apps.activities.views import IsOrganizer
 from . import services
 
@@ -43,8 +44,10 @@ class OrganizerDashboard(APIView):
         preview = activities.annotate(approved_count=Count('participations', filter=Q(participations__status='approved')))
         ongoing = preview.filter(status='published', starts_at__lte=now, ends_at__gte=now).order_by('ends_at', 'id')
         upcoming = preview.filter(status='published', starts_at__gt=now).order_by('starts_at', 'id')
-        pending = services.participations_for(request.user).filter(status='pending', activity__status='published',
-            activity__starts_at__gt=now).select_related('activity', 'volunteer').order_by('activity__starts_at', 'registered_at', 'id')
+        pending = services.participations_for(request.user).filter(status='pending', activity__status='published')
+        if time_policy.enabled():
+            pending = pending.filter(activity__starts_at__gt=now)
+        pending = pending.select_related('activity', 'volunteer').order_by('activity__starts_at', 'registered_at', 'id')
         return Response({
             'profile': ProfileSerializer(request.user).data,
             'activity_counts': counts,

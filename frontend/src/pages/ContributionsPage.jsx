@@ -1,3 +1,5 @@
+import ActionRow from '../components/ActionRow.jsx'
+import RecordDetails from '../components/RecordDetails.jsx'
 import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
@@ -6,6 +8,8 @@ import { apiPost } from '../api/client.js'
 import { activityTime } from '../api/activityFormat.js'
 import RequestState from '../components/RequestState.jsx'
 import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
+import VolunteerStatistics from '../components/VolunteerStatistics.jsx'
+import MyContributions from '../components/MyContributions.jsx'
 import { ReportPagination } from '../components/ReportMetrics.jsx'
 import '../styles/activities.css'
 import '../styles/contributions.css'
@@ -33,26 +37,32 @@ function Contributions({ managed = false }) {
   const [failure, setFailure] = useState('')
   const [message, setMessage] = useState('')
   const [history, setHistory] = useState(null)
-  function refresh() { setPending(null); setHistory(null); retry() }
+  const [statisticsVersion, setStatisticsVersion] = useState(0)
+  function refresh() { setPending(null); setHistory(null); setStatisticsVersion(value => value + 1); retry() }
   function movePage(value) { setPending(null); setHistory(null); setParams({ page: String(value) }) }
   async function save(event) {
     event.preventDefault(); setBusy(true); setFailure(''); setMessage('')
     try {
       await apiPost(`/organizer/activities/${id}/contributions/${pending.id}/`, { score: Number(score), revision: pending.contribution?.revision || 0, reason })
       setMessage('Đã lưu điểm đóng góp và lịch sử xác nhận.'); refresh()
-    } catch (problem) { setFailure(Object.values(problem.details?.error?.details || {}).flat().join(' ') || problem.message) }
+    } catch (problem) { setFailure(problem.message) }
     finally { setBusy(false) }
   }
+  if (!managed) return <MyContributions data={data} loading={loading} error={error} refresh={refresh} page={page} movePage={movePage}
+    statisticsVersion={statisticsVersion} onHistory={setHistory}
+    historyPanel={history && <ConfirmationDialog title="Lịch sử điều chỉnh đóng góp" onClose={() => setHistory(null)}><History key={history.id} entry={history} close={() => setHistory(null)} /></ConfirmationDialog>} />
   return <section className="page-width section interior activity-page">
-    <Link className="activity-back" to={managed ? `/nha-to-chuc/hoat-dong/${id}` : '/tinh-nguyen-vien'}>← {managed ? 'Về hoạt động' : 'Về tổng quan'}</Link>
+
     <h1>{managed ? 'Xác nhận đóng góp' : 'Đóng góp của tôi'}</h1>
-    <p>Chỉ tính người đã được duyệt, có điểm danh và hoạt động Hoàn thành. Nhà tổ chức chấm điểm nguyên từ 0–10 cho từng người, không tự suy ra từ thời lượng hoạt động.</p>
+
     <p><Link className="button secondary" to="/bang-xep-hang">Xem bảng xếp hạng và cấp bậc</Link></p>
     {managed && <OrganizerActivityHeader id={id} selected="contributions" />}
-    <button className="text-button" disabled={busy} onClick={refresh}>Cập nhật đóng góp</button>
+    <div className="list-results-toolbar">{data && <p>{data.count} lượt tham gia đủ điều kiện.</p>}<button type="button" className="button secondary refresh-button" disabled={busy} onClick={refresh}>Làm mới</button></div>
     <RequestState loading={loading} error={error} retry={retry} />
     {message && <p role="status">{message}</p>}{failure && <p role="alert" className="request-error">{failure}</p>}
     {data?.summary && <div className="contribution-summary" aria-label="Tổng hợp đóng góp"><div><span>Tổng điểm đóng góp</span><strong>{points(data.summary.score)}</strong></div><div><span>Hoạt động đã xác nhận</span><strong>{data.summary.confirmed}</strong></div><div><span>Hoạt động chờ xác nhận</span><strong>{data.summary.pending}</strong></div></div>}
+    {!managed && <VolunteerStatistics key={statisticsVersion} />}
+    {!managed && <h2>Chi tiết đóng góp</h2>}
     {pending && <ConfirmationDialog title="Xác nhận điểm đóng góp" busy={busy} onClose={() => setPending(null)}><form className="activity-confirm" aria-label="Xác nhận điểm đóng góp" onSubmit={save}>{failure && <p role="alert" className="request-error">{failure}</p>}<h2>{pending.contribution ? 'Điều chỉnh' : 'Xác nhận'} · {pending.volunteer_name}</h2>
       <p>Chấm điểm nguyên từ 0 đến 10. Điểm 0 là đã chấm; chưa chấm được hiển thị riêng.</p>
       <div className="activity-field"><label htmlFor="contribution-score">Điểm đóng góp</label><input id="contribution-score" type="number" min="0" max={pending.activity.max_score} step="1" required disabled={busy} value={score} onChange={event => setScore(event.target.value)} /></div>
@@ -60,13 +70,13 @@ function Contributions({ managed = false }) {
       <button className="button primary" disabled={busy || score === '' || (Boolean(pending.contribution) && !reason.trim())}>Lưu đóng góp</button>{' '}<button className="button secondary" type="button" disabled={busy} onClick={() => setPending(null)}>Hủy chỉnh sửa</button>
     </form></ConfirmationDialog>}
     {history && <History key={history.id} entry={history} close={() => setHistory(null)} />}
-    {data && <><p>{data.count} lượt tham gia đủ điều kiện.</p>{!data.count && <p className="activity-empty">Chưa có lượt tham gia đủ điều kiện xác nhận đóng góp.</p>}
-      <div className="activity-grid">{data.results.map(entry => <article className="activity-card" key={entry.id}><h2>{managed ? entry.volunteer_name : entry.activity.title}</h2><p>{managed ? entry.activity.title : entry.activity.organizer_name} · {activityTime(entry.activity.starts_at)}</p>
+    {data && <>{!data.count && <p className="activity-empty">Chưa có lượt tham gia đủ điều kiện xác nhận đóng góp.</p>}
+      <div className="activity-grid">{data.results.map(entry => <ActionRow className="activity-card" key={entry.id}><h2>{managed ? entry.volunteer_name : entry.activity.title}</h2><p>{managed ? entry.activity.title : entry.activity.organizer_name} · {activityTime(entry.activity.starts_at)}</p>
         <p>{entry.contribution ? <>Được công nhận: <strong>{points(entry.contribution.score)}</strong></> : 'Chờ Nhà tổ chức chấm điểm.'}</p>
-        {entry.contribution && <p>Người xác nhận: {entry.contribution.confirmed_by_name} · {activityTime(entry.contribution.updated_at)}</p>}
+        <RecordDetails title={managed ? entry.volunteer_name : entry.activity.title}><p>Hoạt động: {entry.activity.title}</p><p>Nhà tổ chức: {entry.activity.organizer_name}</p><p>Bắt đầu: {activityTime(entry.activity.starts_at)}</p>{entry.contribution ? <><p>Điểm đóng góp: {points(entry.contribution.score)}</p><p>Người xác nhận: {entry.contribution.confirmed_by_name} · {activityTime(entry.contribution.updated_at)}</p></> : <p>Chưa chấm điểm đóng góp.</p>}</RecordDetails>
         <div className="activity-actions">{managed && <button className="button primary" disabled={busy} onClick={() => { setPending(entry); setScore(entry.contribution ? String(entry.contribution.score) : ''); setReason(''); setFailure(''); setMessage(''); setHistory(null) }}>{entry.contribution ? 'Điều chỉnh đóng góp' : 'Xác nhận đóng góp'}</button>}
         {entry.contribution && <button className="button secondary" disabled={busy} onClick={() => { setHistory(entry); setPending(null) }}>Xem lịch sử điều chỉnh</button>}</div>
-      </article>)}</div><ReportPagination data={data} page={page} busy={busy} onPage={movePage} /></>}
+      </ActionRow>)}</div><ReportPagination data={data} page={page} busy={busy} onPage={movePage} /></>}
   </section>
 }
 

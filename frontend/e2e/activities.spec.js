@@ -46,6 +46,7 @@ test('Organizer tạo, sửa, công khai, khách tìm xem và hủy hoạt độ
     await expect(page.getByRole('button', { name: 'Hoàn thành hoạt động' })).toBeDisabled()
     const publicPage = await guest.newPage()
     await publicPage.goto('/hoat-dong')
+    if (await publicPage.locator('.activity-filter-panel').getAttribute('open') === null) await publicPage.locator('.activity-filter-panel > summary').click()
     await publicPage.getByLabel('Tìm theo tên hoạt động').fill(title)
     await publicPage.getByRole('button', { name: 'Tìm kiếm', exact: true }).click()
     await publicPage.getByRole('link', { name: title, exact: true }).click()

@@ -44,7 +44,7 @@ def report_workbook(report):
     summary.title = 'Tổng quan'
     append_row(summary, ['Chỉ tiêu', 'Giá trị'])
     metadata = [('Báo cáo', 'V-Connect — Báo cáo hoạt động'), ('Phạm vi', report['scope']),
-                ('Lập lúc (giờ Việt Nam)', report['generated_at']), ('Số hoạt động', report['activity_count'])]
+                ('Lập lúc', report['generated_at']), ('Số hoạt động', report['activity_count'])]
     filter_labels = {'search': 'Từ khóa', 'status': 'Trạng thái', 'date_from': 'Ngày bắt đầu từ',
                      'date_to': 'Ngày bắt đầu đến', 'organizer': 'ID Nhà tổ chức'}
     for key, value in report['filters'].items():
@@ -61,7 +61,7 @@ def report_workbook(report):
         append_row(summary, [f'Đánh giá {rating} sao', count])
     append_row(summary, ['Quy tắc', 'Mỗi người/hoạt động tính một đơn hiện tại; đăng ký lại không tăng số đơn. '
                 'Đã tham gia chỉ tính Hoàn thành, được duyệt và có điểm danh. Phản hồi bị ẩn không tính. '
-                'Lọc và nhóm tháng theo ngày bắt đầu hoạt động (giờ Việt Nam), không phải ngày gửi đơn.'])
+                'Lọc và nhóm tháng theo ngày bắt đầu hoạt động, không phải ngày gửi đơn.'])
     style_table(summary, [38, 105])
     summary.row_dimensions[summary.max_row].height = 60
     details = workbook.create_sheet('Hoạt động')

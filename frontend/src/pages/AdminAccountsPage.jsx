@@ -1,3 +1,5 @@
+import ActionRow from '../components/ActionRow.jsx'
+import RecordDetails from '../components/RecordDetails.jsx'
 import ConfirmationDialog from '../components/ConfirmationDialog.jsx'
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -24,12 +26,12 @@ export default function AdminAccountsPage() {
       await apiPost(`/admin/accounts/${pending.id}/status/`, { is_active: !pending.is_active, reason })
       setMessage(`Đã ${pending.is_active ? 'khóa' : 'mở khóa'} tài khoản và lưu lý do.`)
       setPending(null); setReason(''); movePage(1); retry()
-    } catch (problem) { setFailure(Object.values(problem.details?.error?.details || {}).flat().join(' ') || problem.message) }
+    } catch (problem) { setFailure(problem.message) }
     finally { setBusy(false) }
   }
   return <section className="page-width section interior activity-page">
-    <Link className="activity-back" to="/quan-tri">← Về quản trị</Link><h1>Quản lý tài khoản</h1>
-    <p>Khóa/mở khóa Volunteer và Organizer cần lý do. Tài khoản được mở khóa phải đăng nhập lại. Tài khoản Admin được bảo vệ.</p>
+    <h1>Quản lý tài khoản</h1>
+
     <form className="activity-search" onSubmit={event => { event.preventDefault(); const form = new FormData(event.currentTarget); setPending(null); setParams({ search: form.get('search'), role: form.get('role'), status: form.get('status'), page: '1' }) }}>
       <label htmlFor="account-search">Tìm họ tên, email hoặc username</label><input id="account-search" name="search" maxLength={200} defaultValue={params.get('search') || ''} />
       <label htmlFor="account-role">Vai trò</label><select id="account-role" name="role" defaultValue={params.get('role') || ''}><option value="">Tất cả</option>{Object.entries(roleLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select>
@@ -45,10 +47,10 @@ export default function AdminAccountsPage() {
       <button className="button secondary" type="button" disabled={busy} onClick={() => setPending(null)}>Quay lại</button>
     </form></ConfirmationDialog>}
     {data && <><p>{data.count} tài khoản.</p>{!data.count && <p className="activity-empty">Chưa có tài khoản phù hợp.</p>}
-      <div className="activity-grid">{data.results.map(entry => <article className="activity-card ad-account-row" key={entry.id}>
-        <div><h2>{entry.full_name}</h2><p>{entry.email || entry.username}</p></div><div><p>{roleLabels[entry.role]}</p><span className={`ad-account-state${entry.is_active ? '' : ' locked'}`}>Trạng thái: {entry.is_active ? 'Hoạt động' : 'Bị khóa'}</span>{entry.role === 'admin' && <p>Tài khoản được bảo vệ</p>}</div>
+      <div className="activity-grid">{data.results.map(entry => <ActionRow className="activity-card ad-account-row" key={entry.id}>
+        <div><h2>{entry.full_name}</h2><RecordDetails title={entry.full_name}><p>Họ tên: {entry.full_name}</p><p>Email hoặc username: {entry.email || entry.username}</p><p>Vai trò: {roleLabels[entry.role]}</p><p>Trạng thái: {entry.is_active ? "Hoạt động" : "Bị khóa"}</p></RecordDetails></div><div><p>{roleLabels[entry.role]}</p><span className={`ad-account-state${entry.is_active ? '' : ' locked'}`}>Trạng thái: {entry.is_active ? 'Hoạt động' : 'Bị khóa'}</span>{entry.role === 'admin' && <p>Tài khoản được bảo vệ</p>}</div>
         {entry.role !== 'admin' && <button className="button secondary" disabled={busy} onClick={() => { setPending(entry); setReason(''); setFailure(''); setMessage('') }}>{entry.is_active ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}</button>}
-      </article>)}</div><ReportPagination data={data} page={page} busy={busy} onPage={movePage} /></>}
+      </ActionRow>)}</div><ReportPagination data={data} page={page} busy={busy} onPage={movePage} /></>}
     <p><Link to="/quan-tri/nhat-ky">Xem nhật ký thao tác</Link></p>
   </section>
 }

@@ -15,6 +15,24 @@
 .activity-heading, .activity-actions, .activity-pagination { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
 .activity-heading { justify-content: space-between; margin-bottom: 1.5rem; }
 .activity-heading h1 { margin-bottom: 0; }
+.activity-filter-panel { margin: 24px 0; }
+.action-row { cursor: pointer; transition: box-shadow .15s, border-color .15s; }
+.action-row:hover { box-shadow: 0 3px 16px #245f4618; }
+.action-row:focus-visible { outline: 3px solid #d89d37; outline-offset: 4px; }
+.activity-card > h2, .activity-card-content > h2, .om-activity-row h2, .vs-participation-row h2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.activity-filter-panel > summary { list-style: none; width: fit-content; cursor: pointer; }
+.activity-filter-panel > summary::-webkit-details-marker { display: none; }
+.activity-filter-panel > summary:focus-visible { outline: 3px solid #d89d37; outline-offset: 4px; }
+.activity-filter-panel .filter-hide-label { display: none; }
+.activity-filter-panel[open] .filter-show-label { display: none; }
+.activity-filter-panel[open] .filter-hide-label { display: inline; }
+.activity-filter-panel[open] .filter-toggle-icon { transform: rotate(180deg); }
 .activity-search { margin: 1.5rem 0; max-width: 680px; }
 .activity-search label, .activity-field label { display: block; margin-bottom: .6rem; font-weight: 600; }
 .activity-search > div { display: flex; gap: .75rem; }
@@ -116,3 +134,7 @@
   .activity-visual.large { height: 190px; }
   .activity-public-detail .activity-back { font-size: 13px; }
 }
+.activity-actions.participation-review-actions { flex-wrap: nowrap; gap: 10px; }
+.activity-actions.participation-review-actions > .button { width: auto; min-width: 0; flex: 1; padding-inline: 12px; white-space: nowrap; }
+.activity-editor .activity-day-option { display: flex; align-items: center; gap: 10px; margin-block: 16px; font-size: 14px; }
+.activity-editor .activity-day-option input { width: auto; margin: 0; accent-color: #174f44; }

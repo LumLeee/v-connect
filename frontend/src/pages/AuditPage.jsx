@@ -1,3 +1,4 @@
+import ActionRow from '../components/ActionRow.jsx'
 import { Link, useSearchParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
@@ -7,7 +8,6 @@ import '../styles/activities.css'
 import '../styles/audit.css'
 
 const actions = { account_locked: 'Khóa tài khoản', account_unlocked: 'Mở khóa tài khoản', review_approved: 'Duyệt đăng ký', review_rejected: 'Từ chối đăng ký', attendance_confirmed: 'Xác nhận có mặt', attendance_code_issued: 'Tạo mã điểm danh', attendance_code_revoked: 'Thu hồi mã điểm danh', feedback_hidden: 'Ẩn phản hồi', activity_created: 'Tạo hoạt động', activity_updated: 'Sửa hoạt động', activity_status_changed: 'Đổi trạng thái hoạt động', activity_cover_changed: 'Đổi ảnh bìa', contribution_confirmed: 'Xác nhận đóng góp', contribution_updated: 'Điều chỉnh đóng góp' }
-const errorText = value => typeof value === 'string' ? value : Object.values(value || {}).map(errorText).join(' ')
 actions.invitation_sent = 'Gửi lời mời'
 actions.invitation_accepted = 'Chấp nhận lời mời'
 actions.invitation_declined = 'Từ chối lời mời'
@@ -23,8 +23,7 @@ export default function AuditPage() {
   }
   function changePage(value) { const next = new URLSearchParams(params); next.set('page', String(value)); setParams(next) }
   return <section className="page-width section interior activity-page">
-    <Link className="activity-back" to="/quan-tri">← Về quản trị</Link><h1>Nhật ký thao tác</h1>
-    <p>Tra cứu thao tác và thay đổi trước–sau. Bộ lọc ngày dùng giờ Việt Nam, tính cả ngày bắt đầu và kết thúc. Nhật ký cũ chưa có bản chụp dữ liệu vẫn được giữ nguyên.</p>
+    <h1>Nhật ký thao tác</h1>
     <form className="audit-filters" key={params.toString()} onSubmit={filter}>
       <div className="audit-filter-grid"><div className="activity-field"><label htmlFor="audit-action">Loại thao tác</label><select name="action" id="audit-action" defaultValue={params.get('action') || ''} onChange={event => event.currentTarget.form.requestSubmit()}>
         <option value="">Tất cả</option>{Object.entries(actions).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></div>
@@ -36,13 +35,13 @@ export default function AuditPage() {
       </div></details>
       <div className="activity-actions"><button className="button primary">Áp dụng bộ lọc</button><button className="button secondary" type="button" onClick={() => setParams({})}>Xóa bộ lọc</button></div>
     </form>
-    <button className="text-button" onClick={retry}>Cập nhật nhật ký</button><RequestState loading={loading} error={error?.status === 400 ? { ...error, message: errorText(error.details?.error?.details) || error.message } : error} retry={retry} />
-    {data && <><p>{data.count} thao tác.</p>{!data.count && <p className="activity-empty">Chưa có thao tác phù hợp.</p>}
-      <div className="activity-grid">{data.results.map(entry => <article className="activity-card ad-audit-row" key={entry.id}>
+    <div className="list-results-toolbar">{data && <p>{data.count} thao tác.</p>}<button type="button" className="button secondary refresh-button" onClick={retry}>Làm mới</button></div><RequestState loading={loading} error={error} retry={retry} />
+    {data && <>{!data.count && <p className="activity-empty">Chưa có thao tác phù hợp.</p>}
+      <div className="activity-grid">{data.results.map(entry => <ActionRow className="activity-card ad-audit-row" key={entry.id}>
         <h2>{entry.action_label}</h2><p>Người thực hiện: {entry.actor_name}</p>{entry.subject_name && <p>Tài khoản liên quan: {entry.subject_name}</p>}
-        {entry.activity_title && <p>Hoạt động: {entry.activity_title}</p>}{entry.reason && <p className="activity-description">Lý do: {entry.reason}</p>}
-        <time dateTime={entry.created_at}>{activityTime(entry.created_at)} (giờ Việt Nam)</time>
+        {entry.activity_title && <p>Hoạt động: {entry.activity_title}</p>}
+        <time dateTime={entry.created_at}>{activityTime(entry.created_at)}</time>
         <p><Link to={`/quan-tri/nhat-ky/${entry.id}?${params}`}>Xem chi tiết thao tác</Link></p>
-      </article>)}</div><ReportPagination data={data} page={page} onPage={changePage} /></>}
+      </ActionRow>)}</div><ReportPagination data={data} page={page} onPage={changePage} /></>}
   </section>
 }

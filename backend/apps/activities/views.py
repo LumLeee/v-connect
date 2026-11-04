@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 
 from .models import Activity
 from .time_policy import enabled, ended
-from .serializers import ActivitySerializer, TransitionSerializer
+from .serializers import ActivitySerializer, ManagedActivityListSerializer, TransitionSerializer
 from .filters import filter_activities
 from apps.notifications.services import notify_participants
 from apps.participations.models import AttendanceCode
@@ -60,10 +60,20 @@ class PublicDetail(generics.RetrieveAPIView):
 @method_decorator(never_cache, name='dispatch')
 class ManagedList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsOrganizer]
-    serializer_class = ActivitySerializer
+    serializer_class = ManagedActivityListSerializer
 
     def get_queryset(self):
-        return filter_activities(search(activities().filter(organizer=self.request.user), self.request), self.request, managed=True)
+        queryset = activities().filter(organizer=self.request.user).annotate(
+            matching_approved=Count('participations', filter=Q(participations__status='approved'), distinct=True),
+            registration_count=Count('participations', distinct=True),
+            pending_count=Count('participations', filter=Q(participations__status='pending'), distinct=True),
+            attendance_count=Count('participations__attendance', distinct=True),
+            feedback_count=Count('participations__attendance__feedback',
+                filter=Q(participations__attendance__feedback__is_hidden=False), distinct=True),
+            contribution_count=Count('participations__attendance__contribution', distinct=True),
+            invitation_count=Count('invitations', distinct=True),
+        )
+        return filter_activities(search(queryset, self.request), self.request, managed=True)
 
     def perform_create(self, serializer):
         with transaction.atomic():

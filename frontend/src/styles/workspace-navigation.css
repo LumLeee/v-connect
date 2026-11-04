@@ -1,0 +1,33 @@
+.od-shell.workspace-shell { display: grid; grid-template-columns: 228px minmax(0, 1fr); }
+.od-shell.workspace-shell.menu-closed { grid-template-columns: minmax(0, 1fr); }
+.workspace-shell .od-sidebar[hidden] { display: none !important; }
+.workspace-shell .od-sidebar { min-width: 0; }
+.workspace-topbar-start { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.workspace-topbar-start > div { min-width: 0; overflow-wrap: anywhere; }
+.workspace-menu-toggle, .workspace-sidebar-close { width: 40px; height: 40px; flex-shrink: 0; display: inline-grid; place-items: center; border: 1px solid #dce6df; border-radius: 9px; background: white; color: #285f4d; cursor: pointer; }
+.workspace-menu-toggle:hover, .workspace-sidebar-close:hover { background: #edf5ef; }
+.workspace-menu-toggle:focus-visible, .workspace-sidebar-close:focus-visible { outline: 2px solid #37785f; outline-offset: 3px; }
+.workspace-sidebar-close { display: none; }
+.workspace-menu-backdrop { position: fixed; inset: 0; z-index: 100; border: 0; border-radius: 0; background: #102c3566; padding: 0; cursor: pointer; }
+@media (min-width: 1500px) { .od-shell.workspace-shell:not(.menu-closed) { grid-template-columns: 250px minmax(0, 1fr); } }
+@media (max-width: 1050px) {
+  .od-shell.workspace-shell { grid-template-columns: minmax(0, 1fr); }
+  .workspace-shell .od-sidebar { position: fixed; inset: 0 auto 0 0; z-index: 101; width: min(310px, calc(100vw - 40px)); height: 100dvh; box-sizing: border-box; padding: 26px 20px; overflow-y: auto; overscroll-behavior: contain; border-right: 1px solid #dce6df; border-bottom: 0; gap: 18px; box-shadow: 12px 0 40px #102c3520; }
+  .workspace-shell .od-brand { margin-right: 36px; font-size: 22px; }
+  .workspace-sidebar-close { display: inline-grid; position: absolute; top: 24px; right: 12px; width: 34px; height: 34px; }
+  .workspace-shell .od-sidebar nav { grid-template-columns: minmax(0, 1fr); gap: 5px; }
+  .workspace-shell .od-sidebar nav a { font-size: 13px; padding: 12px 10px; }
+  .workspace-shell .od-logout { position: static; align-self: flex-start; font-size: 13px; }
+  .workspace-shell .od-home-link { display: block; }
+  .workspace-shell .od-sidebar-account { margin-top: 10px; }
+}
+@media (max-width: 700px) {
+  .workspace-shell .od-topbar { padding-inline: 14px; gap: 10px; }
+  .workspace-topbar-start { gap: 9px; }
+  .workspace-topbar-start .om-breadcrumb, .workspace-topbar-start .vs-breadcrumb { font-size: 10px; gap: 6px; }
+  .workspace-shell .od-topbar-account { flex-shrink: 0; }
+}
+@media print {
+  .od-shell.workspace-shell { display: block; }
+  .workspace-shell .od-sidebar, .workspace-menu-backdrop, .workspace-menu-toggle { display: none !important; }
+}

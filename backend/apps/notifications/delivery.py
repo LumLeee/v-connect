@@ -34,7 +34,7 @@ def create_reminders(limit=200):
                     continue
                 local_start = timezone.localtime(activity.starts_at).strftime('%H:%M ngày %d/%m/%Y')
                 notify(entry.volunteer, 'reminder', 'Sắp đến giờ tham gia hoạt động',
-                       f'“{activity.title}” bắt đầu lúc {local_start} (giờ Việt Nam). Địa điểm: {activity.address}.',
+                       f'“{activity.title}” bắt đầu lúc {local_start}. Địa điểm: {activity.address}.',
                        activity, dedupe_key=key, reminder={'reminder_participation': entry,
                            'reminder_starts_at': activity.starts_at, 'reminder_reviewed_at': entry.reviewed_at})
                 created += 1

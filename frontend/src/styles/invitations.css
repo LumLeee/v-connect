@@ -1,0 +1,14 @@
+.activity-grid.invitation-list { grid-template-columns: minmax(0, 1fr); }
+.invitation-row { display: grid; grid-template-columns: minmax(0, 1.5fr) auto minmax(0, 1.2fr); align-items: center; gap: 24px; }
+.invitation-row > div { min-width: 0; overflow-wrap: anywhere; }
+.invitation-row .activity-actions { margin: 0; justify-content: flex-end; gap: 10px; }
+.invitation-row .activity-actions .button { padding-inline: 14px; }
+@media (max-width: 1000px) {
+  .invitation-row { grid-template-columns: minmax(0, 1fr) auto; gap: 16px; }
+  .invitation-row .activity-actions { grid-column: 1 / -1; justify-content: flex-start; }
+}
+@media (max-width: 560px) {
+  .invitation-row { grid-template-columns: minmax(0, 1fr); }
+  .invitation-row .activity-actions { flex-wrap: nowrap; }
+  .invitation-row .activity-actions > .button { width: auto; flex: 1; min-width: 0; }
+}

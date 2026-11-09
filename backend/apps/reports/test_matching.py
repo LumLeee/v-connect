@@ -2,7 +2,7 @@ from datetime import datetime, time, timedelta
 from types import SimpleNamespace
 
 from django.core.cache import cache
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
@@ -30,6 +30,7 @@ class AvailabilityTests(SimpleTestCase):
         self.assertIsNone(availability_ratio(SimpleNamespace(starts_at=monday, ends_at=monday), []))
 
 
+@override_settings(MATCHING_AI_ENABLED=False)
 class MatchingTests(APITestCase):
     def setUp(self):
         cache.clear()

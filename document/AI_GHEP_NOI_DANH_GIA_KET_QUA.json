@@ -1,0 +1,376 @@
+{
+  "timestamp_utc": "2026-11-08T14:32:31.597937+00:00",
+  "dataset_version": 1,
+  "provenance": "Dữ liệu tổng hợp do người triển khai gán nhãn; không chứa hồ sơ hay hoạt động thật.",
+  "limitations": [
+    "Chỉ có 20 cặp kiểm tra thủ công, chưa đại diện dữ liệu vận hành.",
+    "Hai hoạt động trong mỗi cặp không có lịch rảnh; điểm lịch cùng bằng 0.",
+    "Năm ca literal_control có tiêu chí khớp trực tiếp để kiểm tra baseline; 15 ca paraphrase tập trung vào cách diễn đạt khác nhau. Báo cáo riêng hai nhóm để không nhầm thành hiệu năng toàn bộ hệ thống.",
+    "Nhãn là mức phù hợp tương đối, không khẳng định hoạt động âm hoàn toàn không phù hợp.",
+    "Các chẩn đoán phủ định và hồ sơ rỗng tách khỏi chỉ số chất lượng chính; embeddings có thể hiểu sai phủ định.",
+    "Không điều chỉnh dữ liệu, trọng số hoặc ngưỡng theo kết quả chạy trên bộ này. Cần bộ đánh giá độc lập trước khi hiệu chỉnh."
+  ],
+  "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "text_representation": "profile skills/interests; activity title/description/required skills; no availability or personal/contact fields",
+  "embedding_elapsed_seconds": 4.032000000006519,
+  "semantic_threshold": 0.35,
+  "semantic": {
+    "cases": 20,
+    "wins": 19,
+    "ties": 0,
+    "losses": 1,
+    "strict_pairwise_accuracy": 0.95,
+    "tie_adjusted_pairwise_accuracy": 0.95,
+    "mean_gap": 0.2520673888226476
+  },
+  "rules_baseline": {
+    "cases": 20,
+    "wins": 5,
+    "ties": 15,
+    "losses": 0,
+    "strict_pairwise_accuracy": 0.25,
+    "tie_adjusted_pairwise_accuracy": 0.625,
+    "mean_gap": 12.5
+  },
+  "hybrid": {
+    "cases": 20,
+    "wins": 19,
+    "ties": 1,
+    "losses": 0,
+    "strict_pairwise_accuracy": 0.95,
+    "tie_adjusted_pairwise_accuracy": 0.975,
+    "mean_gap": 18.134999999999998
+  },
+  "groups": {
+    "literal_control": {
+      "semantic": {
+        "cases": 5,
+        "wins": 4,
+        "ties": 0,
+        "losses": 1,
+        "strict_pairwise_accuracy": 0.8,
+        "tie_adjusted_pairwise_accuracy": 0.8,
+        "mean_gap": 0.31298724971764913
+      },
+      "rules_baseline": {
+        "cases": 5,
+        "wins": 5,
+        "ties": 0,
+        "losses": 0,
+        "strict_pairwise_accuracy": 1.0,
+        "tie_adjusted_pairwise_accuracy": 1.0,
+        "mean_gap": 50.0
+      },
+      "hybrid": {
+        "cases": 5,
+        "wins": 5,
+        "ties": 0,
+        "losses": 0,
+        "strict_pairwise_accuracy": 1.0,
+        "tie_adjusted_pairwise_accuracy": 1.0,
+        "mean_gap": 46.982
+      }
+    },
+    "paraphrase": {
+      "semantic": {
+        "cases": 15,
+        "wins": 15,
+        "ties": 0,
+        "losses": 0,
+        "strict_pairwise_accuracy": 1.0,
+        "tie_adjusted_pairwise_accuracy": 1.0,
+        "mean_gap": 0.2317607685243138
+      },
+      "rules_baseline": {
+        "cases": 15,
+        "wins": 0,
+        "ties": 15,
+        "losses": 0,
+        "strict_pairwise_accuracy": 0.0,
+        "tie_adjusted_pairwise_accuracy": 0.5,
+        "mean_gap": 0.0
+      },
+      "hybrid": {
+        "cases": 15,
+        "wins": 14,
+        "ties": 1,
+        "losses": 0,
+        "strict_pairwise_accuracy": 0.9333333333333333,
+        "tie_adjusted_pairwise_accuracy": 0.9666666666666667,
+        "mean_gap": 8.519333333333334
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "cong-nghe-nguoi-cao-tuoi",
+      "kind": "paraphrase",
+      "positive_cosine": 0.6116525489059987,
+      "negative_cosine": 0.27024355967617003,
+      "cosine_gap": 0.3414089892298287,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 12.08,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 12.08
+    },
+    {
+      "id": "bep-an-cong-dong",
+      "kind": "paraphrase",
+      "positive_cosine": 0.6342093599258513,
+      "negative_cosine": 0.3348659810445687,
+      "cosine_gap": 0.29934337888128254,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 13.12,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 13.12
+    },
+    {
+      "id": "kem-hoc-sinh",
+      "kind": "paraphrase",
+      "positive_cosine": 0.5592155827285624,
+      "negative_cosine": 0.5481985601054657,
+      "cosine_gap": 0.011017022623096673,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 9.66,
+      "negative_hybrid_score": 9.15,
+      "hybrid_gap": 0.5099999999999998
+    },
+    {
+      "id": "trong-cay-xanh",
+      "kind": "paraphrase",
+      "positive_cosine": 0.7577502988242392,
+      "negative_cosine": 0.14411421188561485,
+      "cosine_gap": 0.6136360869386244,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 18.82,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 18.82
+    },
+    {
+      "id": "rac-thai-bien",
+      "kind": "literal_control",
+      "positive_cosine": 0.7819521623482396,
+      "negative_cosine": 0.321049001696535,
+      "cosine_gap": 0.4609031606517046,
+      "positive_rule_score": 50.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 50.0,
+      "positive_hybrid_score": 54.94,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 54.94
+    },
+    {
+      "id": "bien-phien-dich",
+      "kind": "literal_control",
+      "positive_cosine": 0.7047008367178415,
+      "negative_cosine": 0.36925908993510737,
+      "cosine_gap": 0.3354417467827341,
+      "positive_rule_score": 50.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 50.0,
+      "positive_hybrid_score": 51.37,
+      "negative_hybrid_score": 0.89,
+      "hybrid_gap": 50.48
+    },
+    {
+      "id": "nhiep-anh-su-kien",
+      "kind": "paraphrase",
+      "positive_cosine": 0.4577890918649908,
+      "negative_cosine": 0.1679708662556227,
+      "cosine_gap": 0.2898182256093681,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 4.97,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 4.97
+    },
+    {
+      "id": "so-cap-cuu",
+      "kind": "literal_control",
+      "positive_cosine": 0.6212753253670672,
+      "negative_cosine": 0.15953872009720751,
+      "cosine_gap": 0.4617366052698597,
+      "positive_rule_score": 50.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 50.0,
+      "positive_hybrid_score": 47.52,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 47.52
+    },
+    {
+      "id": "cham-soc-dong-vat",
+      "kind": "paraphrase",
+      "positive_cosine": 0.4359964962444932,
+      "negative_cosine": 0.3847901988867687,
+      "cosine_gap": 0.05120629735772453,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 3.97,
+      "negative_hybrid_score": 1.61,
+      "hybrid_gap": 2.3600000000000003
+    },
+    {
+      "id": "thiet-ke-do-hoa",
+      "kind": "literal_control",
+      "positive_cosine": 0.5159797314946193,
+      "negative_cosine": 0.5355917703692886,
+      "cosine_gap": -0.019612038874669335,
+      "positive_rule_score": 50.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 50.0,
+      "positive_hybrid_score": 42.66,
+      "negative_hybrid_score": 8.57,
+      "hybrid_gap": 34.089999999999996
+    },
+    {
+      "id": "gay-quy",
+      "kind": "paraphrase",
+      "positive_cosine": 0.6876691078577473,
+      "negative_cosine": 0.42526031310517975,
+      "cosine_gap": 0.2624087947525675,
+      "positive_rule_score": 50.0,
+      "negative_rule_score": 50.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 50.58,
+      "negative_hybrid_score": 38.47,
+      "hybrid_gap": 12.11
+    },
+    {
+      "id": "lap-trinh-cong-dong",
+      "kind": "literal_control",
+      "positive_cosine": 0.6291400015179318,
+      "negative_cosine": 0.30267322675931524,
+      "cosine_gap": 0.3264667747586166,
+      "positive_rule_score": 50.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 50.0,
+      "positive_hybrid_score": 47.88,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 47.88
+    },
+    {
+      "id": "dong-hanh-nguoi-gia",
+      "kind": "paraphrase",
+      "positive_cosine": 0.7316499281145267,
+      "negative_cosine": 0.4406592095893722,
+      "cosine_gap": 0.29099071852515446,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 17.61,
+      "negative_hybrid_score": 4.18,
+      "hybrid_gap": 13.43
+    },
+    {
+      "id": "huan-luyen-the-thao",
+      "kind": "paraphrase",
+      "positive_cosine": 0.7564800341473475,
+      "negative_cosine": 0.4816615462591746,
+      "cosine_gap": 0.2748184878881729,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 18.76,
+      "negative_hybrid_score": 6.08,
+      "hybrid_gap": 12.680000000000001
+    },
+    {
+      "id": "cuu-tro-thien-tai",
+      "kind": "paraphrase",
+      "positive_cosine": 0.5937872694895501,
+      "negative_cosine": 0.4749142500366933,
+      "cosine_gap": 0.11887301945285678,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 11.25,
+      "negative_hybrid_score": 5.77,
+      "hybrid_gap": 5.48
+    },
+    {
+      "id": "van-hoa-doc",
+      "kind": "paraphrase",
+      "positive_cosine": 0.6271740512384792,
+      "negative_cosine": 0.27710211906570653,
+      "cosine_gap": 0.3500719321727727,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 12.79,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 12.79
+    },
+    {
+      "id": "tiep-can-nguoi-khuyet-tat",
+      "kind": "paraphrase",
+      "positive_cosine": 0.32901228499196694,
+      "negative_cosine": 0.17717565374356273,
+      "cosine_gap": 0.1518366312484042,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 0.0,
+      "negative_hybrid_score": 0.0,
+      "hybrid_gap": 0.0
+    },
+    {
+      "id": "dieu-phoi-su-kien",
+      "kind": "paraphrase",
+      "positive_cosine": 0.7325697579449961,
+      "negative_cosine": 0.5916331959282429,
+      "cosine_gap": 0.1409365620167532,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 17.66,
+      "negative_hybrid_score": 11.15,
+      "hybrid_gap": 6.51
+    },
+    {
+      "id": "nguon-nuoc",
+      "kind": "paraphrase",
+      "positive_cosine": 0.6843491606174126,
+      "negative_cosine": 0.41242837735526006,
+      "cosine_gap": 0.2719207832621525,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 15.43,
+      "negative_hybrid_score": 2.88,
+      "hybrid_gap": 12.55
+    },
+    {
+      "id": "sua-xe-dap",
+      "kind": "paraphrase",
+      "positive_cosine": 0.4753509037139538,
+      "negative_cosine": 0.4672263058080064,
+      "cosine_gap": 0.008124597905947384,
+      "positive_rule_score": 0.0,
+      "negative_rule_score": 0.0,
+      "rule_gap": 0.0,
+      "positive_hybrid_score": 5.79,
+      "negative_hybrid_score": 5.41,
+      "hybrid_gap": 0.3799999999999999
+    }
+  ],
+  "diagnostics": [
+    {
+      "id": "phu-dinh",
+      "cosine": 0.4139468176620078,
+      "expectation": "Báo cáo cosine tham khảo; embeddings có thể bỏ qua phủ định. Không tự suy diễn lịch rảnh hay đăng ký, không xem là xác suất người dùng đồng ý."
+    }
+  ],
+  "blank_profile": "Excluded from embeddings; verify no AI-only match in application unit tests.",
+  "model_revision": "faf4aa4225822f3bc6376869cb1164e8e3feedd0",
+  "dataset_sha256": "29135a02c2eb27844e7eb114d82987f836e4f4b4f155fa8f0476ce8b3c509658"
+}

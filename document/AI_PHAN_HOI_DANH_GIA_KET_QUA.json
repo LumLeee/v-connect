@@ -1,0 +1,375 @@
+{
+  "timestamp_utc": "2026-11-09T02:19:57.053817+00:00",
+  "dataset_version": "2026-11-09-v1",
+  "provenance": "20 phản hồi tiếng Việt tổng hợp và 8 tình huống chẩn đoán do người kiểm tra độc lập viết trước khi chạy mô hình. Không chứa dữ liệu tài khoản hoặc phản hồi thật. Không lấy từ các câu nguyên mẫu của bộ phân tích.",
+  "limitations": [
+    "Bộ mẫu nhỏ do một người gán nhãn, không đại diện cho dữ liệu vận hành và chưa có thỏa thuận giữa nhiều người gán nhãn.",
+    "Đây là kiểm tra chẩn đoán, không phải tập huấn luyện hoặc tập điều chỉnh ngưỡng. Không chỉnh câu nguyên mẫu hoặc ngưỡng dựa trên kết quả của bộ này.",
+    "Nhãn cảm xúc và cờ rà soát chỉ hỗ trợ người đọc. Cờ spam hoặc sự cố không xác nhận vi phạm hay xác minh sự kiện.",
+    "Hai câu nhiều chiều được gán uncertain để kiểm tra khả năng không kết luận vội. Cảm xúc văn bản không được suy ra từ điểm sao."
+  ],
+  "ai": {
+    "status": "active",
+    "reason": null,
+    "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "revision": "faf4aa4225822f3bc6376869cb1164e8e3feedd0"
+  },
+  "elapsed_seconds": 4.155999999988126,
+  "sentiment": {
+    "cases": 20,
+    "exact_accuracy_including_uncertain": 0.6,
+    "abstentions": 10,
+    "known_label_coverage": 0.5882352941176471,
+    "known_label_answered_accuracy": 0.9,
+    "macro_f1_including_uncertain": 0.5826465201465202,
+    "confusion": {
+      "positive": {
+        "positive": 5,
+        "neutral": 0,
+        "negative": 0,
+        "uncertain": 1
+      },
+      "neutral": {
+        "positive": 1,
+        "neutral": 3,
+        "negative": 0,
+        "uncertain": 1
+      },
+      "negative": {
+        "positive": 0,
+        "neutral": 0,
+        "negative": 1,
+        "uncertain": 5
+      },
+      "uncertain": {
+        "positive": 0,
+        "neutral": 0,
+        "negative": 0,
+        "uncertain": 3
+      }
+    },
+    "per_class": {
+      "positive": {
+        "support": 6,
+        "predicted": 6,
+        "precision": 0.8333333333333334,
+        "recall": 0.8333333333333334,
+        "f1": 0.8333333333333334
+      },
+      "neutral": {
+        "support": 5,
+        "predicted": 3,
+        "precision": 1.0,
+        "recall": 0.6,
+        "f1": 0.75
+      },
+      "negative": {
+        "support": 6,
+        "predicted": 1,
+        "precision": 1.0,
+        "recall": 0.16666666666666666,
+        "f1": 0.2857142857142857
+      },
+      "uncertain": {
+        "support": 3,
+        "predicted": 10,
+        "precision": 0.3,
+        "recall": 1.0,
+        "f1": 0.46153846153846156
+      }
+    }
+  },
+  "review_flags_all_cases": {
+    "spam": {
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "true_negative": 26,
+      "precision": null,
+      "recall": 0.0
+    },
+    "incident": {
+      "true_positive": 1,
+      "false_positive": 1,
+      "false_negative": 2,
+      "true_negative": 24,
+      "precision": 0.5,
+      "recall": 0.3333333333333333
+    }
+  },
+  "review_flags_diagnostics_only": {
+    "spam": {
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 1,
+      "true_negative": 7,
+      "precision": null,
+      "recall": 0.0
+    },
+    "incident": {
+      "true_positive": 1,
+      "false_positive": 1,
+      "false_negative": 1,
+      "true_negative": 5,
+      "precision": 0.5,
+      "recall": 0.5
+    }
+  },
+  "cases": [
+    {
+      "id": "sentiment-01",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 63.5,
+      "margin": 41.2
+    },
+    {
+      "id": "sentiment-02",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 68.7,
+      "margin": 27.4
+    },
+    {
+      "id": "sentiment-03",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 67.7,
+      "margin": 21.4
+    },
+    {
+      "id": "sentiment-04",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 64.2,
+      "margin": 21.2
+    },
+    {
+      "id": "sentiment-05",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 60.1,
+      "margin": 29.1
+    },
+    {
+      "id": "sentiment-06",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 63.1,
+      "margin": 46.1
+    },
+    {
+      "id": "sentiment-07",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 58.6,
+      "margin": 23.5
+    },
+    {
+      "id": "sentiment-08",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 58.4,
+      "margin": 35.7
+    },
+    {
+      "id": "sentiment-09",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "negative",
+      "similarity": 44.8,
+      "margin": 10.4
+    },
+    {
+      "id": "sentiment-10",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 55.0,
+      "margin": 22.9
+    },
+    {
+      "id": "sentiment-11",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "neutral",
+      "similarity": 58.2,
+      "margin": 4.8
+    },
+    {
+      "id": "sentiment-12",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "neutral",
+      "similarity": 51.3,
+      "margin": 18.3
+    },
+    {
+      "id": "sentiment-13",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "neutral",
+      "similarity": 67.0,
+      "margin": 35.4
+    },
+    {
+      "id": "sentiment-14",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "uncertain",
+      "similarity": 36.0,
+      "margin": 10.7
+    },
+    {
+      "id": "sentiment-15",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "positive",
+      "similarity": 45.6,
+      "margin": 12.1
+    },
+    {
+      "id": "sentiment-16",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "uncertain",
+      "predicted_sentiment": "uncertain",
+      "similarity": 58.0,
+      "margin": 3.6
+    },
+    {
+      "id": "sentiment-17",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "uncertain",
+      "predicted_sentiment": "uncertain",
+      "similarity": 38.2,
+      "margin": 12.9
+    },
+    {
+      "id": "sentiment-18",
+      "expected_flags": [
+        "incident"
+      ],
+      "predicted_flags": [],
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 26.6,
+      "margin": 0.3
+    },
+    {
+      "id": "sentiment-19",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "uncertain",
+      "similarity": 51.1,
+      "margin": 29.1
+    },
+    {
+      "id": "sentiment-20",
+      "expected_flags": [
+        "spam"
+      ],
+      "predicted_flags": [],
+      "expected_sentiment": "uncertain",
+      "predicted_sentiment": "uncertain",
+      "similarity": 17.0,
+      "margin": 6.0
+    }
+  ],
+  "diagnostics": [
+    {
+      "id": "review-01",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "purpose": "Phủ định sự cố không được trình bày thành sự cố đã xảy ra.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "review-02",
+      "expected_flags": [
+        "incident"
+      ],
+      "predicted_flags": [
+        "incident"
+      ],
+      "purpose": "Cần con người xem lại phản ánh về an toàn, không tự kết luận sự kiện.",
+      "predicted_sentiment": "negative"
+    },
+    {
+      "id": "review-03",
+      "expected_flags": [],
+      "predicted_flags": [
+        "incident"
+      ],
+      "purpose": "Thảo luận giả định hoặc đào tạo an toàn không phải phản ánh sự cố thực tế.",
+      "predicted_sentiment": "positive"
+    },
+    {
+      "id": "review-04",
+      "expected_flags": [
+        "spam"
+      ],
+      "predicted_flags": [],
+      "purpose": "Quảng bá và yêu cầu thanh toán không liên quan đến hoạt động.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "review-05",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "purpose": "URL tự nó không chứng minh spam.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "review-06",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "purpose": "Nội dung phòng chống lừa đảo không phải lời mời lừa đảo hoặc sự cố đã xảy ra.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "review-07",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "purpose": "Các từ nhạy cảm được phủ định cần được rà lại thay vì xác nhận vi phạm.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "review-08",
+      "expected_flags": [
+        "incident"
+      ],
+      "predicted_flags": [],
+      "purpose": "Phản ánh có dấu hiệu bất thường cần người phụ trách kiểm tra.",
+      "predicted_sentiment": "uncertain"
+    }
+  ],
+  "rating_usage": "Fixture ratings are deliberately not sent to the text classifier. Two cases contradict rating and text.",
+  "interpretation": "Cosine similarity and margin are model signals, not calibrated probabilities. All review flags need human verification.",
+  "dataset_sha256": "6a7ba7d54fdfb481df17f04192466f631d50d403d65e2858824b151e795e22a2"
+}

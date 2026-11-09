@@ -12,6 +12,31 @@ import { activityTime } from '../api/activityFormat.js'
 import '../styles/activities.css'
 import '../styles/matching.css'
 
+const ruleLimits = { skills: 50, interests: 20, availability: 30 }
+const criterionLabels = { skills: 'Kỹ năng', interests: 'Sở thích', availability: 'Lịch rảnh', semantic: 'Nội dung tương đồng' }
+
+function MatchingSource({ ai }) {
+  if (!ai?.status) return null
+  const active = ai.status === 'active'
+  const fallback = ai.status === 'fallback'
+  return <div className={`matching-source${active ? ' matching-source--ai' : ''}`} role="status" aria-label="Phương pháp ghép nối">
+    <span className="matching-source-label">{active ? 'AI + quy tắc' : fallback ? 'Quy tắc dự phòng' : 'Ghép nối theo quy tắc'}</span>
+    <p>{active ? 'AI so sánh nội dung hồ sơ và hoạt động; kỹ năng và lịch rảnh vẫn được tính riêng.' : fallback ? 'AI hiện chưa sẵn sàng. Gợi ý vẫn được tính bằng kỹ năng, sở thích và lịch rảnh.' : ai.status === 'not_applicable' ? 'Chưa áp dụng AI cho danh sách này.' : 'Gợi ý được tính bằng kỹ năng, sở thích và lịch rảnh.'}</p>
+  </div>
+}
+
+function ScoreBreakdown({ entry, limits = ruleLimits }) {
+  if (!entry.components) return null
+  return <dl className="matching-score-breakdown" aria-label="Điểm theo tiêu chí">
+    {Object.entries(criterionLabels).filter(([criterion]) => limits[criterion] != null).map(([criterion, label]) => <div key={criterion}><dt>{label}</dt><dd>{entry.components[criterion] ?? 0}/{limits[criterion]}</dd></div>)}
+  </dl>
+}
+
+function SemanticExplanation({ entry, limits }) {
+  if (limits?.semantic == null) return null
+  return <p className="matching-semantic-note">{entry.semantic ? <>Mức tương đồng nội dung: <strong>{entry.semantic.similarity}%</strong>. AI so sánh ý nghĩa của hồ sơ và hoạt động; mức này không xác nhận kỹ năng hoặc khả năng được duyệt.</> : 'Chưa có đủ nội dung hồ sơ để AI so sánh. Mục nội dung tương đồng chưa được cộng điểm.'}</p>
+}
+
 function InviteButton({ activityId, volunteer }) {
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
@@ -54,9 +79,11 @@ export default function MatchingPage({ managed = false }) {
     </div>
     <RequestState loading={loading} error={error} retry={retry} />
     {data && <>
+      <MatchingSource ai={data.ai} />
       <p>{data.count} gợi ý có ít nhất một tiêu chí phù hợp.</p>
       {rulesOpen && <ConfirmationDialog title="Quy tắc ghép nối" onClose={() => setRulesOpen(false)}>
         <p>{data.explanation}</p><p>{data.note}</p>
+        {data.ai?.status === 'active' && <p className="matching-model-note">{data.ai.model === 'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2' ? 'Mô hình: MiniLM đa ngôn ngữ (L12-v2), chạy trên máy chủ V-Connect.' : 'AI đa ngôn ngữ chạy trên máy chủ V-Connect.'}</p>}
         <button type="button" className="button secondary" onClick={() => setRulesOpen(false)}>Đóng</button>
       </ConfirmationDialog>}
 
@@ -69,11 +96,18 @@ export default function MatchingPage({ managed = false }) {
         {!managed && entry.activity.skill_details?.length > 0 && <div className="activity-skill-tags" aria-label="Kỹ năng yêu cầu">
           {entry.activity.skill_details.map(skill => <span key={skill.id}>{skill.name}</span>)}
         </div>}
+        {!managed && <details className="matching-explanation" onClick={event => event.stopPropagation()} onKeyDown={event => event.stopPropagation()}>
+          <summary>Vì sao được gợi ý?</summary>
+          {!!entry.reasons?.length && <ul>{entry.reasons.map(reason => <li key={reason}>{reason}</li>)}</ul>}
+          <ScoreBreakdown entry={entry} limits={data.component_limits} />
+          <SemanticExplanation entry={entry} limits={data.component_limits} />
+        </details>}
         </div>
         <div className="matching-card-actions">
-        {managed && <RecordDetails title={entry.volunteer.full_name}><ul>{entry.reasons.map(reason => <li key={reason}>{reason}</li>)}</ul>
-        {!!entry.matched_skills.length && <p>Kỹ năng phù hợp: {entry.matched_skills.join(', ')}.</p>}
-        <p className="matching-breakdown">Kỹ năng {entry.components.skills}/50 · Sở thích {entry.components.interests}/20 · Lịch rảnh {entry.components.availability}/30</p>
+        {managed && <RecordDetails title={entry.volunteer.full_name}><ul>{entry.reasons?.map(reason => <li key={reason}>{reason}</li>)}</ul>
+        {!!entry.matched_skills?.length && <p>Kỹ năng phù hợp: {entry.matched_skills.join(', ')}.</p>}
+        <ScoreBreakdown entry={entry} limits={data.component_limits} />
+        <SemanticExplanation entry={entry} limits={data.component_limits} />
         </RecordDetails>}
         {!managed && <Link data-row-primary data-row-keep-action className="button primary" to={`/hoat-dong/${entry.activity.id}`}>Xem chi tiết</Link>}
         {managed && <InviteButton activityId={id} volunteer={entry.volunteer} />}

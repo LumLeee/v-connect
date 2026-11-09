@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "language": "vi",
+  "provenance": "Dữ liệu tổng hợp do người triển khai gán nhãn; không chứa hồ sơ hay hoạt động thật.",
+  "purpose": "So sánh thứ hạng ngữ nghĩa của một hoạt động phù hợp và một hoạt động ít phù hợp hơn với cùng hồ sơ. Không đánh giá điều kiện tham gia, độ công bằng hay xác suất được duyệt.",
+  "limitations": [
+    "Chỉ có 20 cặp kiểm tra thủ công, chưa đại diện dữ liệu vận hành.",
+    "Hai hoạt động trong mỗi cặp không có lịch rảnh; điểm lịch cùng bằng 0.",
+    "Năm ca literal_control có tiêu chí khớp trực tiếp để kiểm tra baseline; 15 ca paraphrase tập trung vào cách diễn đạt khác nhau. Báo cáo riêng hai nhóm để không nhầm thành hiệu năng toàn bộ hệ thống.",
+    "Nhãn là mức phù hợp tương đối, không khẳng định hoạt động âm hoàn toàn không phù hợp.",
+    "Các chẩn đoán phủ định và hồ sơ rỗng tách khỏi chỉ số chất lượng chính; embeddings có thể hiểu sai phủ định.",
+    "Không điều chỉnh dữ liệu, trọng số hoặc ngưỡng theo kết quả chạy trên bộ này. Cần bộ đánh giá độc lập trước khi hiệu chỉnh."
+  ],
+  "cases": [
+    {
+      "id": "cong-nghe-nguoi-cao-tuoi",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Công nghệ"], "interests": ["giúp ông bà làm quen với thiết bị số"]},
+      "positive": {"title": "Kết nối số cho người cao tuổi", "description": "Chỉ dẫn các bác gọi video, tăng cỡ chữ và lưu số trên điện thoại thông minh.", "required_skills": ["Giao tiếp"]},
+      "negative": {"title": "Lắp đặt hệ thống tưới tự động", "description": "Đấu nối cảm biến và bộ điều khiển cho vườn rau cộng đồng.", "required_skills": ["Giao tiếp"]}
+    },
+    {
+      "id": "bep-an-cong-dong",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Nấu ăn"], "interests": ["chuẩn bị bữa cơm cho người khó khăn"]},
+      "positive": {"title": "Bếp sẻ chia", "description": "Sơ chế thực phẩm, nấu và đóng hộp các suất ăn miễn phí cho bệnh nhân nghèo.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Phân loại đồ quyên góp", "description": "Kiểm kê áo quần, sách vở và xếp các kiện hàng hỗ trợ vào kho.", "required_skills": ["Làm việc nhóm"]}
+    },
+    {
+      "id": "kem-hoc-sinh",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Giảng dạy"], "interests": ["kèm bài cho trẻ em có hoàn cảnh khó khăn"]},
+      "positive": {"title": "Lớp học cầu vồng", "description": "Ôn phép tính và luyện đọc tiếng Việt cho học sinh tiểu học tại mái ấm.", "required_skills": ["Giao tiếp"]},
+      "negative": {"title": "Sơn sửa lớp học", "description": "Vệ sinh tường, sơn lại cửa và lắp bàn ghế trong trường tiểu học.", "required_skills": ["Giao tiếp"]}
+    },
+    {
+      "id": "trong-cay-xanh",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Làm vườn"], "interests": ["phủ xanh khu dân cư và chăm sóc cây non"]},
+      "positive": {"title": "Mầm xanh cuối tuần", "description": "Đào hố, đặt cây giống, vun gốc và tưới nước cho hàng cây mới trồng.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Khảo sát chất lượng nước", "description": "Lấy mẫu tại các kênh thoát nước, ghi nhận độ pH và nhập số liệu.", "required_skills": ["Làm việc nhóm"]}
+    },
+    {
+      "id": "rac-thai-bien",
+      "kind": "literal_control",
+      "profile": {"skills": ["Làm việc nhóm"], "interests": ["giảm rác nhựa ở đại dương"]},
+      "positive": {"title": "Bãi cát sạch", "description": "Nhặt chai lọ, túi nilon và phân loại phế thải dọc bờ biển.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Hướng dẫn khách ở bảo tàng biển", "description": "Đón đoàn tham quan, giới thiệu các mô hình tàu thuyền và chỉ đường tới phòng trưng bày.", "required_skills": ["Thuyết minh"]}
+    },
+    {
+      "id": "bien-phien-dich",
+      "kind": "literal_control",
+      "profile": {"skills": ["Tiếng Anh"], "interests": ["chuyển ngữ và làm cầu nối với khách nước ngoài"]},
+      "positive": {"title": "Đồng hành cùng đoàn thiện nguyện quốc tế", "description": "Phiên dịch trao đổi giữa chuyên gia nước ngoài và người dân trong buổi tập huấn.", "required_skills": ["Tiếng Anh"]},
+      "negative": {"title": "Sắp xếp phòng hội thảo quốc tế", "description": "Kê ghế, gắn bảng tên và kiểm tra micro trước khi đón các đoàn.", "required_skills": ["Giao tiếp"]}
+    },
+    {
+      "id": "nhiep-anh-su-kien",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Nhiếp ảnh"], "interests": ["lưu lại khoảnh khắc đẹp bằng máy ảnh"]},
+      "positive": {"title": "Ghi dấu ngày hội cộng đồng", "description": "Chụp chân dung người tham gia, chọn ảnh và bàn giao bộ hình tư liệu cho ban tổ chức.", "required_skills": ["Truyền thông"]},
+      "negative": {"title": "Biên tập bản tin ngày hội", "description": "Viết thông cáo báo chí, sửa bài và soạn nội dung đăng trang tin.", "required_skills": ["Truyền thông"]}
+    },
+    {
+      "id": "so-cap-cuu",
+      "kind": "literal_control",
+      "profile": {"skills": ["Sơ cứu"], "interests": ["xử trí chấn thương ban đầu và băng bó vết thương"]},
+      "positive": {"title": "Trạm hỗ trợ y tế giải chạy", "description": "Hỗ trợ nhân viên chuyên môn chăm sóc vận động viên bị trầy xước và nhận biết tình trạng cần cấp cứu.", "required_skills": ["Sơ cứu"]},
+      "negative": {"title": "Phát nước cho giải chạy", "description": "Bổ sung chai nước và thức ăn nhẹ tại các điểm tiếp sức trên đường đua.", "required_skills": ["Giao tiếp"]}
+    },
+    {
+      "id": "cham-soc-dong-vat",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Chăm sóc động vật"], "interests": ["bảo vệ chó mèo bị bỏ rơi"]},
+      "positive": {"title": "Cuối tuần ở trạm cứu hộ thú cưng", "description": "Cho các bé bốn chân ăn, vệ sinh chuồng và giúp chúng làm quen với người nhận nuôi.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Ngày khám thú y cho gia súc", "description": "Hỗ trợ đánh số đàn bò, sắp lịch tiêm và chuẩn bị khu vực cân vật nuôi của nông hộ.", "required_skills": ["Làm việc nhóm"]}
+    },
+    {
+      "id": "thiet-ke-do-hoa",
+      "kind": "literal_control",
+      "profile": {"skills": ["Thiết kế"], "interests": ["sáng tạo hình ảnh và bố cục truyền thông"]},
+      "positive": {"title": "Bộ nhận diện chiến dịch sẻ chia", "description": "Vẽ minh họa, phối màu và dàn trang poster kêu gọi cộng đồng tham gia.", "required_skills": ["Thiết kế"]},
+      "negative": {"title": "Quản trị kênh truyền thông", "description": "Trả lời bình luận, theo dõi lịch đăng bài và tổng hợp lượt tiếp cận.", "required_skills": ["Truyền thông"]}
+    },
+    {
+      "id": "gay-quy",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Giao tiếp"], "interests": ["vận động nguồn tài trợ cho các hoàn cảnh khó khăn"]},
+      "positive": {"title": "Kết nối mạnh thường quân", "description": "Giới thiệu dự án cộng đồng tới nhà hảo tâm, ghi nhận cam kết đóng góp và theo dõi khoản ủng hộ.", "required_skills": ["Giao tiếp"]},
+      "negative": {"title": "Trao quà tại mái ấm", "description": "Chia suất quà đã chuẩn bị, hướng dẫn xếp hàng và hỗ trợ người nhận mang đồ.", "required_skills": ["Giao tiếp"]}
+    },
+    {
+      "id": "lap-trinh-cong-dong",
+      "kind": "literal_control",
+      "profile": {"skills": ["Lập trình"], "interests": ["xây dựng phần mềm hỗ trợ tổ chức thiện nguyện"]},
+      "positive": {"title": "Công cụ quản lý kho quyên góp", "description": "Viết mã giao diện, kết nối API và sửa lỗi ứng dụng theo dõi hàng hỗ trợ.", "required_skills": ["Lập trình"]},
+      "negative": {"title": "Sửa máy tính cũ tặng học sinh", "description": "Thay linh kiện, vệ sinh phần cứng và cài đặt hệ điều hành cho các máy được tặng.", "required_skills": ["Công nghệ"]}
+    },
+    {
+      "id": "dong-hanh-nguoi-gia",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Lắng nghe"], "interests": ["trò chuyện và bầu bạn với người già neo đơn"]},
+      "positive": {"title": "Một buổi chiều bên các cụ", "description": "Đọc báo, chơi cờ và lắng nghe chuyện đời của người cao tuổi sống một mình.", "required_skills": ["Giao tiếp"]},
+      "negative": {"title": "Dọn sân nhà dưỡng lão", "description": "Quét lá, chuyển bàn ghế và vệ sinh đường đi trong khuôn viên cơ sở chăm sóc.", "required_skills": ["Giao tiếp"]}
+    },
+    {
+      "id": "huan-luyen-the-thao",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Thể thao"], "interests": ["dạy trẻ vận động và rèn kỹ thuật chơi bóng"]},
+      "positive": {"title": "Sân chơi khỏe vui", "description": "Hướng dẫn học sinh khởi động, chuyền bóng và phối hợp đồng đội trong trận bóng đá nhỏ.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Hậu cần hội thao", "description": "Căng băng rôn, kê bàn đăng ký và dọn khán đài sau các trận thi đấu.", "required_skills": ["Làm việc nhóm"]}
+    },
+    {
+      "id": "cuu-tro-thien-tai",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Điều phối"], "interests": ["tiếp tế khẩn cấp cho bà con chịu ảnh hưởng bão lũ"]},
+      "positive": {"title": "Chuyến xe về vùng ngập", "description": "Đóng gói nhu yếu phẩm và chuyển hàng cứu trợ tới các hộ dân bị cô lập sau mưa lớn.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Tập huấn phòng chống ngập", "description": "Chuẩn bị hội trường và phát tài liệu tuyên truyền phương án ứng phó trong mùa mưa sắp tới.", "required_skills": ["Làm việc nhóm"]}
+    },
+    {
+      "id": "van-hoa-doc",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Kể chuyện"], "interests": ["khơi dậy niềm yêu thích đọc sách ở trẻ nhỏ"]},
+      "positive": {"title": "Trang sách mở tương lai", "description": "Đọc truyện thành tiếng, tổ chức kể lại câu chuyện và giúp các em chọn sách phù hợp.", "required_skills": ["Giao tiếp"]},
+      "negative": {"title": "Kiểm kê thư viện", "description": "Dán mã vạch, nhập số lượng đầu sách và phân loại các thùng tài liệu lưu kho.", "required_skills": ["Giao tiếp"]}
+    },
+    {
+      "id": "tiep-can-nguoi-khuyet-tat",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Hỗ trợ di chuyển"], "interests": ["giúp người dùng xe lăn tham gia sinh hoạt cộng đồng"]},
+      "positive": {"title": "Ngày hội không rào cản", "description": "Đồng hành cùng người hạn chế vận động, hướng dẫn lối dốc và hỗ trợ lên xuống phương tiện an toàn.", "required_skills": ["Giao tiếp"]},
+      "negative": {"title": "Vẽ tranh cùng trẻ khiếm thính", "description": "Chuẩn bị màu vẽ và hướng dẫn bằng hình ảnh cho lớp mỹ thuật dành cho các em khó nghe.", "required_skills": ["Giao tiếp"]}
+    },
+    {
+      "id": "dieu-phoi-su-kien",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Tổ chức sự kiện"], "interests": ["điều hành lịch trình và phân công nhân sự cho ngày hội"]},
+      "positive": {"title": "Điều phối ngày hội thiện nguyện", "description": "Theo dõi tiến độ chương trình, bố trí ca trực và liên hệ các nhóm khi thay đổi lịch biểu.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Biểu diễn trong ngày hội", "description": "Tập luyện bài hát, diễn tiết mục múa và giao lưu văn nghệ trên sân khấu.", "required_skills": ["Làm việc nhóm"]}
+    },
+    {
+      "id": "nguon-nuoc",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Phân tích dữ liệu"], "interests": ["theo dõi ô nhiễm nguồn nước và đo chỉ số môi trường"]},
+      "positive": {"title": "Dòng sông khỏe", "description": "Thu mẫu nước mặt, ghi nhận nồng độ chất bẩn và nhập kết quả xét nghiệm để lập báo cáo.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Khơi thông bờ sông", "description": "Vớt rác nổi, cắt cỏ và thu dọn các vật cản lối đi ven sông.", "required_skills": ["Làm việc nhóm"]}
+    },
+    {
+      "id": "sua-xe-dap",
+      "kind": "paraphrase",
+      "profile": {"skills": ["Sửa chữa"], "interests": ["bảo dưỡng xe đạp cũ để tặng học sinh"]},
+      "positive": {"title": "Vòng bánh tới trường", "description": "Vá săm, chỉnh phanh và tra dầu xích cho những chiếc xe hai bánh không gắn máy được quyên góp.", "required_skills": ["Làm việc nhóm"]},
+      "negative": {"title": "Đạp xe gây quỹ", "description": "Tham gia hành trình đạp xe quanh thành phố và kêu gọi bạn bè ủng hộ quỹ học bổng.", "required_skills": ["Làm việc nhóm"]}
+    }
+  ],
+  "diagnostics": [
+    {
+      "id": "ho-so-rong",
+      "profile": {"skills": [], "interests": []},
+      "activity": {"title": "Hỗ trợ công nghệ cho người cao tuổi", "description": "Hướng dẫn sử dụng điện thoại thông minh.", "required_skills": ["Công nghệ"]},
+      "expectation": "Không tạo gợi ý chỉ từ embedding của tiêu đề trường hoặc chuỗi rỗng. Kiểm tra bằng kiểm thử tích hợp, không tính vào pairwise accuracy."
+    },
+    {
+      "id": "phu-dinh",
+      "profile": {"skills": ["Nấu ăn"], "interests": ["không muốn nấu ăn, chỉ muốn trồng rau"]},
+      "activity": {"title": "Nấu bữa trưa cộng đồng", "description": "Chuẩn bị các suất cơm cho người khó khăn.", "required_skills": ["Nấu ăn"]},
+      "expectation": "Báo cáo cosine tham khảo; embeddings có thể bỏ qua phủ định. Không tự suy diễn lịch rảnh hay đăng ký, không xem là xác suất người dùng đồng ý."
+    }
+  ]
+}

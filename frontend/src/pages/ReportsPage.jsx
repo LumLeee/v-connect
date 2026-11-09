@@ -39,6 +39,7 @@ export default function ReportsPage({ mode = 'overview' }) {
       {data.activity.status !== 'completed' && <p className="activity-empty">Đây là số liệu hiện tại. Hoạt động chưa hoàn thành hoặc đã bị hủy.</p>}
       <ReportMetrics metrics={data.metrics} activity={id} />
       {user.role !== 'volunteer' && <div className="activity-actions">{data.activity.status === 'completed' && <Link className="button primary" to={`/bao-cao/hoat-dong/${id}/tong-ket`}>Mẫu báo cáo tổng kết</Link>}</div>}
+      {user.role !== 'volunteer' && data.activity.status === 'completed' && <p><Link className="button secondary" to={`/bao-cao/hoat-dong/${id}/tong-ket#ban-nhap-ai`}>Soạn bản nháp AI</Link></p>}
       {user.role === 'organizer' && <p><Link to={`/nha-to-chuc/hoat-dong/${id}/phan-hoi`}>Xem phản hồi hoạt động</Link></p>}
     </>}
     {mode === 'activities' && <form className="activity-search" onSubmit={event => { event.preventDefault(); const form = new FormData(event.currentTarget); setParams({ search: form.get('search'), status: form.get('status'), page: '1' }) }}>

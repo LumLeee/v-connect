@@ -51,12 +51,21 @@ class OrganizerFeedback(generics.ListAPIView):
 
     def get_queryset(self):
         activity = get_object_or_404(Activity, pk=self.kwargs['pk'], organizer=self.request.user)
-        return services.visible_feedback().filter(attendance__participation__activity=activity)
+        self.activity_feedback = services.visible_feedback().filter(attendance__participation__activity=activity)
+        rating = self.request.query_params.get('rating', 'all')
+        ordering = self.request.query_params.get('ordering', 'newest')
+        if rating not in ['all', '1', '2', '3', '4', '5']:
+            raise ValidationError({'rating': 'Chọn all hoặc số sao từ 1 đến 5.'})
+        if ordering not in ['newest', 'oldest']:
+            raise ValidationError({'ordering': 'Chọn newest hoặc oldest.'})
+        queryset = self.activity_feedback if rating == 'all' else self.activity_feedback.filter(rating=int(rating))
+        return queryset.order_by('-created_at', '-id') if ordering == 'newest' else queryset.order_by('created_at', 'id')
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         response = self.get_paginated_response(self.get_serializer(self.paginate_queryset(queryset), many=True).data)
-        response.data['summary'] = services.summary(queryset)
+        # Keep the overall activity score stable when selecting a star filter.
+        response.data['summary'] = services.summary(self.activity_feedback)
         return response
 
 

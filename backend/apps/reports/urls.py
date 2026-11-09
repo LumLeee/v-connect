@@ -4,12 +4,14 @@ from .analytics_views import Analytics, ExportAnalytics, ReportOrganizers
 from .organizer_dashboard import OrganizerDashboard
 from .matching import RecommendedActivities, RecommendedVolunteers
 from .summary_document import ActivitySummaryDocument
+from .ai_draft import ActivityAIDraft
 from .leaderboard import Leaderboard, LeaderboardAvatar
 
 urlpatterns = [
     path('leaderboard/', Leaderboard.as_view()),
     path('leaderboard/avatars/<uuid:pk>/', LeaderboardAvatar.as_view()),
     path('reports/activities/<uuid:pk>/summary-document/', ActivitySummaryDocument.as_view()),
+    path('reports/activities/<uuid:pk>/ai-draft/', ActivityAIDraft.as_view()),
     path('matching/activities/', RecommendedActivities.as_view()),
     path('organizer/activities/<uuid:pk>/matching/', RecommendedVolunteers.as_view()),
     path('reports/organizer-dashboard/', OrganizerDashboard.as_view()),

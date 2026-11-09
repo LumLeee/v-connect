@@ -4,7 +4,7 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Đã hoàn thành nghiệp vụ chính và kiểm tra tổng thể giai đoạn 9 trên nhánh `dev`, kế thừa giai đoạn 8 (`feature/reports-admin`, commit `f2a85f5`). Bao gồm xác thực/phân quyền, hồ sơ, avatar, hoạt động cơ bản/mở rộng, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị cơ bản. Đã bổ sung báo cáo mở rộng, thông báo trong website, nhắc lịch trước 1 giờ và hàng đợi email; SMTP thật chưa cấu hình. AI chưa triển khai. Xem [kết quả giai đoạn 9](document/GIAI_DOAN_9_KET_QUA.md) và [hướng dẫn vận hành, sao lưu](document/VAN_HANH_VA_SAO_LUU.md).
+Đã hoàn thành nghiệp vụ chính và kiểm tra tổng thể giai đoạn 9 trên nhánh `dev`, kế thừa giai đoạn 8 (`feature/reports-admin`, commit `f2a85f5`). Bao gồm xác thực/phân quyền, hồ sơ, avatar, hoạt động cơ bản/mở rộng, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị cơ bản. Đã bổ sung báo cáo mở rộng, thông báo trong website, nhắc lịch trước 1 giờ và hàng đợi email; SMTP thật chưa cấu hình. Đã tích hợp [AI ghép nối bằng embedding chạy local](document/AI_GHEP_NOI.md), kết hợp quy tắc và dự phòng khi model chưa sẵn sàng. Có thêm [AI hỗ trợ phản hồi và bản nháp báo cáo](document/AI_PHAN_HOI_VA_BAO_CAO.md) ở mức thử nghiệm: nhãn theo câu mẫu, cờ rà soát bằng quy tắc, chọn trích dẫn nguyên văn và mẫu số liệu; không phải mô hình cảm xúc chuyên dụng hoặc mô hình sinh văn bản. Xem [kết quả giai đoạn 9](document/GIAI_DOAN_9_KET_QUA.md) và [hướng dẫn vận hành, sao lưu](document/VAN_HANH_VA_SAO_LUU.md).
 
 Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
 
@@ -34,6 +34,12 @@ cd ..
 Nếu `py` chưa có trên PATH, dùng đường dẫn đến Python 3.12. Workspace hiện đã có `.venv`, nên không cần tạo lại. `requirements.lock` và `frontend/package-lock.json` cố định phiên bản đã cài; `requirements.txt` mô tả khoảng phiên bản cho lần nâng cấp có chủ đích.
 
 `init_env.py` sinh khóa Django và mật khẩu tài khoản ứng dụng ngẫu nhiên. Nếu `backend/.env` đã tồn tại, script giữ nguyên toàn bộ nội dung.
+
+Để bật mô hình ghép nối, chuẩn bị tệp local bằng lệnh sau sau khi cài dependency. Lệnh cần Internet để tải model cố định, không cần API key hoặc kết nối MySQL; inference sau đó chạy offline trên CPU. Nếu chưa chuẩn bị model, ghép nối vẫn dùng quy tắc dự phòng. Chi tiết cấu hình, điểm và giới hạn: [AI ghép nối](document/AI_GHEP_NOI.md).
+
+```powershell
+.\.venv\Scripts\python.exe backend/manage.py prepare_matching_model
+```
 
 ## 3. Chuẩn bị MySQL80
 
@@ -133,7 +139,7 @@ Hoặc chạy từng bước:
 ```powershell
 .\.venv\Scripts\python.exe backend/manage.py check
 .\.venv\Scripts\python.exe backend/manage.py makemigrations --check --dry-run
-.\.venv\Scripts\python.exe backend/manage.py test apps.core apps.accounts apps.activities apps.participations apps.feedback apps.reports --noinput
+.\.venv\Scripts\python.exe backend/manage.py test apps.core apps.accounts apps.activities apps.participations apps.feedback apps.reports apps.recommendations --noinput
 cd frontend
 npm.cmd run lint
 npm.cmd run build
@@ -176,6 +182,9 @@ Playwright có 62 ca trên desktop 1280px và màn hình hẹp 390px, đồng th
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | Các origin được phép gửi request CSRF |
 | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Kết nối MySQL |
 | `DB_TEST_NAME` | Database kiểm thử riêng, mặc định `test_v_connect` |
+| `MATCHING_AI_ENABLED`, `MATCHING_AI_MODEL_DIR` | Bật AI ghép nối và thư mục model local; các giới hạn timeout/cache/đầu vào trong [hướng dẫn](document/AI_GHEP_NOI.md) |
+| `FEEDBACK_AI_ENABLED`, `FEEDBACK_AI_MAX_ITEMS` | Bật nhãn phản hồi bằng embedding, tối đa 40 phản hồi/lần mặc định; cờ quy tắc có nguồn riêng, vẫn cần đọc thủ công |
+| `REPORT_AI_ENABLED`, `REPORT_AI_MAX_FEEDBACK` | Bật chọn trích dẫn cho bản nháp, mặc định xét 40 phản hồi hợp lệ mới nhất; số liệu dùng mẫu cố định |
 | `VITE_API_BASE_URL` | URL công khai, mặc định `/api/v1` |
 | `VITE_BACKEND_PROXY` | Backend cho Vite development proxy |
 
@@ -275,7 +284,7 @@ Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn
 
 Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
 
-Theo kế hoạch điều chỉnh ngày 22/09/2026, nghiệp vụ chính đã hoàn thành kiểm tra tổng thể ở giai đoạn 9. Giai đoạn 10 đã bổ sung hồ sơ Tình nguyện viên mở rộng và kỹ năng yêu cầu, bộ lọc, ảnh bìa cho hoạt động; báo cáo mở rộng có biểu đồ, bộ lọc, Excel và in/lưu PDF; thông báo có trung tâm trong website, nhắc trước 1 giờ và hàng đợi email. SMTP thật chưa cấu hình. Đã bổ sung tự check-in bằng QR/mã có hạn; check-out, bản đồ, timeline và ba chức năng AI chưa triển khai. Xem [kế hoạch](document/KE_HOACH_TRIEN_KHAI.md).
+Theo kế hoạch điều chỉnh ngày 22/09/2026, nghiệp vụ chính đã hoàn thành kiểm tra tổng thể ở giai đoạn 9. Giai đoạn 10 đã bổ sung hồ sơ Tình nguyện viên mở rộng và kỹ năng yêu cầu, bộ lọc, ảnh bìa cho hoạt động; báo cáo mở rộng có biểu đồ, bộ lọc, Excel và in/lưu PDF; thông báo có trung tâm trong website, nhắc trước 1 giờ và hàng đợi email. SMTP thật chưa cấu hình. Đã bổ sung tự check-in bằng QR/mã có hạn và AI ghép nối dùng embedding local; AI hỗ trợ phản hồi và bản nháp báo cáo cũng dùng model này, ở mức thử nghiệm cần con người kiểm tra. Cờ sự cố còn bỏ sót, không dùng để xác nhận an toàn. Check-out, bản đồ và timeline chưa triển khai. Xem [kế hoạch](document/KE_HOACH_TRIEN_KHAI.md).
 
 Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).
 
@@ -313,6 +322,8 @@ Volunteer đã có mặt mở **Lịch sử tham gia** → hoạt động Hoàn 
 
 Phản hồi bị ẩn vẫn được lưu để đối chiếu nhưng không hiển thị cho Organizer và không tính vào điểm trung bình. Người gửi xem được lý do xử lý. Migration bổ sung `feedback.0001_initial`; chạy `python backend/manage.py migrate --noinput` bằng Python trong `.venv` khi cập nhật. API và kiểm thử: [giai đoạn 7](document/GIAI_DOAN_7_KET_QUA.md).
 
+Nút **Phân tích AI** trong danh sách phản hồi của Organizer/Admin gợi ý sắc thái, chủ đề và nội dung cần xem lại theo bộ lọc. Đây là công cụ thử nghiệm; không có cờ không có nghĩa là không có sự cố hoặc quảng cáo. Kết quả đo, giới hạn và nguồn quy tắc/AI: [AI phản hồi và báo cáo](document/AI_PHAN_HOI_VA_BAO_CAO.md). Không tự ẩn phản hồi hoặc thay đổi điểm.
+
 ## 14. Thống kê và quản trị
 
 Chọn **Xem thống kê** trong tài khoản để xem số liệu theo vai trò và mở danh sách đối chiếu. Organizer mở **Xem kết quả hoạt động** để xem số liệu riêng. “Đã tham gia” chỉ tính hoạt động Hoàn thành có điểm danh; lượt có mặt ở hoạt động chưa hoàn thành/bị hủy hiển thị riêng.
@@ -327,7 +338,7 @@ Trang `/tinh-nguyen-vien` dùng bố cục tham khảo Volunteer Dashboard trong
 
 ## 16. Hồ sơ tình nguyện viên mở rộng
 
-Trong `/ho-so`, Volunteer chọn kỹ năng, nhập sở thích (mỗi dòng một mục) và thêm lịch rảnh lặp hằng tuần theo giờ Việt Nam. Các mục đều tùy chọn và được lưu bằng nút **Lưu hồ sơ**. API kiểm tra giới hạn, dữ liệu trùng và lịch chồng lấn, chỉ cho chủ tài khoản cập nhật. Chưa có ghép nối tự động hoặc AI.
+Trong `/ho-so`, Volunteer chọn kỹ năng, nhập sở thích (mỗi dòng một mục) và thêm lịch rảnh lặp hằng tuần theo giờ Việt Nam. Các mục đều tùy chọn và được lưu bằng nút **Lưu hồ sơ**. API kiểm tra giới hạn, dữ liệu trùng và lịch chồng lấn, chỉ cho chủ tài khoản cập nhật. Kỹ năng và sở thích được dùng cho [ghép nối AI](document/AI_GHEP_NOI.md); lịch rảnh được đối chiếu bằng code. Chỉ hồ sơ chủ động bật cho phép mới xuất hiện trong gợi ý ứng viên cho Nhà tổ chức. Gợi ý không tự đăng ký hoặc tự duyệt.
 
 Khi cập nhật bản cài, sao lưu rồi chạy `python backend/manage.py migrate --noinput` bằng Python trong `.venv`; migration `accounts.0005_volunteerprofile_availabilityslot` bổ sung bảng mới. Xem [quy tắc, API và kết quả hồ sơ mở rộng](document/HO_SO_MO_RONG.md).
 

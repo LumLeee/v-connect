@@ -1,0 +1,538 @@
+{
+  "timestamp_utc": "2026-11-09T02:23:30.355472+00:00",
+  "dataset_version": "2026-11-09-v2-independent-holdout",
+  "provenance": "20 phản hồi tổng hợp mới và 8 tình huống rà soát mới được người kiểm tra độc lập viết sau khi ghi nhận hạn chế ở v1, nhưng trước khi đọc hoặc chạy phần quy tắc rà soát mới. Không sử dụng phản hồi hoặc thông tin tài khoản thật. Không sao chép câu nguyên mẫu của mô hình.",
+  "limitations": [
+    "V1 trở thành bộ chẩn đoán phát triển vì các hạn chế của nó đã được dùng để quyết định bổ sung quy tắc. Không coi việc chạy lại v1 là kiểm tra độc lập.",
+    "V2 nhỏ và do một người gán nhãn, không có độ tin cậy giữa nhiều người gán nhãn, không đại diện cho dữ liệu vận hành.",
+    "Không sửa quy tắc, câu nguyên mẫu hoặc ngưỡng dựa trên kết quả v2; nếu sửa tiếp cần một tập kiểm tra mới.",
+    "Cảm xúc là nhãn gợi ý bằng embedding, không phải mô hình cảm xúc đã huấn luyện riêng. Cờ rà soát kết hợp quy tắc và embedding, không xác minh sự kiện hay vi phạm."
+  ],
+  "ai": {
+    "status": "active",
+    "reason": null,
+    "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "revision": "faf4aa4225822f3bc6376869cb1164e8e3feedd0"
+  },
+  "elapsed_seconds": 3.2969999999913853,
+  "sentiment": {
+    "cases": 20,
+    "exact_accuracy_including_uncertain": 0.6,
+    "abstentions": 12,
+    "known_label_coverage": 0.5,
+    "known_label_answered_accuracy": 1.0,
+    "macro_f1_including_uncertain": 0.5833333333333334,
+    "confusion": {
+      "positive": {
+        "positive": 5,
+        "neutral": 0,
+        "negative": 0,
+        "uncertain": 0
+      },
+      "neutral": {
+        "positive": 0,
+        "neutral": 1,
+        "negative": 0,
+        "uncertain": 4
+      },
+      "negative": {
+        "positive": 0,
+        "neutral": 0,
+        "negative": 2,
+        "uncertain": 4
+      },
+      "uncertain": {
+        "positive": 0,
+        "neutral": 0,
+        "negative": 0,
+        "uncertain": 4
+      }
+    },
+    "per_class": {
+      "positive": {
+        "support": 5,
+        "predicted": 5,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "neutral": {
+        "support": 5,
+        "predicted": 1,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.3333333333333333
+      },
+      "negative": {
+        "support": 6,
+        "predicted": 2,
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "f1": 0.5
+      },
+      "uncertain": {
+        "support": 4,
+        "predicted": 12,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5
+      }
+    }
+  },
+  "review_flags_all_cases": {
+    "spam": {
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 0,
+      "true_negative": 26,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "incident": {
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 3,
+      "true_negative": 25,
+      "precision": null,
+      "recall": 0.0
+    }
+  },
+  "review_flags_diagnostics_only": {
+    "spam": {
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "true_negative": 7,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "incident": {
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "true_negative": 6,
+      "precision": null,
+      "recall": 0.0
+    }
+  },
+  "review_flags_by_origin": {
+    "rules": {
+      "spam": {
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 26,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "incident": {
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 3,
+        "true_negative": 25,
+        "precision": null,
+        "recall": 0.0
+      }
+    },
+    "ai": {
+      "spam": {
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 2,
+        "true_negative": 26,
+        "precision": null,
+        "recall": 0.0
+      },
+      "incident": {
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 3,
+        "true_negative": 25,
+        "precision": null,
+        "recall": 0.0
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "holdout-01",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 44.5,
+      "margin": 7.2
+    },
+    {
+      "id": "holdout-02",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 51.4,
+      "margin": 18.0
+    },
+    {
+      "id": "holdout-03",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 60.4,
+      "margin": 19.1
+    },
+    {
+      "id": "holdout-04",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 54.0,
+      "margin": 26.7
+    },
+    {
+      "id": "holdout-05",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "positive",
+      "predicted_sentiment": "positive",
+      "similarity": 57.8,
+      "margin": 20.4
+    },
+    {
+      "id": "holdout-06",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "negative",
+      "similarity": 63.5,
+      "margin": 36.7
+    },
+    {
+      "id": "holdout-07",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 35.3,
+      "margin": 8.3
+    },
+    {
+      "id": "holdout-08",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 44.1,
+      "margin": 0.4
+    },
+    {
+      "id": "holdout-09",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 61.0,
+      "margin": 23.3
+    },
+    {
+      "id": "holdout-10",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "negative",
+      "similarity": 55.0,
+      "margin": 16.9
+    },
+    {
+      "id": "holdout-11",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "uncertain",
+      "similarity": 36.1,
+      "margin": 9.5
+    },
+    {
+      "id": "holdout-12",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "uncertain",
+      "similarity": 42.1,
+      "margin": 1.0
+    },
+    {
+      "id": "holdout-13",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "uncertain",
+      "similarity": 37.9,
+      "margin": 4.5
+    },
+    {
+      "id": "holdout-14",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "neutral",
+      "similarity": 47.4,
+      "margin": 7.6
+    },
+    {
+      "id": "holdout-15",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "neutral",
+      "predicted_sentiment": "uncertain",
+      "similarity": 19.2,
+      "margin": 3.9
+    },
+    {
+      "id": "holdout-16",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "uncertain",
+      "predicted_sentiment": "uncertain",
+      "similarity": 48.1,
+      "margin": 0.9
+    },
+    {
+      "id": "holdout-17",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "uncertain",
+      "predicted_sentiment": "uncertain",
+      "similarity": 52.6,
+      "margin": 11.3
+    },
+    {
+      "id": "holdout-18",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "uncertain",
+      "predicted_sentiment": "uncertain",
+      "similarity": 47.4,
+      "margin": 4.2
+    },
+    {
+      "id": "holdout-19",
+      "expected_flags": [
+        "spam"
+      ],
+      "predicted_flags": [
+        "spam"
+      ],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [
+        "spam"
+      ],
+      "ai_supported_rule_flags": [
+        "spam"
+      ],
+      "flag_origins": {
+        "spam": "rules"
+      },
+      "expected_sentiment": "uncertain",
+      "predicted_sentiment": "uncertain",
+      "similarity": 11.2,
+      "margin": 4.9
+    },
+    {
+      "id": "holdout-20",
+      "expected_flags": [
+        "incident"
+      ],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "expected_sentiment": "negative",
+      "predicted_sentiment": "uncertain",
+      "similarity": 26.6,
+      "margin": 1.7
+    }
+  ],
+  "diagnostics": [
+    {
+      "id": "holdout-review-01",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "purpose": "Không cảnh báo như sự cố thực tế khi sự việc được phủ định rõ ràng.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "holdout-review-02",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "purpose": "Tình huống giả định trong tập huấn không phải sự cố thực tế.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "holdout-review-03",
+      "expected_flags": [
+        "incident"
+      ],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "purpose": "Có chữ tập huấn nhưng là phản ánh trực tiếp một sự việc, không được bỏ qua toàn bộ.",
+      "predicted_sentiment": "negative"
+    },
+    {
+      "id": "holdout-review-04",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "purpose": "Liên kết liên quan đến công việc không tự động là quảng cáo.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "holdout-review-05",
+      "expected_flags": [
+        "spam"
+      ],
+      "predicted_flags": [
+        "spam"
+      ],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [
+        "spam"
+      ],
+      "ai_supported_rule_flags": [
+        "spam"
+      ],
+      "flag_origins": {
+        "spam": "rules"
+      },
+      "purpose": "Lời chào dịch vụ thương mại và kêu gọi liên hệ, không liên quan phản hồi hoạt động.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "holdout-review-06",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "purpose": "Cụm từ thương mại trong câu phủ định không đủ để gắn cờ quảng cáo.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "holdout-review-07",
+      "expected_flags": [],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "purpose": "Phản ánh về quảng cáo không phải bản thân lời quảng cáo, cần tránh cảnh báo sai người gửi.",
+      "predicted_sentiment": "uncertain"
+    },
+    {
+      "id": "holdout-review-08",
+      "expected_flags": [
+        "incident"
+      ],
+      "predicted_flags": [],
+      "predicted_ai_flags": [],
+      "predicted_rule_flags": [],
+      "ai_supported_rule_flags": [],
+      "flag_origins": {},
+      "purpose": "Tai nạn được mô tả cụ thể mà không dùng đúng các từ nguyên mẫu phổ biến.",
+      "predicted_sentiment": "uncertain"
+    }
+  ],
+  "rating_usage": "Fixture ratings are deliberately not sent to the text classifier. Two cases contradict rating and text.",
+  "interpretation": "Cosine similarity and margin are model signals, not calibrated probabilities. All review flags need human verification.",
+  "flag_origin_interpretation": "A rule-triggered flag stays a rule flag even when embeddings support it. AI-supported rule flags are not counted as independently AI-triggered flags.",
+  "dataset_sha256": "e71ad02ff3aa51fa04140c7ad8fee8edbce74f8af526b4d5529073513bc91773"
+}

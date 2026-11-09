@@ -1,6 +1,6 @@
 # Kế hoạch triển khai V-Connect
 
-Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật tiến độ: 03/10/2026.
+Ngày lập: 14/09/2026. Điều chỉnh phạm vi: 22/09/2026. Cập nhật các chức năng AI local: 09/11/2026.
 
 ## 1. Hướng thực hiện đã thống nhất
 
@@ -34,7 +34,8 @@ Quyết định của người dùng là cơ sở xác định phạm vi. Giữ 
 | Giai đoạn 10: hồ sơ mở rộng | Đã bổ sung kỹ năng, sở thích và lịch rảnh; xem [chi tiết](HO_SO_MO_RONG.md) |
 | Giai đoạn 10: hoạt động mở rộng | Đã bổ sung kỹ năng yêu cầu, bộ lọc, ảnh bìa và [timeline chương trình](TIMELINE_HOAT_DONG.md); xem [chi tiết](HOAT_DONG_MO_RONG.md) |
 | Giai đoạn 10: báo cáo mở rộng | Đã bổ sung biểu đồ, bộ lọc, Excel và in/lưu PDF cho Organizer/Admin; xem [chi tiết](BAO_CAO_MO_RONG.md) |
-| Chức năng phụ khác và AI | Chưa triển khai |
+| Giai đoạn 10: ghép nối AI | Đã tích hợp embedding đa ngôn ngữ chạy CPU local, kết hợp quy tắc, có dự phòng và bộ đánh giá tổng hợp; xem [chi tiết](AI_GHEP_NOI.md) |
+| AI phản hồi và AI báo cáo | Đã bổ sung hỗ trợ thử nghiệm bằng model local dùng chung: nhãn theo câu mẫu, quy tắc rà soát riêng, bản nháp số liệu cố định và trích dẫn do AI chọn; cần người dùng kiểm tra. Xem [giới hạn và phép đo](AI_PHAN_HOI_VA_BAO_CAO.md) |
 
 Bản giai đoạn 2 đạt 39 tests backend, 12 ca Playwright, 5 tests bảo vệ database và lint/build. Bản local gồm hồ sơ đạt 48 tests backend khi kiểm tra ngày 21/09/2026. Đây là kết quả các lượt trước, không phải kiểm chứng chức năng chưa triển khai.
 
@@ -173,9 +174,9 @@ Danh sách chờ dưới đây chưa triển khai đồng thời với đợt 1.
 | Bảng xếp hạng và cấp bậc | Top 20 theo tổng điểm Nhà tổ chức đã chấm, chỉ người đăng nhập xem; bằng điểm cùng hạng, có cấp bậc và tiến độ cá nhân | Điểm đóng góp; xem [chi tiết](BANG_XEP_HANG.md) |
 | Thông báo | Đã có chuông, danh sách, đã đọc, liên kết, nhắc trước 1 giờ và hàng đợi email toàn bộ nghiệp vụ; bật/tắt email theo tài khoản | Cần tiến trình xử lý chạy; SMTP thật chưa cấu hình. Xem [chi tiết](THONG_BAO.md) |
 | Ghép nối | Đã triển khai quy tắc hai chiều: đối chiếu kỹ năng/sở thích/lịch, loại xung đột, giải thích điểm; người dùng chủ động cho phép được gợi ý. Bổ sung Nhà tổ chức gửi lời mời, Tình nguyện viên chấp nhận hợp lệ được tự động duyệt; có từ chối/thu hồi, thông báo và nhật ký. Xem [ghép nối](GHEP_NOI.md), [lời mời](LOI_MOI_THAM_GIA.md) | Kỹ năng, sở thích, lịch rảnh và hoạt động |
-| AI ghép nối | Embedding hoặc mô hình phù hợp, đo chất lượng | Baseline và dữ liệu đánh giá |
-| AI phản hồi | Chuẩn hóa nhãn, phân loại cảm xúc, hỗ trợ phát hiện spam/sự cố và rà soát | Phản hồi và dữ liệu đánh giá |
-| AI báo cáo | Tóm tắt từ số liệu, phản hồi hợp lệ; cho phép kiểm tra lại | Báo cáo cơ bản, không tự bịa kết quả |
+| AI ghép nối | Đã tích hợp MiniLM đa ngôn ngữ ONNX local; lọc điều kiện trước, điểm 35/14/21 + tối đa 30 semantic, dự phòng toàn danh sách về 50/20/30. Đã chạy model thật trên 20 cặp tổng hợp, chưa coi là độ chính xác vận hành. Xem [thiết lập và giới hạn](AI_GHEP_NOI.md) | Hồ sơ, hoạt động, model đã chuẩn bị và [bộ đánh giá](AI_GHEP_NOI_DANH_GIA.json); không thêm migration |
+| AI phản hồi | Đã tích hợp thử nghiệm nhãn/chủ đề bằng embedding theo câu mẫu, trích dẫn tham khảo và hàng xem lại; cờ quảng cáo/an toàn do quy tắc riêng có ghi nguồn. Chưa có bộ phân loại cảm xúc chuyên dụng hoặc phát hiện sự cố đáng tin cậy; v2 bỏ sót 3/3 phản ánh sự cố. Không tự xử lý phản hồi | Phản hồi theo quyền/bộ lọc, model local; [phép đo và giới hạn](AI_PHAN_HOI_VA_BAO_CAO.md) |
+| AI báo cáo | Đã bổ sung bản nháp từ số liệu thật bằng mẫu cố định và AI chọn trích dẫn nguyên văn; sửa/sao chép trên trang, không tự lưu/phát hành. Kiểm tra fingerprint nguồn và loại phản hồi bị ẩn. Không dùng mô hình sinh văn bản | Báo cáo tổng kết theo quyền, model dùng chung; [hướng dẫn](AI_PHAN_HOI_VA_BAO_CAO.md) |
 | Báo cáo mở rộng | Đã có biểu đồ, lọc thống kê, Excel và in/lưu PDF; các mẫu chuyên biệt bổ sung khi có nhu cầu | Thống kê và quyền xuất dữ liệu; xem [chi tiết](BAO_CAO_MO_RONG.md) |
 | Quản trị mở rộng | Đã bổ sung [nhật ký nâng cao](NHAT_KY_NANG_CAO.md) và [mẫu báo cáo tổng kết](MAU_BAO_CAO.md) có in/lưu PDF. Đã loại bỏ chứng nhận/chứng chỉ theo yêu cầu ngày 01/11/2026. Quyền chi tiết và câu chuyện tác động để sau | Nghiệp vụ chính; chốt yêu cầu từng mục |
 | Lưu trữ/vận hành | Lưu file bên ngoài, hosting/domain, cache chung và tối ưu theo tải | Nhu cầu triển khai thực tế |

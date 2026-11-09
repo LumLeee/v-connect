@@ -14,7 +14,9 @@ if not npm:
 commands = [
     ([sys.executable, "backend/manage.py", "check"], root),
     ([sys.executable, "backend/manage.py", "makemigrations", "--check", "--dry-run"], root),
-    ([sys.executable, "backend/manage.py", "test", "apps.core", "apps.accounts", "apps.activities", "apps.participations", "apps.feedback", "apps.reports", "apps.notifications", "--noinput"], root),
+    ([sys.executable, "backend/manage.py", "test", "apps.core", "apps.accounts", "apps.activities", "apps.participations", "apps.feedback", "apps.reports", "apps.notifications", "apps.recommendations", "--noinput"], root),
+    ([sys.executable, "scripts/test_matching_ai_evaluation.py"], root),
+    ([sys.executable, "scripts/test_feedback_ai_evaluation.py"], root),
     ([sys.executable, "scripts/test_e2e_safety.py"], root),
     ([npm, "run", "lint"], root / "frontend"),
     ([npm, "run", "build"], root / "frontend"),

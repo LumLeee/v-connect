@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
+import ReportAiDraft from '../components/ReportAiDraft.jsx'
 import { activityTime } from '../api/activityFormat.js'
 import { points } from '../api/documentFormat.js'
 import '../styles/documents.css'
@@ -12,6 +13,7 @@ export default function ActivitySummaryDocumentPage() {
   return <section className="page-width section interior document-page summary-document-page">
     <div className="no-print"><h1>Mẫu báo cáo tổng kết</h1>
       <p>Bản in sử dụng số liệu đang xem. Để lưu PDF, chọn “Lưu dưới dạng PDF” trong hộp thoại in.</p><div className="activity-actions"><button className="button primary" disabled={!data || loading || Boolean(error)} onClick={() => window.print()}>In / Lưu PDF</button><button type="button" className="button secondary refresh-button" onClick={retry}>Làm mới</button></div><RequestState loading={loading} error={failure} retry={retry} />
+      <ReportAiDraft key={id} id={id} sourceData={data} disabled={!data || loading || Boolean(error)} />
     </div>
     {data && <article className="document-sheet summary-sheet"><div className="document-brand">V-CONNECT · KẾT NỐI TÌNH NGUYỆN</div><h2>BÁO CÁO TỔNG KẾT HOẠT ĐỘNG</h2><h3 className="summary-title">{data.activity.title}</h3>
       <p>Đơn vị tổ chức: <strong>{data.activity.organizer_name}</strong></p><p>Thời gian: {activityTime(data.activity.starts_at)} — {activityTime(data.activity.ends_at)}</p><p>Địa điểm: {data.activity.address}</p>

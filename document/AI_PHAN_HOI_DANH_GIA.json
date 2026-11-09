@@ -1,0 +1,42 @@
+{
+  "version": "2026-11-09-v1",
+  "provenance": "20 phản hồi tiếng Việt tổng hợp và 8 tình huống chẩn đoán do người kiểm tra độc lập viết trước khi chạy mô hình. Không chứa dữ liệu tài khoản hoặc phản hồi thật. Không lấy từ các câu nguyên mẫu của bộ phân tích.",
+  "limitations": [
+    "Bộ mẫu nhỏ do một người gán nhãn, không đại diện cho dữ liệu vận hành và chưa có thỏa thuận giữa nhiều người gán nhãn.",
+    "Đây là kiểm tra chẩn đoán, không phải tập huấn luyện hoặc tập điều chỉnh ngưỡng. Không chỉnh câu nguyên mẫu hoặc ngưỡng dựa trên kết quả của bộ này.",
+    "Nhãn cảm xúc và cờ rà soát chỉ hỗ trợ người đọc. Cờ spam hoặc sự cố không xác nhận vi phạm hay xác minh sự kiện.",
+    "Hai câu nhiều chiều được gán uncertain để kiểm tra khả năng không kết luận vội. Cảm xúc văn bản không được suy ra từ điểm sao."
+  ],
+  "cases": [
+    {"id": "sentiment-01", "content": "Tôi rất vui vì đã giúp các bác gọi video cho con cháu. Cảm ơn đội ngũ đã hướng dẫn tận tình.", "rating": 1, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "sentiment-02", "content": "Buổi dọn rác diễn ra suôn sẻ, mọi người hỗ trợ nhau rất nhiệt tình. Tôi mong được tham gia lần nữa.", "rating": 5, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "sentiment-03", "content": "Khâu đón tiếp chu đáo và dụng cụ được chuẩn bị đầy đủ. Một trải nghiệm đáng nhớ.", "rating": 4, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "sentiment-04", "content": "Các phần việc được phân công rõ ràng nên chúng tôi phối hợp rất tốt. Tôi hài lòng với chương trình.", "rating": 5, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "sentiment-05", "content": "Chuyến thăm mang lại nhiều niềm vui cho cả nhóm và các em nhỏ. Chương trình thật ý nghĩa.", "rating": 4, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "sentiment-06", "content": "Thật thất vọng vì đến nơi phải đợi rất lâu mà chẳng ai hướng dẫn. Cách tổ chức quá thiếu chuyên nghiệp.", "rating": 5, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "sentiment-07", "content": "Thông báo thay đổi địa điểm quá muộn khiến tôi mất thời gian đi lại. Tôi không hài lòng.", "rating": 2, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "sentiment-08", "content": "Nhóm không được cung cấp dụng cụ như đã hứa, khâu điều phối rối và chương trình rất mệt mỏi.", "rating": 1, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "sentiment-09", "content": "Phần hướng dẫn khó hiểu, người phụ trách trả lời qua loa. Tôi tiếc vì đã đăng ký buổi này.", "rating": 1, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "sentiment-10", "content": "Không có gì đáng khen trong cách sắp xếp hôm nay. Cả nhóm bị bỏ mặc và tôi rất bực mình.", "rating": 2, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "sentiment-11", "content": "Nhóm tôi phụ trách bàn số ba, gồm bốn tình nguyện viên. Chúng tôi bàn giao dụng cụ lúc 16 giờ.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "sentiment-12", "content": "Hoạt động có ba phần: tập trung, thực hành và tổng kết. Tôi tham gia phần thực hành.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "sentiment-13", "content": "Tôi đã có mặt từ 7 giờ và rời đi lúc 10 giờ. Số áo còn lại được gửi cho người phụ trách.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "sentiment-14", "content": "Chúng tôi thu gom chai nhựa ở đoạn bờ biển phía nam rồi chuyển đến điểm tập kết theo lịch.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "sentiment-15", "content": "Buổi hướng dẫn sử dụng điện thoại được tổ chức trong phòng sinh hoạt cộng đồng, tôi hỗ trợ hai người.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "sentiment-16", "content": "Các bạn tình nguyện viên rất thân thiện nhưng khâu phân công lại lộn xộn, nên tôi vừa vui vừa thất vọng.", "rating": 3, "expected_sentiment": "uncertain", "expected_flags": []},
+    {"id": "sentiment-17", "content": "Không biết nên đánh giá thế nào: phần đầu khá ổn, phần sau chưa đạt như mong đợi.", "rating": 3, "expected_sentiment": "uncertain", "expected_flags": []},
+    {"id": "sentiment-18", "content": "Có người trượt ngã và bị chảy máu ở tay khi di chuyển dụng cụ, chúng tôi đã gọi người phụ trách hỗ trợ.", "rating": 2, "expected_sentiment": "negative", "expected_flags": ["incident"]},
+    {"id": "sentiment-19", "content": "Mọi người được hướng dẫn an toàn rất kỹ. Không ai bị thương và không có sự cố nào, tôi rất yên tâm.", "rating": 5, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "sentiment-20", "content": "Mua ngay gói tăng lượt theo dõi giảm 80%, nhắn tin đặt hàng qua https://shop.example.invalid/deal để nhận ưu đãi!", "rating": 5, "expected_sentiment": "uncertain", "expected_flags": ["spam"]}
+  ],
+  "diagnostics": [
+    {"id": "review-01", "content": "Không có tai nạn, không ai bị thương; mọi người đã về nhà an toàn.", "rating": 5, "expected_flags": [], "purpose": "Phủ định sự cố không được trình bày thành sự cố đã xảy ra."},
+    {"id": "review-02", "content": "Tôi bị một người trong nhóm đe dọa và xúc phạm, mong ban tổ chức kiểm tra lại.", "rating": 1, "expected_flags": ["incident"], "purpose": "Cần con người xem lại phản ánh về an toàn, không tự kết luận sự kiện."},
+    {"id": "review-03", "content": "Cảm ơn đội y tế đã giải thích cách sơ cứu khi có người bị thương, phần tập huấn rất hữu ích.", "rating": 5, "expected_flags": [], "purpose": "Thảo luận giả định hoặc đào tạo an toàn không phải phản ánh sự cố thực tế."},
+    {"id": "review-04", "content": "Tham gia nhóm kiếm tiền không cần vốn, đăng ký tài khoản tại https://offer.example.invalid rồi chuyển khoản để mở khóa quà tặng.", "rating": 5, "expected_flags": ["spam"], "purpose": "Quảng bá và yêu cầu thanh toán không liên quan đến hoạt động."},
+    {"id": "review-05", "content": "Tài liệu sau buổi tập huấn được đăng tại https://docs.example.invalid/huong-dan để mọi người ôn lại.", "rating": 4, "expected_flags": [], "purpose": "URL tự nó không chứng minh spam."},
+    {"id": "review-06", "content": "Các bác được nhắc không cung cấp mã OTP và không chuyển tiền cho người lạ. Đây là nội dung thực hành hôm nay.", "rating": 4, "expected_flags": [], "purpose": "Nội dung phòng chống lừa đảo không phải lời mời lừa đảo hoặc sự cố đã xảy ra."},
+    {"id": "review-07", "content": "Hôm nay không có lừa đảo hay quấy rối như lời đồn, tôi đã tham gia đầy đủ.", "rating": 4, "expected_flags": [], "purpose": "Các từ nhạy cảm được phủ định cần được rà lại thay vì xác nhận vi phạm."},
+    {"id": "review-08", "content": "Tôi phát hiện một người thu phí ngoài quy định và yêu cầu gửi mã OTP; đề nghị ban tổ chức xác minh.", "rating": 1, "expected_flags": ["incident"], "purpose": "Phản ánh có dấu hiệu bất thường cần người phụ trách kiểm tra."}
+  ]
+}

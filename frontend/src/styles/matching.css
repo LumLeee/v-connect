@@ -7,6 +7,20 @@
 .matching-card-actions > * { min-width: 0; }
 .matching-card-actions > .button, .matching-card-actions > div > .button { white-space: normal; }
 .matching-toolbar { display: flex; align-items: center; gap: 12px; }
+.matching-source { display:flex; align-items:baseline; flex-wrap:wrap; gap:8px 14px; margin-top:18px; padding:12px 14px; background:#f4f7f5; border:1px solid #dce6df; border-radius:10px; font-size:13px; color:#536b61; }
+.matching-source-label { font-weight:700; color:#365e4f; }
+.matching-source p { flex:1 1 280px; margin:0; line-height:1.6; overflow-wrap:anywhere; }
+.matching-source--ai { background:#edf6f1; border-color:#c6dfd1; }
+.matching-source--ai .matching-source-label { color:#1f684f; }
+.matching-score-breakdown { display:flex; flex-wrap:wrap; gap:10px 22px; margin:14px 0 0; padding-top:12px; border-top:1px solid #dfe8e2; font-size:13px; }
+.matching-score-breakdown div { display:flex; align-items:baseline; gap:8px; }
+.matching-score-breakdown dt { color:#667e75; }
+.matching-score-breakdown dd { margin:0; color:#244f40; font-weight:600; }
+.matching-page .matching-semantic-note, .record-details .matching-semantic-note, .matching-model-note { color:#667e75; font-size:13px; line-height:1.65; overflow-wrap:anywhere; }
+.matching-page .matching-semantic-note, .record-details .matching-semantic-note { margin:12px 0 0; }
+.record-details:has(.matching-score-breakdown) { overflow-wrap:anywhere; }
+.matching-explanation { margin-top:16px; font-size:13px; overflow-wrap:anywhere; }
+.matching-explanation > summary { cursor:pointer; font-weight:600; }
 .activity-grid.matching-activity-list { grid-template-columns: minmax(0, 1fr); }
 .matching-activity-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; }
 .matching-activity-row .matching-score { margin: 0; }
@@ -19,6 +33,8 @@
   .matching-activity-row .matching-card-actions { grid-column: 1 / -1; max-width: none; }
 }
 @media (max-width: 560px) {
+  .matching-score-breakdown { display:grid; grid-template-columns:1fr; gap:7px; }
+  .matching-score-breakdown div { justify-content:space-between; }
   .matching-activity-row { grid-template-columns: minmax(0, 1fr); }
   .matching-activity-row .matching-score { justify-self: start; }
   .matching-activity-row .matching-card-actions { justify-self: start; justify-content: flex-start; }

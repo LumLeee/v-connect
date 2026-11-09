@@ -21,6 +21,21 @@ def env_list(name, default=""):
 
 SECRET_KEY = required_env("DJANGO_SECRET_KEY")
 ACTIVITY_TIME_CHECKS_ENABLED = os.environ.get("ACTIVITY_TIME_CHECKS_ENABLED", "true").lower() == "true"
+MATCHING_AI_ENABLED = os.environ.get("MATCHING_AI_ENABLED", "true").lower() == "true"
+MATCHING_AI_MODEL = os.environ.get("MATCHING_AI_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+MATCHING_AI_MODEL_DIR = Path(os.environ.get("MATCHING_AI_MODEL_DIR", str(BASE_DIR / ".models" / "matching")))
+if not MATCHING_AI_MODEL_DIR.is_absolute():
+    MATCHING_AI_MODEL_DIR = BASE_DIR / MATCHING_AI_MODEL_DIR
+MATCHING_AI_TIMEOUT = float(os.environ.get("MATCHING_AI_TIMEOUT", "10"))
+MATCHING_AI_THREADS = int(os.environ.get("MATCHING_AI_THREADS", "2"))
+MATCHING_AI_CACHE_SIZE = int(os.environ.get("MATCHING_AI_CACHE_SIZE", "2048"))
+MATCHING_AI_MAX_TEXTS = int(os.environ.get("MATCHING_AI_MAX_TEXTS", "256"))
+MATCHING_AI_MAX_TEXT_CHARS = int(os.environ.get("MATCHING_AI_MAX_TEXT_CHARS", "2000"))
+MATCHING_AI_MIN_SIMILARITY = float(os.environ.get("MATCHING_AI_MIN_SIMILARITY", "0.35"))
+FEEDBACK_AI_ENABLED = os.environ.get("FEEDBACK_AI_ENABLED", "true").lower() == "true"
+FEEDBACK_AI_MAX_ITEMS = int(os.environ.get("FEEDBACK_AI_MAX_ITEMS", "40"))
+REPORT_AI_ENABLED = os.environ.get("REPORT_AI_ENABLED", "true").lower() == "true"
+REPORT_AI_MAX_FEEDBACK = int(os.environ.get("REPORT_AI_MAX_FEEDBACK", "40"))
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
@@ -105,7 +120,7 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {"anon": "120/minute", "user": "600/minute", "auth": "30/minute", "password_reset": "5/minute"},
+    "DEFAULT_THROTTLE_RATES": {"anon": "120/minute", "user": "600/minute", "auth": "30/minute", "password_reset": "5/minute", "ai_analysis": "12/minute"},
 }
 LOGGING = {
     "version": 1, "disable_existing_loggers": False,

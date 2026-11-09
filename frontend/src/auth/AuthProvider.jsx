@@ -7,8 +7,10 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const generation = useRef(0)
+  const currentUser = useRef(null)
   const acceptUser = useCallback((value) => {
     generation.current += 1
+    currentUser.current = value
     setUser(value); setError(null); setLoading(false)
   }, [])
   const refresh = useCallback(async () => {
@@ -16,10 +18,20 @@ export default function AuthProvider({ children }) {
     setLoading(true)
     try {
       const data = await apiGet('/auth/me/', { notifyUnauthorized: false })
-      if (current === generation.current) { setUser(data.user); setError(null) }
+      if (current === generation.current) {
+        currentUser.current = data.user
+        setUser(data.user); setError(null)
+      }
     } catch (failure) {
       if (current === generation.current) {
-        setUser(null); setError(failure.status === 401 ? null : failure)
+        const transient = failure.status === 0 || failure.status === 408 || failure.status === 429 || failure.status >= 500
+        // A failed background session check must not discard an authenticated form.
+        // An actual authentication failure still clears the previous account immediately.
+        if (currentUser.current && transient) setError(null)
+        else {
+          currentUser.current = null
+          setUser(null); setError(failure.status === 401 ? null : failure)
+        }
       }
     } finally {
       if (current === generation.current) setLoading(false)

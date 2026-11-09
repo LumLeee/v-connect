@@ -11,6 +11,18 @@
 .notification-preference p { margin: 10px 0; }
 .notification-preference label { display: flex; align-items: center; gap: 10px; }
 .notification-preference input { width: 18px; height: 18px; accent-color: #286749; }
+.notification-preference-disclosure { display: block; padding: 0; }
+.notification-preference-disclosure summary { display: flex; align-items: center; gap: 10px; padding: 16px 20px; cursor: pointer; font-weight: 600; list-style: none; }
+.notification-preference-disclosure summary::-webkit-details-marker { display: none; }
+.notification-preference-disclosure summary::after { content: '+'; margin-left: auto; font-size: 22px; }
+.notification-preference-disclosure[open] summary::after { content: '−'; }
+.notification-preference-disclosure summary:focus-visible { outline: 2px solid #286749; outline-offset: 3px; border-radius: 16px; }
+.notification-preference-disclosure > div { padding: 0 20px 18px; }
+.notification-groups { display: grid; gap: 28px; }
+.notification-day > h2 { margin: 0 0 12px; color: #526a5f; font-size: 16px; font-weight: 600; }
+.organizer-notifications .notification-card h3 { margin: 0; font-size: 18px; font-weight: 500; }
+.organizer-notifications .notification-card.is-unread h3 { font-weight: 700; }
+.organizer-notifications .notification-card.is-unread .notification-card-title span { background: #e2f1e8; padding: 3px 8px; border-radius: 12px; font-weight: 600; }
 .notification-tools, .notification-actions, .notification-pagination { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
 .notification-tools { justify-content: space-between; margin-top: 28px; }
 .notification-tools select { margin-left: 10px; padding: 9px; border: 1px solid #cadbd1; border-radius: 8px; background: white; font: inherit; }
@@ -24,9 +36,26 @@
 .notification-pagination { justify-content: center; margin-top: 24px; }
 .notification-empty { text-align: center; padding: 44px 20px; background: #f7f9f7; border-radius: 16px; }
 .notification-empty svg { margin-bottom: 16px; color: #60836f; }
+.volunteer-notifications .notifications-heading h1 { margin: 0; }
+.volunteer-notifications .notification-preference { border-radius: 12px; }
+.notification-state-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; }
+.notification-state-tabs button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 9px; background: white; color: var(--green); font: inherit; font-size: 14px; cursor: pointer; }
+.notification-state-tabs button[aria-pressed=true] { background: var(--green); color: white; border-color: var(--green); font-weight: 600; }
+.notification-state-tabs button span { background: #e9f2ec; color: #275c48; padding: 1px 7px; border-radius: 12px; font-size: 12px; }
+.notification-state-tabs button[aria-pressed=true] span { background: #ffffff25; color: white; }
+.notification-state-tabs button:focus-visible { outline: 2px solid #43846b; outline-offset: 3px; }
+.volunteer-notifications .notification-tools { margin-top: 16px; }
+.volunteer-notifications .notification-card-title h2 { font-weight: 500; line-height: 1.5; }
+.volunteer-notifications .notification-card.is-unread h2 { font-weight: 700; }
+.volunteer-notifications .notification-card-title > span { padding: 3px 9px; border-radius: 12px; background: #edf2ef; color: #66766e; }
+.volunteer-notifications .notification-card.is-unread .notification-card-title > span { background: #def0e5; color: #26674d; }
+.volunteer-notifications .notification-card p { line-height: 1.65; }
+.volunteer-notifications .notification-actions .button { padding: 9px 14px; font-size: 14px; }
+.volunteer-notifications .notification-actions .text-button { font-size: 14px; }
 @media (max-width: 700px) {
   .notifications-heading { align-items: start; flex-direction: column; gap: 12px; }
   .notification-card, .notification-preference { padding: 18px; }
+  .notification-preference-disclosure { padding: 0; }
   .notification-card-title { flex-direction: column; gap: 8px; }
   .site-header .header-auth { flex-wrap: wrap; }
 }

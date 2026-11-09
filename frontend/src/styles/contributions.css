@@ -65,3 +65,41 @@
   .mc-row { grid-template-columns: minmax(0, 1fr); padding: 18px; }
   .mc-row-actions { flex-wrap: wrap; }
 }
+/* Volunteer contribution filters and compact statistics. */
+.my-contributions .mc-heading { flex-direction:row; flex-wrap:wrap; align-items:center; gap:16px; }
+.my-contributions .mc-heading h1 { margin:0; }
+.my-contributions .mc-heading-actions { margin-left:auto; width:auto; flex-wrap:wrap; justify-content:flex-end; }
+.my-contributions .mc-overview { gap:14px; margin:20px 0 26px; }
+.my-contributions .mc-overview article { padding:22px; }
+.my-contributions .mc-overview article > svg { margin-bottom:12px; }
+.my-contributions .mc-overview article > p { font-size:13px; line-height:1.6; }
+.my-contributions .mc-statistics { margin:26px 0 0; padding:18px 22px; }
+.my-contributions .mc-statistics > summary { cursor:pointer; font-size:17px; font-weight:600; color:#174f44; }
+.my-contributions .mc-statistics[open] > summary { margin-bottom:18px; }
+.mc-filters { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:18px; margin:18px 0; }
+.mc-status-filters { display:flex; flex-wrap:wrap; gap:8px; }
+.mc-status-filters .button { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; }
+.mc-status-filters .is-selected { background:#e6f1eb; border-color:#36765f; color:#174f44; }
+.mc-status-filters .button > span { font-size:12px; padding:2px 7px; border-radius:16px; background:#edf2ef; }
+.mc-search { min-width:0; flex:0 1 360px; }
+.mc-search > label { display:block; color:#526f60; font-size:13px; margin-bottom:7px; }
+.mc-search > div { display:flex; gap:8px; }
+.mc-search input { min-width:0; width:100%; padding:10px 12px; border:1px solid #bdcfc3; border-radius:9px; background:white; }
+.mc-search .button { flex-shrink:0; }
+.mc-result-count { color:#61796b; font-size:14px; }
+.my-contributions .mc-row-info > p { font-size:14px; line-height:1.7; }
+.my-contributions .mc-row-info > p:last-child { margin-bottom:0; }
+.my-contributions .mc-row-score { font-size:13px; line-height:1.7; }
+.my-contributions .mc-status { font-size:12px; }
+.my-contributions .mc-row-actions .button { padding:10px 14px; font-size:13px; }
+@media(max-width:560px) {
+  .my-contributions .mc-heading-actions { width:100%; }
+  .my-contributions .mc-heading-actions .button { padding:10px 12px; font-size:13px; }
+  .my-contributions .mc-overview article { padding:16px; }
+  .my-contributions .mc-overview article > p { font-size:12px; }
+  .mc-search { flex-basis:100%; }
+  .mc-search > div { flex-wrap:wrap; }
+  .mc-search input { flex:1 1 150px; }
+  .my-contributions .mc-statistics { padding:18px 14px; }
+  .my-contributions .mc-row { gap:12px; }
+}

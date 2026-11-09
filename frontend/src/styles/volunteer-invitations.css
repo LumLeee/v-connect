@@ -1,0 +1,44 @@
+.vi-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.vi-heading h1 { margin: 0; }
+.vi-heading .refresh-button { margin-left: auto; flex-shrink: 0; }
+.vi-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.vi-filters button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border: 1px solid #d7e3dc; border-radius: 24px; background: white; color: #52695e; font: inherit; font-size: 13px; cursor: pointer; }
+.vi-filters button[aria-pressed=true] { background: #1c594b; border-color: #1c594b; color: white; }
+.vi-filters button > span { min-width: 22px; padding: 1px 6px; border-radius: 12px; background: #edf3ef; color: #496a59; font-size: 11px; }
+.vi-filters button[aria-pressed=true] > span { background: #ffffff26; color: white; }
+.vi-filters button:disabled { opacity: .6; cursor: wait; }
+.vi-search label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.vi-search-controls { display: flex; align-items: stretch; gap: 10px; }
+.vi-search-controls input { flex: 1; min-width: 0; width: 100%; border: 1px solid #c9d9cf; border-radius: 10px; padding: 12px 14px; font: inherit; font-size: 14px; background: white; color: #263e34; }
+.vi-search-controls .button { flex-shrink: 0; }
+.volunteer-invitations-page .vi-result { margin: 20px 0 16px; font-size: 14px; }
+.volunteer-invitations-page .invitation-list { gap: 12px; }
+.volunteer-invitations-page .invitation-row { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) auto; gap: 24px; }
+.volunteer-invitations-page .invitation-row h2 { margin: 12px 0 8px; font-size: 17px; line-height: 1.5; }
+.volunteer-invitations-page .invitation-row p { font-size: 13px; line-height: 1.65; }
+.vi-status { display: inline-block; border-radius: 20px; padding: 5px 10px; font-size: 12px; color: #62766b; background: #edf1ef; }
+.vi-status.is-pending { color: #82621c; background: #fff3d9; }
+.vi-status.is-accepted { color: #23644d; background: #e4f1e9; }
+.vi-status.is-declined { color: #9a4e42; background: #fbe9e5; }
+.vi-message { font-size: 13px; margin-top: 8px; }
+.vi-message summary { color: #276650; cursor: pointer; width: fit-content; font-weight: 600; }
+.vi-message .activity-description { max-height: 240px; overflow: auto; }
+.volunteer-invitations-page .vi-unavailable { color: #82621c; }
+.volunteer-invitations-page .invitation-row .activity-actions { flex-wrap: wrap; max-width: 180px; }
+.volunteer-invitations-page .invitation-row .activity-actions .button { width: 100%; }
+@media (max-width: 1100px) {
+  .volunteer-invitations-page .invitation-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 24px; }
+  .volunteer-invitations-page .invitation-row .activity-actions { grid-column: 1 / -1; max-width: none; justify-content: flex-end; }
+  .volunteer-invitations-page .invitation-row .activity-actions .button { width: auto; }
+}
+@media (max-width: 600px) {
+  .vi-heading { align-items: flex-start; gap: 12px; }
+  .vi-heading .button { padding: 10px 14px; }
+  .vi-search-controls { flex-wrap: wrap; }
+  .vi-search-controls input { flex-basis: 100%; }
+  .vi-filters { gap: 7px; }
+  .vi-filters button { padding: 8px 11px; font-size: 12px; }
+  .volunteer-invitations-page .invitation-row { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 20px; }
+  .volunteer-invitations-page .invitation-row .activity-actions { gap: 8px; }
+  .volunteer-invitations-page .invitation-row .activity-actions .button { flex: 1; min-width: 0; padding-inline: 10px; font-size: 12px; }
+}

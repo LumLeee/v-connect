@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { UserRound } from 'lucide-react'
-import { apiMutation } from '../api/client.js'
+import { ImagePlus, Trash2, UserRound } from 'lucide-react'
+import { apiGet, apiMutation } from '../api/client.js'
 import { useAuth, roleLabels, workspacePaths } from '../auth/context.js'
 import VolunteerProfileFields from './VolunteerProfileFields.jsx'
 import ImagePasteInput from './ImagePasteInput.jsx'
+import useUnsavedChanges from '../hooks/useUnsavedChanges.js'
 
 const emptyOrganization = { organization_name: '', description: '', website: '', contact_address: '' }
+const profileForm = profile => ({ full_name: profile.full_name ?? '', phone: profile.phone ?? '', bio: profile.bio ?? '', organizer: { ...emptyOrganization, ...profile.organizer } })
 const volunteerForm = profile => ({ skills: profile?.skills || [], interestsText: (profile?.interests || []).join('\n'), availability: profile?.availability || [], matching_visible: profile?.matching_visible || false })
 
 function Field({ name, label, value, onChange, error, multiline = false, ...props }) {
@@ -21,9 +23,11 @@ function Field({ name, label, value, onChange, error, multiline = false, ...prop
 
 export default function ProfileEditor({ initial, readOnly = false }) {
   const { acceptUser } = useAuth()
-  const [form, setForm] = useState({ full_name: initial.full_name, phone: initial.phone, bio: initial.bio,
-    organizer: { ...emptyOrganization, ...initial.organizer } })
+  const [form, setForm] = useState(() => profileForm(initial))
+  const [savedForm, setSavedForm] = useState(() => JSON.stringify(profileForm(initial)))
+  const fileInput = useRef(null)
   const [volunteer, setVolunteer] = useState(() => volunteerForm(initial.volunteer))
+  const [savedVolunteer, setSavedVolunteer] = useState(() => JSON.stringify(volunteerForm(initial.volunteer)))
   const [avatar, setAvatar] = useState(initial.avatar_url)
   const [avatarVersion, setAvatarVersion] = useState(0)
   const [avatarFailed, setAvatarFailed] = useState(false)
@@ -31,18 +35,45 @@ export default function ProfileEditor({ initial, readOnly = false }) {
   const [avatarError, setAvatarError] = useState('')
   const [avatarMessage, setAvatarMessage] = useState('')
   const [saving, setSaving] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [errors, setErrors] = useState({})
   const [message, setMessage] = useState('')
   const [saveError, setSaveError] = useState('')
+  const saveInFlight = useRef(false)
   const isOrganizer = initial.role === 'organizer'
+  const isVolunteer = initial.role === 'volunteer' && !readOnly
+  const isAdmin = initial.role === 'admin' && !readOnly
+  const guardedEditor = isVolunteer || isAdmin
+  const compactAvatar = (isOrganizer || isVolunteer || isAdmin) && !readOnly
+  const dirty = JSON.stringify(form) !== savedForm || (isVolunteer && JSON.stringify(volunteer) !== savedVolunteer)
+  const clearNavigationGuard = useUnsavedChanges(guardedEditor && dirty)
   const update = (name, value) => { setForm(previous => ({ ...previous, [name]: value })); setMessage('') }
   const updateOrganization = (name, value) => {
     setForm(previous => ({ ...previous, organizer: { ...previous.organizer, [name]: value } })); setMessage('')
   }
 
+  function restore() {
+    setForm(JSON.parse(savedForm)); setVolunteer(JSON.parse(savedVolunteer))
+    setErrors({}); setSaveError(''); setMessage('Đã hoàn tác các thay đổi chưa lưu.')
+  }
+  async function refreshProfile() {
+    setRefreshing(true); setSaveError(''); setMessage('')
+    try {
+      const { profile } = await apiGet('/auth/profile/')
+      setAvatar(profile.avatar_url); setAvatarVersion(Date.now()); setAvatarFailed(false)
+      if (!dirty) {
+        const next = profileForm(profile), nextVolunteer = volunteerForm(profile.volunteer)
+        setForm(next); setSavedForm(JSON.stringify(next)); setVolunteer(nextVolunteer); setSavedVolunteer(JSON.stringify(nextVolunteer))
+      }
+      setMessage(dirty ? 'Đã làm mới. Các thay đổi chưa lưu của bạn vẫn được giữ lại.' : 'Đã làm mới hồ sơ.')
+    } catch (failure) { setSaveError(failure.message) }
+    finally { setRefreshing(false) }
+  }
+
   async function save(event) {
     event.preventDefault()
-    if (readOnly) return
+    if (readOnly || saveInFlight.current) return
+    saveInFlight.current = true
     setSaving(true); setErrors({}); setMessage(''); setSaveError('')
     const payload = { full_name: form.full_name, phone: form.phone, bio: form.bio }
     if (isOrganizer) payload.organizer = form.organizer
@@ -51,14 +82,17 @@ export default function ProfileEditor({ initial, readOnly = false }) {
     }
     try {
       const { profile } = await apiMutation('/auth/profile/', payload)
-      setForm({ full_name: profile.full_name, phone: profile.phone, bio: profile.bio,
-        organizer: { ...emptyOrganization, ...profile.organizer } })
+      const saved = profileForm(profile)
+      setForm(saved)
+      setSavedForm(JSON.stringify(saved))
       setVolunteer(volunteerForm(profile.volunteer))
+      setSavedVolunteer(JSON.stringify(volunteerForm(profile.volunteer)))
+      clearNavigationGuard()
       acceptUser({ id: profile.id, full_name: profile.full_name, email: profile.email, username: profile.username, role: profile.role })
       setMessage('Đã lưu hồ sơ của bạn.')
     } catch (failure) {
       setErrors(failure.details?.error?.details || {}); setSaveError(failure.message)
-    } finally { setSaving(false) }
+    } finally { saveInFlight.current = false; setSaving(false) }
   }
 
   async function changeAvatar(event) {
@@ -90,25 +124,34 @@ export default function ProfileEditor({ initial, readOnly = false }) {
     } finally { setAvatarBusy(false) }
   }
 
-  return <fieldset disabled={readOnly} className="profile-preview"><div className="profile-layout">
+  return <fieldset disabled={readOnly} className={`profile-preview${isOrganizer && !readOnly ? ' organizer-profile' : ''}${isVolunteer ? ' volunteer-profile' : ''}${isAdmin ? ' ad-profile-editor' : ''}`}><div className="profile-layout">
     <aside className="profile-card profile-summary">
       {avatar && !avatarFailed ? <img className="profile-avatar" src={`${avatar}?v=${avatarVersion}`} alt="Ảnh đại diện của bạn" onError={() => setAvatarFailed(true)} />
         : <div className="profile-avatar profile-placeholder" aria-label="Chưa có ảnh đại diện"><UserRound size={52} /></div>}
       <h2>Ảnh đại diện</h2>
       <p>{roleLabels[initial.role]}</p>
       {!readOnly && <>
+      {compactAvatar ? <>
+      <input ref={fileInput} id="avatar" type="file" accept="image/jpeg,image/png,image/webp" onChange={changeAvatar} disabled={avatarBusy} aria-label="Chọn ảnh đại diện" hidden />
+      <ImagePasteInput compact groupLabel="Tải ảnh đại diện" label="Dán ảnh" onImage={uploadAvatar} disabled={avatarBusy}
+        actions={avatar && <button type="button" className="image-cover-remove" disabled={avatarBusy} onClick={() => submitAvatar(undefined, 'DELETE')}><Trash2 size={16} aria-hidden="true" />Xóa ảnh</button>}>
+        <button type="button" className="button secondary image-paste-button" disabled={avatarBusy} onClick={() => fileInput.current?.click()}><ImagePlus size={17} aria-hidden="true" />Chọn ảnh</button>
+      </ImagePasteInput>
+      <p className="profile-hint">Ảnh được lưu ngay, riêng với thông tin hồ sơ.</p>
+      </> : <>
       <label className="profile-file-label" htmlFor="avatar">Chọn ảnh đại diện</label>
       <input id="avatar" className="profile-file" type="file" accept="image/jpeg,image/png,image/webp" onChange={changeAvatar} disabled={avatarBusy} aria-describedby="avatar-hint" />
       <ImagePasteInput label="Dán ảnh đại diện" onImage={uploadAvatar} disabled={avatarBusy} />
       <p id="avatar-hint" className="profile-hint">JPEG, PNG hoặc WebP, tối đa 5 MB và 16 triệu điểm ảnh. Ảnh được lưu riêng khi bạn chọn file hoặc dán ảnh.</p>
       {avatar && <button type="button" className="text-button" disabled={avatarBusy} onClick={() => submitAvatar(undefined, 'DELETE')}>Xóa ảnh đại diện</button>}
+      </>}
       {avatarBusy && <p role="status">Đang cập nhật ảnh…</p>}
       {avatarError && <p className="field-error" role="alert">{avatarError}</p>}
       {avatarMessage && <p className="success" role="status">{avatarMessage}</p>}
       </>}
     </aside>
     <form className="profile-card profile-form" onSubmit={save}>
-      <fieldset disabled={readOnly || saving}>
+      <fieldset disabled={readOnly || saving || refreshing}>
         <legend>Thông tin cơ bản</legend>
         <p className="profile-hint">{initial.role === 'admin' ? 'Username đăng nhập' : 'Email đăng nhập'}: <strong>{initial.role === 'admin' ? initial.username : initial.email}</strong></p>
         {(!readOnly || form.full_name?.trim()) && <Field name="full_name" label="Họ và tên" value={form.full_name} onChange={value => update('full_name', value)} error={errors.full_name} maxLength={150} required autoComplete="name" />}
@@ -123,11 +166,14 @@ export default function ProfileEditor({ initial, readOnly = false }) {
         <Field name="website" label="Website" value={form.organizer.website} onChange={value => updateOrganization('website', value)} error={errors.organizer?.website} maxLength={300} type="url" placeholder="https://example.org" />
         <Field name="contact_address" label="Địa chỉ liên hệ" value={form.organizer.contact_address} onChange={value => updateOrganization('contact_address', value)} error={errors.organizer?.contact_address} maxLength={300} autoComplete="street-address" />
       </fieldset>}
-      {initial.role === 'volunteer' && <VolunteerProfileFields value={volunteer} onChange={value => { setVolunteer(value); setMessage('') }} errors={errors.volunteer} disabled={readOnly || saving} readOnly={readOnly} />}
+      {initial.role === 'volunteer' && <VolunteerProfileFields value={volunteer} onChange={value => { setVolunteer(value); setMessage('') }} errors={errors.volunteer} disabled={readOnly || saving || refreshing} readOnly={readOnly} compact={isVolunteer} />}
       {saveError && <p className="request-error" role="alert">{saveError}</p>}
       {message && <p className="success profile-feedback" role="status">{message}</p>}
-      {!readOnly && <div className="profile-actions"><button className="button primary" disabled={saving} type="submit">{saving ? 'Đang lưu…' : 'Lưu hồ sơ'}</button>
-        <Link to={workspacePaths[initial.role]} className="button secondary">Về tài khoản</Link></div>}
+      {(isOrganizer || guardedEditor) && !readOnly && <p className={`profile-save-status${dirty ? ' is-dirty' : ''}`} aria-live="polite">{saving ? 'Đang lưu hồ sơ…' : dirty ? 'Có thay đổi chưa lưu' : 'Không có thay đổi chưa lưu'}</p>}
+      {!readOnly && <div className="profile-actions"><button className="button primary" disabled={saving || refreshing || (guardedEditor && !dirty)} type="submit">{saving ? 'Đang lưu…' : 'Lưu hồ sơ'}</button>
+        {guardedEditor && <button className="button secondary" type="button" disabled={!dirty || saving || refreshing} onClick={restore}>Hoàn tác</button>}
+        {!isAdmin && <Link to={workspacePaths[initial.role]} className="button secondary">Về tài khoản</Link>}
+        {guardedEditor && <button className={isAdmin ? 'button secondary profile-refresh' : 'text-button profile-refresh'} type="button" disabled={saving || refreshing || avatarBusy} onClick={refreshProfile}>{refreshing ? 'Đang làm mới…' : 'Làm mới'}</button>}</div>}
     </form>
   </div></fieldset>
 }

@@ -16,6 +16,8 @@ Chỉ lập tổng kết khi hoạt động Hoàn thành và đã kết thúc. M
 
 `GET /api/v1/reports/activities/<id>/summary-document/` trả dữ liệu mẫu tổng kết theo quyền, với `contributions.score`, `confirmed`, `pending`. Không còn chỉ số chứng nhận.
 
+Cập nhật 09/11/2026: mẫu tổng kết có thêm chức năng [Soạn bản nháp AI](AI_PHAN_HOI_VA_BAO_CAO.md), dùng số liệu thật với mẫu cố định và embedding chọn trích dẫn phản hồi hợp lệ. Người dùng sửa/sao chép trên trang; không tự lưu/phát hành và không phải mô hình sinh văn bản. API `POST /api/v1/reports/activities/<id>/ai-draft/` kiểm tra quyền, điều kiện tổng kết và fingerprint nguồn; nguồn thay đổi trả 409. Không thay đổi kết quả kiểm chứng lịch sử bên dưới.
+
 Đã gỡ giao diện, điều hướng, API cấp/thu hồi/tra cứu và mã QR chứng nhận. Migration `reports.0007_delete_certificate` xóa bảng dữ liệu chứng nhận sau khi sao lưu. Các migration trước được giữ để database hiện có và cài mới cùng chạy đúng lịch sử schema. Nhật ký quản trị cũ vẫn đọc được như lịch sử; không phát sinh thao tác chứng nhận mới. QR/mã điểm danh là chức năng riêng và tiếp tục hoạt động.
 
 ## Kiểm chứng ngày 01/11/2026

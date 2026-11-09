@@ -88,8 +88,11 @@ def main():
     })
     rest = dict(settings.REST_FRAMEWORK)
     # Browser tests share one loopback IP. Actual production limits are tested
-    # separately by accounts/tests.py; CSRF and session checks stay enabled.
-    rest["DEFAULT_THROTTLE_RATES"] = {"anon": "2000/minute", "user": "2000/minute", "auth": "2000/minute", "password_reset": "2000/minute"}
+    # separately by accounts/tests/test_api.py; CSRF and session checks stay enabled.
+    rest["DEFAULT_THROTTLE_RATES"] = {
+        **rest.get("DEFAULT_THROTTLE_RATES", {}),
+        "anon": "2000/minute", "user": "2000/minute", "auth": "2000/minute", "password_reset": "2000/minute",
+    }
     demo_time = "--demo-time" in sys.argv
     if demo_time:
         sys.argv.remove("--demo-time")

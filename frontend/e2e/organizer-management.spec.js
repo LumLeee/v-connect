@@ -40,9 +40,9 @@ test('Các trang quản lý dùng chung điều hướng, dữ liệu và bố c
       [`${base}/diem-danh`, 'Điểm danh người tham gia', 'Quản lý điểm danh', 'attendance'],
       ['/nha-to-chuc/phan-hoi', 'Phản hồi từ người tham gia', 'Phản hồi hoạt động', 'feedback-hub'],
       [`${base}/phan-hoi`, 'Phản hồi hoạt động', 'Phản hồi hoạt động', 'feedback'],
-      ['/bao-cao', 'Thống kê của tôi', 'Báo cáo', 'reports'],
-      ['/bao-cao/mo-rong', 'Báo cáo mở rộng', 'Báo cáo', 'analytics'],
-      ['/ho-so', 'Hồ sơ của tôi', 'Chỉnh sửa hồ sơ', 'profile'],
+      ['/bao-cao', 'Báo cáo', 'Báo cáo', 'reports'],
+      ['/bao-cao/mo-rong', 'Báo cáo', 'Báo cáo', 'analytics'],
+      ['/ho-so', 'Hồ sơ của tôi', 'Hồ sơ cá nhân', 'profile'],
       ['/thong-bao', 'Thông báo', 'Thông báo', 'notifications'],
     ]
     await mkdir(process.env.E2E_ARTIFACT_DIR, { recursive: true })
@@ -50,8 +50,15 @@ test('Các trang quản lý dùng chung điều hướng, dữ liệu và bố c
       await page.goto(url)
       await expect(page.getByRole('heading', { name: heading, exact: true }).first()).toBeVisible()
       await expect(page.getByText('Đang tải dữ liệu…', { exact: true })).toHaveCount(0)
-      const nav = page.getByRole('navigation', { name: 'Điều hướng Nhà tổ chức' })
-      await expect(nav.getByRole('link', { name: active, exact: true })).toHaveAttribute('aria-current', 'page')
+      if (['profile', 'notifications'].includes(name)) {
+        await expect(page.locator('.om-breadcrumb strong')).toHaveText(active)
+      } else {
+        const toggle = page.locator('.workspace-menu-toggle')
+        if (await toggle.getAttribute('aria-expanded') === 'false') await toggle.click()
+        const nav = page.getByRole('navigation', { name: 'Điều hướng Nhà tổ chức' })
+        await expect(nav.getByRole('link', { name: active, exact: true })).toHaveAttribute('aria-current', 'page')
+        if (page.viewportSize().width <= 1050) await page.keyboard.press('Escape')
+      }
       await expect(page.locator('.site-header')).toHaveCount(0)
       for (const width of [320, 390, 768, 1280]) {
         await page.setViewportSize({ width, height: 900 })
@@ -73,7 +80,7 @@ test('Các trang quản lý dùng chung điều hướng, dữ liệu và bố c
     await page.emulateMedia({ media: 'print' })
     await expect(page.locator('.od-sidebar')).toBeHidden()
     await expect(page.locator('.od-topbar')).toBeHidden()
-    await expect(page.getByRole('heading', { name: 'Báo cáo mở rộng' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Báo cáo', exact: true })).toBeVisible()
     await page.emulateMedia({ media: 'screen' })
     await page.goto('/hoat-dong')
     await expect(page.locator('.site-header')).toBeVisible()
@@ -88,9 +95,13 @@ test('Danh sách quản lý xử lý lỗi và các mục nghiệp vụ dẫn đ
   await expect(page.getByRole('alert')).toContainText('Không kết nối được máy chủ')
   await page.unroute('**/api/v1/organizer/activities/?*')
   await page.getByRole('button', { name: 'Thử lại' }).click()
-  await expect(page.getByText('Chưa có hoạt động phù hợp. Bạn có thể tạo hoạt động mới hoặc đổi bộ lọc.')).toBeVisible()
+  await expect(page.getByText('Chưa có hoạt động phù hợp. Hãy thử điều chỉnh bộ lọc.')).toBeVisible()
+  if (await page.locator('.workspace-menu-toggle').getAttribute('aria-expanded') === 'false') await page.locator('.workspace-menu-toggle').click()
   await page.getByRole('navigation', { name: 'Điều hướng Nhà tổ chức' }).getByRole('link', { name: 'Đơn đăng ký', exact: true }).click()
   await expect(page).toHaveURL(/\/nha-to-chuc\/dang-ky$/)
+  await expect(page.getByRole('link', { name: 'Tạo hoạt động', exact: true })).toHaveCount(0)
+  if (await page.locator('.workspace-menu-toggle').getAttribute('aria-expanded') === 'false') await page.locator('.workspace-menu-toggle').click()
+  await page.getByRole('navigation', { name: 'Điều hướng Nhà tổ chức' }).getByRole('link', { name: 'Quản lý hoạt động', exact: true }).click()
   await page.getByRole('link', { name: 'Tạo hoạt động', exact: true }).click()
   await expect(page.getByLabel('Tên hoạt động', { exact: true })).toBeVisible()
 })

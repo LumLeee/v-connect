@@ -8,6 +8,8 @@ def notify(recipient, kind, title, body, activity=None, href=None, dedupe_key=No
     """Persist the inbox and outbox together with the caller's business transaction."""
     if not recipient.is_active:
         return None
+    if not href and kind == 'activity_cancelled' and recipient.role == 'volunteer':
+        href = '/tinh-nguyen-vien/dang-ky?status=cancelled'
     values = dict(recipient=recipient, kind=kind, title=title, body=body, activity=activity,
                   href=href or (f'/hoat-dong/{activity.pk}' if activity else '/thong-bao'))
     if dedupe_key:

@@ -13,6 +13,11 @@ class HideSerializer(StrictFieldsMixin, serializers.Serializer):
     reason = serializers.CharField(max_length=1000, allow_blank=False, trim_whitespace=True)
 
 
+class AdminFeedbackFilterSerializer(StrictFieldsMixin, serializers.Serializer):
+    status = serializers.ChoiceField(choices=['all', 'visible', 'hidden'], default='all')
+    activity = serializers.UUIDField(required=False)
+
+
 class FeedbackSerializer(serializers.ModelSerializer):
     activity_id = serializers.UUIDField(source='attendance.participation.activity_id', read_only=True)
     activity_title = serializers.CharField(source='attendance.participation.activity.title', read_only=True)

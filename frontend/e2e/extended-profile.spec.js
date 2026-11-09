@@ -15,7 +15,7 @@ test('Hồ sơ mở rộng: lưu, giữ bản nháp, kiểm tra lịch chồng l
   page.on('request', request => { if (request.method() === 'PATCH' && request.url().includes('/auth/profile/')) profileWrites++ })
   await page.route('**/api/v1/skills/?**', route => route.abort())
   await page.goto('/ho-so')
-  await expect(page.getByText('Không kết nối được máy chủ. Vui lòng thử lại.', { exact: true })).toBeVisible()
+  await expect(page.getByRole('alert')).toContainText('Không kết nối được máy chủ')
   await page.unroute('**/api/v1/skills/?**')
   await page.getByRole('button', { name: 'Thử lại', exact: true }).click()
   const skills = page.locator('.profile-skill-options input')

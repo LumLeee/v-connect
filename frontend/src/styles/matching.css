@@ -7,6 +7,40 @@
 .matching-card-actions > * { min-width: 0; }
 .matching-card-actions > .button, .matching-card-actions > div > .button { white-space: normal; }
 .matching-toolbar { display: flex; align-items: center; gap: 12px; }
+.matching-source { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 14px; margin-top: 18px; padding: 12px 14px; background: #f4f7f5; border: 1px solid #dce6df; border-radius: 10px; font-size: 13px; color: #536b61; }
+.matching-source-label { font-weight: 700; color: #365e4f; }
+.matching-source p { flex: 1 1 280px; margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
+.matching-source--ai { background: #edf6f1; border-color: #c6dfd1; }
+.matching-source--ai .matching-source-label { color: #1f684f; }
+.matching-score-breakdown { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid #dfe8e2; font-size: 13px; }
+.matching-score-breakdown div { display: flex; align-items: baseline; gap: 8px; }
+.matching-score-breakdown dt { color: #667e75; }
+.matching-score-breakdown dd { margin: 0; color: #244f40; font-weight: 600; }
+.matching-page .matching-semantic-note, .record-details .matching-semantic-note, .matching-model-note { color: #667e75; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
+.matching-page .matching-semantic-note, .record-details .matching-semantic-note { margin: 12px 0 0; }
+.record-details:has(.matching-score-breakdown) { overflow-wrap: anywhere; }
+.activity-grid.organizer-matching-list { grid-template-columns: minmax(0, 1fr); }
+.organizer-matching-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; }
+.organizer-matching-row > * { min-width: 0; }
+.organizer-matching-row .matching-score { margin: 0; white-space: nowrap; font-size: 14px; }
+.organizer-matching-row .matching-card-info h2 { margin: 0; font-size: 19px; }
+.organizer-matching-row .matching-card-info { overflow-wrap: anywhere; }
+.organizer-matching-row .activity-skill-tags { margin-bottom: 0; }
+.organizer-matching-row .matching-card-actions { align-items: center; justify-content: flex-end; max-width: 360px; }
+.organizer-matching-row .matching-card-actions > .button { flex-shrink: 0; }
+.organizer-matching-row .matching-invite-action { display: grid; justify-items: start; gap: 8px; }
+.organizer-matching-row .matching-invitation-status { margin: 0; font-size: 13px; color: #276650; }
+@media (max-width: 1000px) {
+  .organizer-matching-row { grid-template-columns: auto minmax(0, 1fr); gap: 16px; }
+  .organizer-matching-row .matching-card-actions { grid-column: 1 / -1; justify-self: end; max-width: none; }
+}
+@media (max-width: 560px) {
+  .matching-score-breakdown { display: grid; grid-template-columns: 1fr; gap: 7px; }
+  .matching-score-breakdown div { justify-content: space-between; }
+  .organizer-matching-row { grid-template-columns: minmax(0, 1fr); padding: 18px; }
+  .organizer-matching-row .matching-score { justify-self: start; }
+  .organizer-matching-row .matching-card-actions { justify-self: stretch; justify-content: flex-start; flex-wrap: wrap; }
+}
 .activity-grid.matching-activity-list { grid-template-columns: minmax(0, 1fr); }
 .matching-activity-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; }
 .matching-activity-row .matching-score { margin: 0; }

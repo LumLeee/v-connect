@@ -1,0 +1,42 @@
+{
+  "version": "2026-11-09-v2-independent-holdout",
+  "provenance": "20 phản hồi tổng hợp mới và 8 tình huống rà soát mới được người kiểm tra độc lập viết sau khi ghi nhận hạn chế ở v1, nhưng trước khi đọc hoặc chạy phần quy tắc rà soát mới. Không sử dụng phản hồi hoặc thông tin tài khoản thật. Không sao chép câu nguyên mẫu của mô hình.",
+  "limitations": [
+    "V1 trở thành bộ chẩn đoán phát triển vì các hạn chế của nó đã được dùng để quyết định bổ sung quy tắc. Không coi việc chạy lại v1 là kiểm tra độc lập.",
+    "V2 nhỏ và do một người gán nhãn, không có độ tin cậy giữa nhiều người gán nhãn, không đại diện cho dữ liệu vận hành.",
+    "Không sửa quy tắc, câu nguyên mẫu hoặc ngưỡng dựa trên kết quả v2; nếu sửa tiếp cần một tập kiểm tra mới.",
+    "Cảm xúc là nhãn gợi ý bằng embedding, không phải mô hình cảm xúc đã huấn luyện riêng. Cờ rà soát kết hợp quy tắc và embedding, không xác minh sự kiện hay vi phạm."
+  ],
+  "cases": [
+    {"id": "holdout-01", "content": "Được chứng kiến các em tự đọc xong cuốn truyện đầu tiên khiến tôi rất xúc động. Cảm ơn chương trình vì một ngày tuyệt vời.", "rating": 5, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "holdout-02", "content": "Các anh chị luôn động viên thành viên mới như tôi, nhờ vậy tôi tự tin hơn rất nhiều. Tôi rất thích cách làm việc của nhóm.", "rating": 1, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "holdout-03", "content": "Bữa cơm được trao tận tay người cần giúp đỡ và ai cũng nở nụ cười. Tôi thấy công sức mình bỏ ra thật xứng đáng.", "rating": 5, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "holdout-04", "content": "Điều phối viên giải đáp từng câu hỏi rất kiên nhẫn. Tôi đánh giá cao sự tận tâm của các bạn.", "rating": 4, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "holdout-05", "content": "Buổi trồng cây vui hơn tôi tưởng, đồng đội dễ mến và công việc vừa sức. Tôi sẵn sàng quay lại vào đợt tới.", "rating": 5, "expected_sentiment": "positive", "expected_flags": []},
+    {"id": "holdout-06", "content": "Thật khó chịu khi kế hoạch liên tục thay đổi và mọi câu hỏi đều bị phớt lờ. Tôi thất vọng với người phụ trách.", "rating": 5, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "holdout-07", "content": "Chúng tôi đứng dưới nắng quá lâu vì xe đến muộn, nước uống cũng thiếu. Trải nghiệm hôm nay thật tệ.", "rating": 1, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "holdout-08", "content": "Thông tin trước buổi làm khác hẳn thực tế, khiến cả nhóm bị động. Tôi thấy việc chuẩn bị rất sơ sài.", "rating": 2, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "holdout-09", "content": "Tôi không muốn tham gia thêm vì nhiệm vụ giao quá sức và người hướng dẫn chẳng giúp gì khi tôi hỏi.", "rating": 1, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "holdout-10", "content": "Việc bỏ qua nhu cầu của người nhận hỗ trợ làm tôi buồn và bức xúc. Chương trình cần xem lại cách thực hiện.", "rating": 2, "expected_sentiment": "negative", "expected_flags": []},
+    {"id": "holdout-11", "content": "Tôi ở nhóm đóng gói, mỗi túi có hai quyển vở và một hộp bút. Nhóm bàn giao toàn bộ số túi cho điểm nhận.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "holdout-12", "content": "Có sáu bàn hướng dẫn trong hội trường. Tôi cùng một bạn khác hỗ trợ ở bàn gần cửa ra vào.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "holdout-13", "content": "Danh sách sách đã phân loại được gửi trong nhóm chung sau buổi làm. Tôi phụ trách ghi tên tác giả.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "holdout-14", "content": "Phần việc của tôi là sắp ghế trước khi đón khách và gom bảng tên sau khi mọi người về.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "holdout-15", "content": "Hoạt động diễn ra ở tầng một. Các phần quà được chia thành ba loại theo độ tuổi người nhận.", "rating": 3, "expected_sentiment": "neutral", "expected_flags": []},
+    {"id": "holdout-16", "content": "Tôi quý tinh thần hỗ trợ của các bạn, tuy nhiên cách xếp lịch khiến tôi mệt. Buổi này có cả điều tốt lẫn điều chưa ổn.", "rating": 3, "expected_sentiment": "uncertain", "expected_flags": []},
+    {"id": "holdout-17", "content": "Khâu tập huấn làm tôi hài lòng nhưng việc di chuyển giữa các điểm lại gây bực bội. Tôi có cảm nhận khá trái chiều.", "rating": 3, "expected_sentiment": "uncertain", "expected_flags": []},
+    {"id": "holdout-18", "content": "Mặc dù nhóm rất nỗ lực, tôi vẫn thấy phần tổng kết quá vội. Có lẽ cần tham gia thêm mới đánh giá được.", "rating": 3, "expected_sentiment": "uncertain", "expected_flags": []},
+    {"id": "holdout-19", "content": "Đặt mua bộ mỹ phẩm hôm nay để nhận voucher, truy cập https://sale.example.invalid/voucher và chốt đơn ngay!", "rating": 5, "expected_sentiment": "uncertain", "expected_flags": ["spam"]},
+    {"id": "holdout-20", "content": "Trong lúc khuân thùng, một bạn bị vật nặng rơi trúng chân và phải đến cơ sở y tế. Tôi mong có kiểm tra an toàn trước khi làm.", "rating": 1, "expected_sentiment": "negative", "expected_flags": ["incident"]}
+  ],
+  "diagnostics": [
+    {"id": "holdout-review-01", "content": "Đội bảo hộ kiểm tra thường xuyên nên hôm nay không xảy ra tai nạn, cũng không có người bị thương.", "rating": 5, "expected_flags": [], "purpose": "Không cảnh báo như sự cố thực tế khi sự việc được phủ định rõ ràng."},
+    {"id": "holdout-review-02", "content": "Nếu gặp người bị ngất thì cần gọi y tế theo hướng dẫn. Đây là câu hỏi được thảo luận trong lớp thực hành sơ cứu.", "rating": 4, "expected_flags": [], "purpose": "Tình huống giả định trong tập huấn không phải sự cố thực tế."},
+    {"id": "holdout-review-03", "content": "Trong buổi tập huấn, tôi thực sự bị người hướng dẫn đe dọa khi nêu ý kiến. Mong đơn vị tổ chức liên hệ để làm rõ.", "rating": 1, "expected_flags": ["incident"], "purpose": "Có chữ tập huấn nhưng là phản ánh trực tiếp một sự việc, không được bỏ qua toàn bộ."},
+    {"id": "holdout-review-04", "content": "Bản đồ các điểm thu gom ở https://map.example.invalid/diem-thu-gom là tài liệu của đội điều phối.", "rating": 3, "expected_flags": [], "purpose": "Liên kết liên quan đến công việc không tự động là quảng cáo."},
+    {"id": "holdout-review-05", "content": "Cho vay giải ngân siêu tốc, nhận tiền trong ngày! Gọi ngay để được tư vấn và đăng ký tại https://loan.example.invalid.", "rating": 5, "expected_flags": ["spam"], "purpose": "Lời chào dịch vụ thương mại và kêu gọi liên hệ, không liên quan phản hồi hoạt động."},
+    {"id": "holdout-review-06", "content": "Đây không phải bài bán hàng; tôi chỉ cảm ơn nhóm đã giúp bà con sửa lại những chiếc xe cũ.", "rating": 5, "expected_flags": [], "purpose": "Cụm từ thương mại trong câu phủ định không đủ để gắn cờ quảng cáo."},
+    {"id": "holdout-review-07", "content": "Bài giới thiệu sản phẩm và quảng cáo dịch vụ xuất hiện liên tục trong nhóm khiến tôi phiền lòng, đề nghị người quản lý gỡ chúng.", "rating": 1, "expected_flags": [], "purpose": "Phản ánh về quảng cáo không phải bản thân lời quảng cáo, cần tránh cảnh báo sai người gửi."},
+    {"id": "holdout-review-08", "content": "Lúc thu dọn tôi bị đứt tay do mảnh kính và phải nhờ nhân viên y tế băng lại, xin bổ sung găng tay dày hơn.", "rating": 2, "expected_flags": ["incident"], "purpose": "Tai nạn được mô tả cụ thể mà không dùng đúng các từ nguyên mẫu phổ biến."}
+  ]
+}

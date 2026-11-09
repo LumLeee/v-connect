@@ -85,3 +85,32 @@
 .od-toolbar .od-create { white-space: normal; }
 .od-profile-link { display: inline-flex; align-items: center; gap: 14px; border-radius: 8px; }
 .od-sidebar-account:focus-visible, .od-profile-link:focus-visible { outline: 2px solid #37785f; outline-offset: 4px; }
+.od-content .od-metric-label { font-size: 12px; font-weight: 500; letter-spacing: 0; min-height: 0; }
+.od-content .od-metric > span:last-child { font-size: 12px; }
+.od-content .od-card-label, .od-content .od-status { font-size: 11px; letter-spacing: 0; }
+.od-content .od-activity-card p, .od-content .od-card-footer { font-size: 12px; }
+.od-card-footer small { display: block; margin-top: 5px; font-size: 12px; }
+.od-content .od-panel-heading { align-items: center; }
+.od-content .od-count { border-radius: 20px; font-size: 12px; white-space: nowrap; }
+.od-pending-panel, .od-pending-clear { margin-bottom: 24px; scroll-margin-top: 20px; }
+.od-content .od-pending-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.od-content .od-pending-list li { display: block; padding: 0; border: 0; min-width: 0; }
+.od-content .od-pending-list .od-pending-row { display: flex; align-items: flex-start; gap: 12px; width: 100%; height: 100%; margin: 0; padding: 16px; border: 1px solid #e1e9e3; border-radius: 9px; color: inherit; background: #fbfdfb; }
+.od-content .od-pending-list .od-pending-row:hover { background: #edf5ef; border-color: #aac7b5; }
+.od-pending-row > div { min-width: 0; overflow-wrap: anywhere; }
+.od-content .od-pending-row strong { font-size: 14px; }
+.od-content .od-pending-row p { font-size: 13px; color: #62766b; margin-top: 6px; font-weight: 400; }
+.od-pending-more { margin-top: 16px; }
+.od-pending-clear { display: flex; align-items: center; gap: 10px; padding: 15px 18px; border-radius: 9px; border: 1px solid #dce8df; background: #edf6ef; color: #37684e; font-size: 13px; }
+.od-content .od-empty.compact { display: flex; justify-content: flex-start; align-items: center; text-align: left; padding: 16px; border: 1px dashed #e2eae3; gap: 12px; }
+.od-content .od-empty.compact strong { font-size: 13px; }
+.od-content .od-report-card { align-self: start; }
+.od-content .od-report-card dl { font-size: 13px; }
+@media (max-width: 700px) {
+  .od-content .od-pending-list { grid-template-columns: 1fr; }
+  .od-content .od-metrics { grid-template-columns: 1fr; }
+  .od-content .od-metric { grid-template-columns: 34px minmax(0, 1fr) auto; }
+  .od-content .od-metric > strong { grid-column: auto; font-size: 25px; }
+  .od-content .od-metric > span:last-child { grid-column: 2 / -1; }
+  .od-content .od-toolbar .button, .od-content .od-toolbar .od-create { padding-inline: 10px; font-size: 12px; }
+}

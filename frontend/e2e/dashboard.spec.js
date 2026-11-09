@@ -15,7 +15,7 @@ test('Dashboard tình nguyện viên dùng dữ liệu thật và bố cục kh�
   await page.goto('/tinh-nguyen-vien')
   await expect(page.getByRole('heading', { name: 'Tổng quan', exact: true })).toBeVisible()
   await expect(page.locator('.vd-stat strong')).toHaveText([
-    String(data.metrics.registered), String(data.upcoming_count), String(data.metrics.attended_completed),
+    String(data.summary.pending_invitations), String(data.summary.pending_registrations), String(data.checkin_now_count), String(data.metrics.attended_completed),
   ])
   await expect(page.locator('#vd-upcoming .vd-activity-row')).toHaveCount(data.upcoming.length)
   await expect(page.getByText('Sắp ra mắt', { exact: true })).toHaveCount(0)
@@ -26,9 +26,9 @@ test('Dashboard tình nguyện viên dùng dữ liệu thật và bố cục kh�
   await page.setViewportSize(info.project.use.viewport)
   await mkdir(process.env.E2E_ARTIFACT_DIR, { recursive: true })
   await page.screenshot({ path: path.join(process.env.E2E_ARTIFACT_DIR, `${info.project.name}-volunteer-dashboard.png`), fullPage: true })
-  await page.getByRole('link', { name: 'Chỉnh sửa hồ sơ', exact: true }).click()
+  await page.locator('.vd-welcome').click()
   await expect(page).toHaveURL(/\/ho-so$/)
   await page.goto('/tinh-nguyen-vien')
-  await page.getByRole('link', { name: 'Đăng ký của tôi', exact: true }).click()
-  await expect(page).toHaveURL(/\/tinh-nguyen-vien\/dang-ky$/)
+  await page.locator('.vd-stat').filter({ hasText: 'Đơn chờ duyệt' }).click()
+  await expect(page).toHaveURL(/\/tinh-nguyen-vien\/dang-ky\?status=pending$/)
 })

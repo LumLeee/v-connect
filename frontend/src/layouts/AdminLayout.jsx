@@ -39,7 +39,7 @@ function Avatar({ url }) {
 
 export default function AdminLayout({ children }) {
   const { user, signOut } = useAuth()
-  const menu = useWorkspaceMenu()
+  const menu = useWorkspaceMenu(`vconnect:admin:menu:${user.id}`)
   const { pathname } = useLocation()
   const profile = useApi('/auth/profile/')
   const refreshProfile = profile.retry
@@ -62,15 +62,14 @@ export default function AdminLayout({ children }) {
       <WorkspaceMenuBackdrop menu={menu} /><aside id={menu.id} ref={menu.sidebarRef} hidden={!menu.open} role={menu.narrow && menu.open ? 'dialog' : undefined} aria-modal={menu.narrow && menu.open ? true : undefined} className="od-sidebar" aria-label="Không gian Quản trị viên">
         <Link to="/" className="od-brand"><span><HeartHandshake size={25} aria-hidden="true" /></span>V-Connect<span className="od-brand-dot">.</span></Link>
         <WorkspaceMenuClose menu={menu} />
-        <p className="od-sidebar-caption">KHÔNG GIAN QUẢN TRỊ VIÊN</p>
         <nav aria-label="Điều hướng Quản trị viên">{items.map(([key, to, label, Icon]) => <Link key={key} to={to} className={section === key ? 'active' : undefined} aria-current={section === key ? 'page' : undefined}><Icon size={19} aria-hidden="true" />{label}</Link>)}</nav>
-        <Link to="/ho-so" className="od-sidebar-account" aria-label="Xem hồ sơ cá nhân"><Avatar url={profile.data?.profile.avatar_url} /><div><strong>{user.full_name}</strong><span>Quản trị viên</span></div></Link>
+        <Link to="/ho-so" className="od-sidebar-account" aria-label="Xem hồ sơ cá nhân"><Avatar key={profile.data?.profile.avatar_url || 'empty'} url={profile.data?.profile.avatar_url} /><div><strong>{user.full_name}</strong><span>Quản trị viên</span></div></Link>
         <button type="button" className="od-logout" disabled={busy} onClick={logout}><LogOut size={18} aria-hidden="true" />Đăng xuất</button>
         <Link className="od-home-link" to="/">Về trang chủ</Link>
       </aside>
       <div ref={menu.workspaceRef} className="od-workspace">
         <header className="od-topbar"><div className="workspace-topbar-start"><WorkspaceMenuToggle menu={menu} /><div className="om-breadcrumb"><Link to="/quan-tri">Bảng điều hành</Link><span>/</span><strong>{current[2]}</strong></div>
-          </div><div className="od-topbar-account"><NotificationBell key={user.id} /><Link className="od-profile-link" to="/ho-so" aria-label="Tài khoản của tôi"><span className="od-role">Quản trị viên</span><Avatar url={profile.data?.profile.avatar_url} /></Link></div></header>
+          </div><div className="od-topbar-account"><NotificationBell key={user.id} /><Link className="od-profile-link" to="/ho-so" aria-label="Tài khoản của tôi"><span className="od-role">Quản trị viên</span><Avatar key={profile.data?.profile.avatar_url || 'empty'} url={profile.data?.profile.avatar_url} /></Link></div></header>
         <main id="main-content" className={`om-content ad-content ad-${section}`}>
           {error && <p className="request-error" role="alert">{error}</p>}
           {children}

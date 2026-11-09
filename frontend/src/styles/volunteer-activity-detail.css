@@ -1,0 +1,60 @@
+.va-detail { min-width: 0; }
+.va-detail .va-detail-heading { margin-bottom: 24px; }
+.va-detail .va-detail-heading h1 { margin: 12px 0; line-height: 1.35; }
+.va-detail .va-detail-heading > p { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; color: #62766b; }
+.va-detail-heading > p svg { flex-shrink: 0; }
+.va-detail .activity-detail-layout.va-detail-layout { grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr); gap: 22px; }
+.va-detail-cover { min-width: 0; }
+.va-detail .va-detail-side { grid-column: 2; grid-row: 1 / span 2; display: flex; flex-direction: column; gap: 18px; }
+.va-detail .va-detail-content { grid-column: 1; margin: 0; min-width: 0; }
+.va-detail .va-detail-content > h2:first-child, .va-detail .activity-required-skills h2 { margin-top: 0; }
+.va-detail .activity-required-skills { margin-bottom: 26px; }
+.va-detail .activity-required-skills .activity-skill-tags { margin-bottom: 10px; }
+.va-detail .activity-required-skills .muted { font-size: 13px; margin: 0; }
+.va-detail .activity-skill-tags span { font-size: 13px; }
+.va-detail .activity-description { font-size: 14px; }
+.va-detail .activity-logistics { padding: 22px; }
+.va-detail .activity-logistics > h2 { margin: 0; font-size: 18px; }
+.va-detail .activity-logistic-item { gap: 10px; padding-top: 16px; margin-top: 16px; }
+.va-detail .activity-logistic-item h3 { font-size: 14px; margin-bottom: 10px; }
+.va-detail .activity-logistic-item p, .va-detail .activity-logistic-item dd { font-size: 14px; line-height: 1.65; }
+.va-detail .activity-logistic-item dt { font-size: 12px; }
+.va-detail .activity-logistic-item > div { flex: 1; }
+.va-detail-capacity > div { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 10px; }
+.va-detail .va-detail-capacity dd { margin: 3px 0; color: #245b48; font-weight: 600; }
+.va-detail .va-participation { margin: 0; padding: 22px; background: white; border-color: #cbded2; }
+.va-participation-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.va-detail .va-participation-heading > h2 { margin: 0; font-size: 18px; }
+.va-detail .va-participation-heading .refresh-button { width: auto; flex-shrink: 0; margin: 0; padding: 8px 10px; font-size: 12px; gap: 6px; min-height: 40px; }
+.va-detail .va-participation > p { font-size: 14px; line-height: 1.65; margin: 14px 0; }
+.va-detail .va-participation > .va-participation-status { padding: 10px 12px; border-radius: 8px; background: #eff4f0; color: #365b49; font-size: 14px; font-weight: 600; }
+.va-detail .va-participation > .va-state-approved { background: #e7f2eb; color: #235b44; }
+.va-detail .va-participation > .va-state-pending { background: #fff6df; color: #795b16; }
+.va-detail .va-participation > .va-state-rejected, .va-detail .va-participation > .va-state-cancelled { background: #f9eeeb; color: #8b4b40; }
+.va-detail .va-participation > .va-participation-privacy, .va-detail .va-participation > .va-participation-policy { font-size: 12px; color: #62766b; }
+.va-participation-actions { display: grid; gap: 10px; margin-top: 18px; }
+.va-detail .va-participation-actions .button { min-width: 0; width: 100%; margin: 0; padding: 12px 14px; min-height: 46px; text-align: center; font-size: 14px; white-space: normal; }
+.va-participation-cancel { margin-top: 16px; padding-top: 14px; border-top: 1px solid #e7ede8; }
+.va-detail .va-participation-cancel .button { width: auto; margin: 0; min-height: 42px; padding: 9px 13px; font-size: 13px; color: #8a4840; border-color: #dfc9c4; }
+.va-participation-list-link { display: inline-block; margin-top: 18px; font-size: 13px; color: #276650; text-decoration: underline; text-underline-offset: 3px; }
+.va-participation a:focus-visible { outline: 3px solid #d89d37; outline-offset: 3px; }
+.va-detail .va-participation-guest > .button { width: 100%; margin-top: 4px; min-height: 46px; }
+.va-detail .va-participation .activity-empty { padding: 14px; }
+.va-detail .va-participation .activity-empty p { font-size: 13px; line-height: 1.6; margin: 7px 0; }
+@media (max-width: 1000px) {
+  .va-detail .activity-detail-layout.va-detail-layout { grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr); gap: 18px; }
+}
+@media (max-width: 850px) {
+  .va-detail .activity-detail-layout.va-detail-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .va-detail .va-detail-side, .va-detail .va-detail-content { grid-column: auto; grid-row: auto; }
+  .va-detail .va-detail-side { gap: 18px; }
+}
+@media (max-width: 560px) {
+  .va-detail .va-detail-heading { margin-bottom: 18px; }
+  .va-detail .va-detail-heading > p { font-size: 13px; }
+  .va-detail .activity-info-card, .va-detail .activity-logistics, .va-detail .va-participation { padding: 18px; }
+  .va-detail .va-participation-heading { flex-wrap: wrap; }
+  .va-detail .va-participation-heading .refresh-button { margin-left: auto; }
+  .va-detail .va-participation-heading > h2 { font-size: 17px; }
+  .va-detail .activity-visual.large { height: 170px; }
+}

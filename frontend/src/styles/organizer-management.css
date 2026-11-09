@@ -13,9 +13,34 @@
 .om-page-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 22px; }
 .om-page-heading > div { min-width: 0; }
 .om-page-heading > .button { flex-shrink: 0; }
+.om-management-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+.om-management-actions .button { min-height: 40px; white-space: nowrap; }
+.om-management-actions .button.refresh-button { margin-left: 0; order: 0; }
+.om-status-filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; margin: 22px 0 16px; background: white; border: 1px solid #e0e8e3; border-radius: 10px; }
+.om-status-filters button { min-height: 40px; padding: 8px 16px; border: 0; border-radius: 7px; background: transparent; color: #62766b; font-size: 13px; font-weight: 500; }
+.om-status-filters button:hover { background: #edf5ef; color: #174f44; }
+.om-status-filters button[aria-pressed=true] { background: #174f44; color: white; }
 .om-content .om-eyebrow, .om-content .eyebrow { font-size: 10px; letter-spacing: 1.4px; color: #638575; }
 .om-content .button { gap: 8px; padding: 10px 15px; font-size: 12px; }
 .om-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 22px 0; }
+.om-summary.om-registration-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.om-summary.om-context-summary { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.om-applicant-status-filters button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.om-applicant-status-filters button > span { min-width: 22px; padding: 1px 6px; border-radius: 12px; background: #edf3ef; color: #496a59; font-size: 11px; }
+.om-applicant-status-filters button[aria-pressed=true] > span { background: #ffffff26; color: white; }
+.om-applicant-search { padding: 18px; margin: 16px 0; border: 1px solid #e0e8e3; border-radius: 10px; background: white; }
+.om-applicant-search > label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+.om-applicant-search-controls { display: flex; align-items: center; gap: 10px; }
+.om-applicant-search-controls input { width: 100%; padding: 10px 12px 10px 42px; border: 1px solid #cbd8d1; border-radius: 7px; font-size: 13px; background: #fbfcfb; color: inherit; }
+.om-applicant-search-controls > .button { flex-shrink: 0; min-height: 42px; }
+.om-content .om-applicant-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+.om-applicant-row .om-applicant-actions { justify-self: end; }
+.om-content .om-applicant-row .participation-review-actions { justify-content: flex-end; margin: 0; }
+.om-content .om-applicant-row .participation-review-actions > .button { flex: 0 0 auto; min-height: 40px; }
+.om-applicant-status { display: inline-block; border-radius: 20px; padding: 4px 10px; font-size: 12px; font-weight: 500; background: #edf1ef; color: #62766b; }
+.om-applicant-status.is-pending { background: #fff3d9; color: #82621c; }
+.om-applicant-status.is-approved { background: #e4f1e9; color: #23644d; }
+.om-applicant-status.is-rejected { background: #fbe9e5; color: #9a4e42; }
 .om-stat { display: grid; grid-template-columns: 25px 1fr; align-items: center; gap: 10px; background: white; padding: 20px; border: 1px solid #e0e8e3; border-radius: 10px; }
 .om-stat svg { color: #5b9277; }.om-stat span { font-size: 12px; color: #657b6e; }.om-stat strong { grid-column: 1 / -1; font-size: 26px; line-height: 1.2; }
 .om-content .activity-search { max-width: none; background: white; padding: 22px; border: 1px solid #e0e8e3; border-radius: 11px; margin: 22px 0; }
@@ -62,6 +87,8 @@
 .om-activity-tabs { display: flex; flex-wrap: wrap; gap: 5px 17px; padding: 0 22px; border-top: 1px solid #e7eee9; }
 .om-activity-tabs a { padding: 12px 0; font-size: 12px; color: #617c6c; border-bottom: 2px solid transparent; }
 .om-activity-tabs a[aria-current=page] { border-color: #347458; color: #225f47; font-weight: 600; }
+.om-activity-tabs a:focus-visible { outline: 2px solid #347458; outline-offset: -3px; border-radius: 4px; }
+.om-activity-context--navigation-only .om-activity-tabs { border-top: 0; }
 .om-detail-body { background: white; border: 1px solid #e0e8e3; border-radius: 11px; padding: 24px; margin-bottom: 24px; }
 .om-content .activity-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); background: #f5f8f5; border-radius: 8px; padding: 18px; }
 .om-content .activity-description { line-height: 1.8; overflow-wrap: anywhere; }
@@ -101,8 +128,11 @@
 }
 @media (max-width: 800px) {
   .om-content .om-person-row { grid-template-columns: 1fr; gap: 10px; }
+  .om-applicant-page .om-management-heading { align-items: center; flex-direction: row; flex-wrap: wrap; }
+  .om-applicant-row .om-applicant-actions { width: 100%; }
   .om-content .activity-filter-grid, .om-content .activity-grid, .om-content .analytics-charts { grid-template-columns: 1fr; }
   .om-page-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .om-management-heading .om-management-actions { width: 100%; }
   .om-context-main { grid-template-columns: 1fr; gap: 16px; }.om-context-main .om-capacity { max-width: 220px; }
   .om-editor-fields { grid-template-columns: 1fr; }
 }
@@ -111,16 +141,29 @@
   .om-content { padding: 24px 20px 35px; }.om-content h1 { font-size: 26px; }
   .om-breadcrumb { gap: 6px; font-size: 10px; }.om-breadcrumb > strong { max-width: 120px; }
   .om-stat { padding: 16px; gap: 8px; }.om-stat span { font-size: 11px; }
+  .om-summary.om-registration-summary { grid-template-columns: 1fr; gap: 10px; }
+  .om-summary.om-context-summary { grid-template-columns: 1fr; gap: 10px; }
+  .om-registration-summary .om-stat, .om-context-summary .om-stat { grid-template-columns: 25px minmax(0, 1fr) auto; }
+  .om-registration-summary .om-stat strong, .om-context-summary .om-stat strong { grid-column: auto; font-size: 23px; }
+  .om-applicant-search-controls { flex-wrap: wrap; }
+  .om-applicant-search-controls .activity-search-input { flex-basis: 100%; }
+  .om-applicant-search-controls > .button { margin-left: auto; }
+  .om-applicant-search-controls > .button + .button { margin-left: 0; }
   .om-activity-row { grid-template-columns: 1fr; gap: 14px; }.om-activity-row .om-capacity { max-width: 200px; }
   .om-content .activity-search, .om-editor-section, .om-detail-body, .om-content .profile-card, .om-content .attendance-code-panel { padding: 18px; }
   .om-content .activity-facts { grid-template-columns: 1fr; }.om-content .activity-search > div { flex-wrap: wrap; }
   .om-content .activity-search-input { width: 100%; }.om-content .activity-search-input input { width: 100%; }
-  .om-list-toolbar { align-items: flex-start; flex-wrap: wrap; }.om-activity-tabs { gap: 0 13px; padding-inline: 18px; }
+  .om-list-toolbar { align-items: flex-start; flex-wrap: wrap; }
+  .om-activity-tabs { flex-wrap: nowrap; gap: 20px; padding-inline: 18px; overflow-x: auto; scrollbar-width: thin; scroll-padding-inline: 18px; }
+  .om-activity-tabs a { flex: 0 0 auto; white-space: nowrap; padding-block: 14px; }
+  .om-management-actions { gap: 8px; }
+  .om-management-actions .button { padding-inline: 10px; }
+  .om-status-filters button { flex: 1 0 auto; padding-inline: 12px; }
   .om-content .active-attendance-code { flex-wrap: wrap; }.om-content .active-attendance-code img { max-width: 100%; height: auto; }
 }
 @media print {
   .od-shell { display: block !important; background: white !important; }
-  .od-sidebar, .od-topbar, .skip-link, .om-activity-tabs { display: none !important; }
+  .od-sidebar, .od-topbar, .skip-link, .om-activity-tabs, .om-activity-context--navigation-only { display: none !important; }
   .om-content { max-width: none; padding: 0 !important; margin: 0; }
   .om-content h1 { font-size: 20pt; }
 }

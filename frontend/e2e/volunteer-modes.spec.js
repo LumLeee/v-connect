@@ -42,9 +42,12 @@ async function mockLists(page) {
       const mode = path.includes('/history/') ? 'history' : path.includes('/check-in/') ? 'checkin' : 'registrations'
       const results = state.empty ? [] : state[mode]
       const summary = mode === 'registrations'
-        ? { total: results.length, pending: results.filter(row => row.status === 'pending').length, approved: results.filter(row => row.status === 'approved').length }
-        : mode === 'checkin' ? { total: results.length, attended: results.filter(row => row.attendance).length, pending: results.filter(row => !row.attendance).length }
-          : { total: results.length, completed: results.filter(row => row.activity.status === 'completed').length, total_score: results.reduce((sum, row) => sum + (row.contribution?.score || 0), 0), feedback_count: results.filter(row => row.feedback).length }
+        ? { total: results.length, ...Object.fromEntries(['pending', 'approved', 'rejected', 'cancelled'].map(status => [status, results.filter(row => row.status === status).length])) }
+        : mode === 'checkin' ? { total: results.length, attended: results.filter(row => row.attendance).length, pending: results.filter(row => !row.attendance).length,
+          open: results.filter(row => !row.attendance && (row.activity.time_checks_disabled || (+new Date(row.activity.starts_at) <= +new Date(instant) && +new Date(instant) <= +new Date(row.activity.ends_at)))).length,
+          upcoming: results.filter(row => !row.attendance && !row.activity.time_checks_disabled && row.activity.starts_at > instant).length,
+          closed: results.filter(row => !row.attendance && !row.activity.time_checks_disabled && row.activity.ends_at < instant).length }
+          : { total: results.length, completed: results.filter(row => row.activity.status === 'completed').length, total_score: results.reduce((sum, row) => sum + (row.contribution?.score || 0), 0), feedback_count: results.filter(row => row.feedback).length, feedback_pending: results.filter(row => !row.feedback).length }
       return route.fulfill({ json: { count: results.length, results, next: null, previous: null, summary } })
     }
     return route.fulfill({ json: { count: 0, results: [] } })
@@ -56,7 +59,7 @@ test('Ba trang có dữ liệu, thống kê và thao tác riêng; hủy cần x�
   const state = await mockLists(page)
   await page.goto('/tinh-nguyen-vien/dang-ky')
   await expect(page.locator('.vp-registration')).toHaveCount(2)
-  await expect(page.locator('.vp-registration').first()).toContainText('Đăng ký:')
+  await expect(page.locator('.vp-registration').first()).toContainText('Gửi đơn:')
   await expect(page.getByRole('link', { name: 'Check-in hoạt động', exact: true })).toHaveCount(0)
   await page.locator('.vp-registration').first().getByRole('button', { name: 'Hủy đăng ký', exact: true }).click()
   expect(state.cancelled).toBe(0)
@@ -69,14 +72,14 @@ test('Ba trang có dữ liệu, thống kê và thao tác riêng; hủy cần x�
   state.cancelFails = false
   await page.getByRole('button', { name: 'Xác nhận hủy đăng ký', exact: true }).click()
   await expect(page.getByRole('dialog')).toHaveCount(0)
-  await expect(page.locator('.vp-summary > div').nth(1).locator('strong')).toHaveText('0')
+  await expect(page.getByRole('group', { name: 'Lọc trạng thái đơn đăng ký' }).getByRole('button', { name: /^Chờ duyệt/ }).locator('span')).toHaveText('0')
   await expect(page.locator('.vp-registration').first()).toContainText('Đã hủy đăng ký')
 
   await page.goto('/tinh-nguyen-vien/check-in')
   await expect(page.locator('.vp-checkin.vp-row')).toHaveCount(2)
   await expect(page.getByRole('link', { name: 'Check-in hoạt động', exact: true })).toHaveCount(1)
   await expect(page.locator('.vp-checkin.is-attended')).toContainText('Điểm danh:')
-  await expect(page.locator('.vp-checkin.is-attended time')).toHaveText('5 phút trước')
+  await expect(page.locator('.vp-checkin.is-attended .vp-attendance time')).toHaveText('5 phút trước')
   await expect(page.getByRole('button', { name: 'Hủy đăng ký', exact: true })).toHaveCount(0)
   const before = state.requests['/api/v1/participations/check-in/']
   state.checkin = state.checkin.map(row => ({ ...row, attendance: state.checkin[1].attendance }))
@@ -132,7 +135,8 @@ test('Trạng thái trống, lỗi mạng và trang không còn dữ liệu có 
   for (const [path, message] of [['dang-ky', 'Chưa có đơn đăng ký.'], ['check-in', 'Chưa có hoạt động được duyệt đang công khai.'], ['lich-su', 'Chưa có hoạt động được xác nhận có mặt.']]) {
     await page.goto(`/tinh-nguyen-vien/${path}`)
     await expect(page.getByText(message, { exact: true })).toBeVisible()
-    await expect(page.locator('.vp-summary strong')).toHaveText(['0', '0', '0'])
+    if (path === 'dang-ky') await expect(page.getByRole('group', { name: 'Lọc trạng thái đơn đăng ký' }).locator('button span')).toHaveText(['0', '0', '0', '0', '0'])
+    else await expect(page.locator('.vp-summary strong')).toHaveText(['0', '0', '0'])
   }
   state.fail = true
   await page.goto('/tinh-nguyen-vien/lich-su')

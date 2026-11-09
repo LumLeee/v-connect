@@ -1,0 +1,47 @@
+.volunteer-checkin .vci-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
+.volunteer-checkin .vci-heading h1 { margin: 0; }
+.volunteer-checkin .vci-heading > .button { margin-left: auto; }
+.volunteer-checkin .vci-activity-title { max-width: 760px; margin: 0 0 12px; font-size: 20px; line-height: 1.5; overflow-wrap: anywhere; }
+.volunteer-checkin .vci-form { max-width: 760px; margin-top: 12px; padding: 24px; border: 1px solid #d6e3db; border-radius: 16px; background: #fff; }
+.vci-instruction { margin: 0 0 20px; color: #617b6e; font-size: 14px; line-height: 1.7; }
+.vci-tabs { display: flex; gap: 6px; padding: 5px; border-radius: 10px; background: #eff5f1; }
+.vci-tabs > button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex: 1; min-width: 0; min-height: 44px; padding: 10px 14px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: #526e60; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.vci-tabs > button[aria-selected="true"] { color: #1b5b47; background: #fff; border-color: #c5d9cd; box-shadow: 0 1px 3px #18372a0d; }
+.vci-tabs > button:disabled { opacity: .55; cursor: wait; }
+.vci-tabs > button:focus-visible { outline: 3px solid #d89d37; outline-offset: 2px; }
+.vci-panel { padding-block: 16px 0; min-width: 0; }
+.vci-panel > p { margin: 0 0 16px; font-size: 13px; color: #617b6e; }
+.vci-camera-open { display: inline-flex; align-items: center; gap: 8px; }
+.volunteer-checkin .vci-panel .image-paste-actions { gap: 10px; }
+.volunteer-checkin .vci-panel .image-paste-actions .button { min-height: 44px; font-size: 13px; }
+.volunteer-checkin .vci-panel .activity-field { margin: 0; }
+.volunteer-checkin .vci-panel .activity-field label { display: block; margin-bottom: 10px; font-size: 14px; }
+.volunteer-checkin .vci-panel .activity-field input { box-sizing: border-box; max-width: 100%; width: 300px; min-height: 52px; font-size: 22px; }
+.volunteer-checkin .vci-panel .activity-field > p { margin: 8px 0 0; font-size: 12px; color: #687f70; }
+.volunteer-checkin .vci-panel .vci-qr-ready { display: flex; align-items: flex-start; gap: 8px; margin: 18px 0 0; padding: 12px; border-radius: 8px; color: #1c654b; background: #eaf6ed; line-height: 1.6; }
+.vci-qr-ready svg { flex-shrink: 0; margin-top: 2px; }
+.vci-confirm { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e2ebe5; }
+.vci-confirm > p { flex: 1 1 190px; margin: 0; font-size: 12px; line-height: 1.6; color: #687f70; }
+.vci-success, .vci-unavailable { max-width: 760px; padding: 24px; border: 1px solid #d2e2d7; border-radius: 16px; background: #fff; overflow-wrap: anywhere; }
+.vci-success { display: flex; gap: 16px; background: #f1f8f3; }
+.vci-success-icon { flex-shrink: 0; color: #2e7c56; margin-top: 2px; }
+.vci-success > div { min-width: 0; flex: 1; }
+.vci-success h2, .vci-unavailable h2 { margin: 0 0 8px; font-size: 20px; line-height: 1.5; }
+.vci-success p { margin: 7px 0; line-height: 1.65; font-size: 14px; }
+.vci-success .vci-success-activity { font-weight: 600; color: #244d3d; }
+.vci-success dl { margin: 20px 0; }
+.vci-success dl > div { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 10px 0; font-size: 13px; line-height: 1.65; }
+.vci-success dt { flex: 0 0 145px; color: #617b6e; }
+.vci-success dd { margin: 0; min-width: 0; font-weight: 600; }
+.vci-unavailable > p { margin: 0 0 20px; font-size: 14px; line-height: 1.8; color: #617b6e; }
+@media (max-width: 560px) {
+  .volunteer-checkin .vci-heading h1 { font-size: 25px; }
+  .volunteer-checkin .vci-form, .vci-success, .vci-unavailable { padding: 18px; }
+  .volunteer-checkin .vci-activity-title { font-size: 18px; }
+  .vci-tabs > button { padding: 9px 8px; }
+  .vci-confirm { align-items: stretch; flex-direction: column; }
+  .vci-confirm > p { flex: auto; }
+  .vci-success { flex-direction: column; gap: 10px; }
+  .vci-success dl > div { flex-direction: column; }
+  .vci-success dt { flex-basis: auto; }
+}

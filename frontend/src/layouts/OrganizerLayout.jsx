@@ -11,14 +11,14 @@ import '../styles/organizer-management.css'
 
 const items = [
   ['overview', '/nha-to-chuc', 'Tổng quan', LayoutDashboard],
-  ['leaderboard', '/bang-xep-hang', 'Bảng xếp hạng', Trophy],
   ['activities', '/nha-to-chuc/hoat-dong', 'Quản lý hoạt động', CalendarDays],
-  ['matching', '/nha-to-chuc/ghep-noi', 'Ghép nối tình nguyện viên', HeartHandshake],
   ['registrations', '/nha-to-chuc/dang-ky', 'Đơn đăng ký', ClipboardList],
+  ['matching', '/nha-to-chuc/ghep-noi', 'Ghép nối tình nguyện viên', HeartHandshake],
   ['attendance', '/nha-to-chuc/diem-danh', 'Quản lý điểm danh', UserCheck],
   ['contributions', '/nha-to-chuc/dong-gop', 'Quản lý đóng góp', HeartHandshake],
   ['feedback', '/nha-to-chuc/phan-hoi', 'Phản hồi hoạt động', MessageSquare],
   ['reports', '/bao-cao', 'Báo cáo', BarChart3],
+  ['leaderboard', '/bang-xep-hang', 'Bảng xếp hạng', Trophy],
 ]
 
 function sectionFor(path) {
@@ -41,7 +41,7 @@ function Avatar({ url }) {
 
 export default function OrganizerLayout({ children }) {
   const { user, signOut } = useAuth()
-  const menu = useWorkspaceMenu()
+  const menu = useWorkspaceMenu(`v-connect:organizer-menu:${user.id}`)
   const { pathname } = useLocation()
   const profile = useApi('/auth/profile/')
   const refreshProfile = profile.retry
@@ -67,7 +67,7 @@ export default function OrganizerLayout({ children }) {
         <p className="od-sidebar-caption">KHÔNG GIAN NHÀ TỔ CHỨC</p>
         <nav aria-label="Điều hướng Nhà tổ chức">{items.map(([key, to, label, Icon]) => <Link key={key} to={to} className={section === key ? 'active' : undefined} aria-current={section === key ? 'page' : undefined}><Icon size={19} aria-hidden="true" />{label}</Link>)}</nav>
         <Link to="/ho-so" className="od-sidebar-account" aria-label="Xem hồ sơ cá nhân"><Avatar url={profile.data?.profile.avatar_url} /><div><strong>{user.full_name}</strong><span>{user.email}</span></div></Link>
-        <button type="button" className="od-logout" disabled={busy} onClick={logout}><LogOut size={18} aria-hidden="true" />Đăng xuất</button>
+        <button type="button" className="od-logout" data-unsaved-navigation disabled={busy} onClick={logout}><LogOut size={18} aria-hidden="true" />Đăng xuất</button>
         <Link className="od-home-link" to="/">Về trang chủ</Link>
       </aside>
       <div ref={menu.workspaceRef} className="od-workspace">

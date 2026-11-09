@@ -8,6 +8,8 @@ import { metricLabels } from '../api/reportFormat.js'
 import useApi from '../hooks/useApi.js'
 import useReportOrganizers from '../hooks/useReportOrganizers.js'
 import RequestState from '../components/RequestState.jsx'
+import OrganizerReportsView from '../components/OrganizerReportsView.jsx'
+import AdminReportsPage from './AdminReportsPage.jsx'
 import '../styles/analytics.css'
 
 const filterNames = ['search', 'status', 'date_from', 'date_to', 'organizer']
@@ -106,6 +108,8 @@ export default function AdvancedReportsPage() {
   const { user } = useAuth()
   const [params, setParams] = useSearchParams()
   const allowed = ['admin', 'organizer'].includes(user.role)
+  if (user.role === 'admin') return <AdminReportsPage title="Báo cáo mở rộng" />
+  if (user.role === 'organizer') return <OrganizerReportsView />
   return allowed ? <ReportPage key={user.id} admin={user.role === 'admin'} params={params} setParams={setParams} /> : <Navigate to="/bao-cao" replace />
 }
 

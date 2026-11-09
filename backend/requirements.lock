@@ -1,11 +1,40 @@
 # Python 3.12. Reproduce with: python -m pip install -r requirements.lock
+anyio==4.16.0
 asgiref==3.12.1
+certifi==2026.10.23
+charset-normalizer==3.5.2
+click==8.5.1
+colorama==0.4.6; platform_system == "Windows"
 Django==5.2.17
 djangorestframework==3.16.1
 et_xmlfile==2.0.0
+fastembed==0.9.1
+filelock==4.2.9
+flatbuffers==25.12.19
+fsspec==2026.9.0
+h11==0.16.0
+hf-xet==1.8.0
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.33.0
+idna==3.20
+loguru==0.7.3
+mmh3==5.3.1
 mysqlclient==2.2.8
+numpy==2.5.4
+onnxruntime==1.31.1
 openpyxl==3.1.5
+packaging==26.3
 pillow==12.3.0
+protobuf==7.36.2
+py_rust_stemmers==0.1.8
 python-dotenv==1.2.3
+PyYAML==6.0.3
+requests==2.34.2
 sqlparse==0.6.0
+tokenizers==0.23.3
+tqdm==4.70.1
+typing_extensions==4.16.0
 tzdata==2026.4
+urllib3==2.8.0
+win32_setctime==1.2.1; platform_system == "Windows"

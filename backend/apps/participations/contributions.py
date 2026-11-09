@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Case, Count, IntegerField, Q, Sum, When
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -110,7 +110,39 @@ class ManagedContributions(generics.ListAPIView):
 
     def get_queryset(self):
         activity = get_object_or_404(Activity, pk=self.kwargs['pk'], organizer=self.request.user)
-        return eligible_entries().filter(participation__activity=activity)
+        self.contribution_status = self.request.query_params.get('status', 'all').strip()
+        if self.contribution_status not in ['all', 'pending', 'confirmed']:
+            raise ValidationError({'status': 'Trạng thái đóng góp không hợp lệ.'})
+        term = self.request.query_params.get('search', '').strip()
+        if len(term) > 200:
+            raise ValidationError({'search': 'Từ khóa không được vượt quá 200 ký tự.'})
+        queryset = eligible_entries().filter(participation__activity=activity)
+        if term:
+            queryset = queryset.filter(Q(participation__volunteer__full_name__icontains=term) |
+                Q(participation__volunteer__email__icontains=term))
+        return queryset.order_by(
+            Case(When(contribution__isnull=True, then=0), default=1, output_field=IntegerField()),
+            'participation__volunteer__full_name', 'pk',
+        )
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        summary = queryset.aggregate(
+            total=Count('pk'),
+            score=Sum('contribution__score', default=0),
+            confirmed=Count('pk', filter=Q(contribution__isnull=False)),
+            pending=Count('pk', filter=Q(contribution__isnull=True)),
+        )
+        if self.contribution_status != 'all':
+            queryset = queryset.filter(contribution__isnull=self.contribution_status == 'pending')
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            response = self.get_paginated_response(self.get_serializer(page, many=True).data)
+        else:
+            results = self.get_serializer(queryset, many=True).data
+            response = Response({'count': len(results), 'next': None, 'previous': None, 'results': results})
+        response.data['summary'] = summary
+        return response
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -129,16 +161,33 @@ class MyContributions(generics.ListAPIView):
     serializer_class = EntrySerializer
 
     def get_queryset(self):
-        return eligible_entries().filter(participation__volunteer=self.request.user)
+        self.contribution_status = self.request.query_params.get('status', 'all').strip()
+        if self.contribution_status not in ['all', 'pending', 'confirmed']:
+            raise ValidationError({'status': 'Trạng thái đóng góp không hợp lệ.'})
+        term = self.request.query_params.get('search', '').strip()
+        if len(term) > 200:
+            raise ValidationError({'search': 'Từ khóa không được vượt quá 200 ký tự.'})
+        queryset = eligible_entries().filter(participation__volunteer=self.request.user)
+        if term:
+            queryset = queryset.filter(participation__activity__title__icontains=term)
+        return queryset.order_by('-confirmed_at', 'pk')
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        response = super().list(request, *args, **kwargs)
-        response.data['summary'] = {
-            'score': queryset.aggregate(total=Sum('contribution__score'))['total'] or 0,
-            'confirmed': queryset.filter(contribution__isnull=False).count(),
-            'pending': queryset.filter(contribution__isnull=True).count(),
-        }
+        summary = queryset.aggregate(
+            score=Sum('contribution__score', default=0),
+            confirmed=Count('pk', filter=Q(contribution__isnull=False)),
+            pending=Count('pk', filter=Q(contribution__isnull=True)),
+        )
+        if self.contribution_status != 'all':
+            queryset = queryset.filter(contribution__isnull=self.contribution_status == 'pending')
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            response = self.get_paginated_response(self.get_serializer(page, many=True).data)
+        else:
+            results = self.get_serializer(queryset, many=True).data
+            response = Response({'count': len(results), 'next': None, 'previous': None, 'results': results})
+        response.data['summary'] = summary
         return response
 
 

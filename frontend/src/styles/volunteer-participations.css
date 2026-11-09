@@ -30,6 +30,31 @@
 .vp-history-result > span { font-size: 12px; color: #61796e; }
 .vp-summary span { font-size: 13px; }
 .vs-participations .vp-message { padding: 12px 16px; border-radius: 8px; background: #e6f2eb; color: #24674e; }
+.vp-heading-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.vp-heading-actions .refresh-button { margin-left: auto; }
+.vp-registration-filters { padding: 20px; background: #fff; border: 1px solid #dfe8e2; border-radius: 12px; }
+.vp-registration-search label { display: block; margin-bottom: 8px; color: #385b4c; font-size: 14px; font-weight: 600; }
+.vp-search-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.vp-search-field { display: flex; align-items: center; gap: 10px; flex: 1 1 240px; min-width: 0; border: 1px solid #bccfc3; border-radius: 8px; padding: 0 12px; color: #648071; }
+.vp-search-field:focus-within { outline: 2px solid #387f61; outline-offset: 2px; }
+.vp-search-field svg { flex-shrink: 0; }
+.vp-search-field input { width: 100%; min-width: 0; min-height: 44px; padding: 10px 0; border: 0; border-radius: 0; background: transparent; font: inherit; font-size: 14px; }
+.vp-search-field input:focus { outline: none; box-shadow: none; }
+.vp-registration-filters .button { min-height: 44px; font-size: 14px; }
+.vp-status-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.vp-status-filters button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 12px; border: 1px solid #d6e2d9; border-radius: 8px; background: #fff; color: #506b5c; font: inherit; font-size: 13px; cursor: pointer; }
+.vp-status-filters button[aria-pressed="true"] { border-color: #286b54; background: #e8f3ed; color: #185541; font-weight: 600; }
+.vp-status-filters button span { min-width: 24px; padding: 2px 6px; border-radius: 12px; background: #f0f4f1; font-size: 12px; }
+.vp-status-filters button[aria-pressed="true"] span { background: #d1e7da; }
+.vp-status-filters button:disabled { cursor: wait; opacity: .6; }
+.vp-registrations .vs-list-toolbar { margin-top: 18px; margin-bottom: 0; }
+.vp-registrations .vp-list { margin-top: 12px; }
+.vs-participations .vp-registration { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) auto; align-items: center; }
+.vs-participations .vp-registration .vp-activity-info, .vs-participations .vp-registration .vp-row-meta { min-width: 0; overflow-wrap: anywhere; }
+.vs-participations .vp-registration .vp-row-actions { grid-column: auto; flex-direction: column; align-items: stretch; }
+.vs-participations .vp-registration .vs-change-note { padding: 7px 10px; border-radius: 6px; background: #fff7e7; color: #775b25; }
+.vs-participations .vp-registration .vp-cancel { background: #fff8f5; }
+.vs-participations .vp-registration:has(.vp-row-actions.row-empty-actions) { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 @media (max-width: 1200px) {
   .vs-participations .vp-history { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
   .vp-history-result { grid-column: 1 / -1; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 10px 18px; }
@@ -40,4 +65,14 @@
   .vs-participations .vp-row { padding: 18px; gap: 12px; }
   .vs-participations .vp-row-actions { justify-content: flex-start; }
   .vs-participations .vs-page-heading { margin-bottom: 16px; }
+  .vp-registrations .vs-page-heading { align-items: flex-start; flex-direction: column; }
+  .vp-heading-actions { width: 100%; justify-content: flex-start; }
+  .vp-registration-filters { padding: 16px; }
+  .vs-participations .vp-registration, .vs-participations .vp-registration:has(.vp-row-actions.row-empty-actions) { grid-template-columns: 1fr; }
+  .vs-participations .vp-registration .vp-row-actions { flex-direction: row; flex-wrap: wrap; }
+}
+@media (max-width: 480px) {
+  .vp-search-field { flex-basis: 100%; }
+  .vp-status-filters button { flex: 1 1 calc(50% - 8px); }
+  .vp-status-filters button:first-child { flex-basis: 100%; }
 }

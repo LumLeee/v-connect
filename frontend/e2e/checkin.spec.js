@@ -40,6 +40,7 @@ test('Tạo, thay thế, thu hồi QR; đọc QR thật từ ảnh và check-in 
       await setTime(target, start + 60000)
     }
     await page.goto(`/nha-to-chuc/hoat-dong/${id}/diem-danh`)
+    await page.locator('.operation-code > summary').click()
     await page.getByRole('button', { name: 'Tạo mã mới', exact: true }).click()
     const image = page.getByAltText('QR check-in hoạt động')
     await expect(image).toBeVisible()
@@ -50,14 +51,17 @@ test('Tạo, thay thế, thu hồi QR; đọc QR thật từ ảnh và check-in 
     const qrImage = await image.getAttribute('src')
     await volunteer.goto(`/hoat-dong/${id}`)
     await volunteer.getByRole('link', { name: 'Check-in bằng QR hoặc mã' }).click()
+    await volunteer.getByRole('tab', { name: 'Nhập mã', exact: true }).click()
     await volunteer.getByLabel('Mã check-in (8 chữ số)').fill(oldCode)
     await volunteer.getByRole('button', { name: 'Xác nhận check-in', exact: true }).click()
     await expect(volunteer.getByRole('alert')).toContainText('Mã không hợp lệ')
+    await volunteer.getByRole('tab', { name: 'Quét QR', exact: true }).click()
     await volunteer.getByLabel('Chọn ảnh QR').setInputFiles({ name: 'checkin.png', mimeType: 'image/png', buffer: Buffer.from(qrImage.split(',')[1], 'base64') })
     await expect(volunteer.getByText('Đã nhận QR của hoạt động. Bấm xác nhận để check-in.')).toBeVisible()
     // Decode the same QR through a real video stream backed by a canvas, without
     // accessing any physical camera on the machine running the test.
-    await volunteer.getByRole('button', { name: 'Dùng mã nhập thay thế' }).click()
+    await volunteer.getByRole('tab', { name: 'Nhập mã', exact: true }).click()
+    await volunteer.getByRole('tab', { name: 'Quét QR', exact: true }).click()
     await volunteer.evaluate(imageData => {
       Object.defineProperty(navigator.mediaDevices, 'getUserMedia', { value: async () => {
         const canvas = document.createElement('canvas')
@@ -86,7 +90,7 @@ test('Tạo, thay thế, thu hồi QR; đọc QR thật từ ảnh và check-in 
     await page.screenshot({ path: path.join(process.env.E2E_ARTIFACT_DIR, `${info.project.name}-checkin-organizer.png`), fullPage: true })
     await volunteer.getByRole('button', { name: 'Xác nhận check-in', exact: true }).click()
     await expect(volunteer.getByRole('status')).toContainText('Bạn đã check-in thành công.')
-    await expect(volunteer.getByText('Hình thức: Quét QR')).toBeVisible()
+    await expect(volunteer.locator('.vci-success dl > div').filter({ has: volunteer.locator('dt', { hasText: 'Hình thức' }) })).toContainText('Quét QR')
     await volunteer.evaluate(() => window.scrollTo(0, 0))
     await volunteer.screenshot({ path: path.join(process.env.E2E_ARTIFACT_DIR, `${info.project.name}-checkin-volunteer.png`), fullPage: true })
     for (const width of [320, 390, 768, 1280]) {
@@ -102,7 +106,7 @@ test('Tạo, thay thế, thu hồi QR; đọc QR thật từ ảnh và check-in 
     await expect(image).toHaveCount(0)
     await volunteer.reload()
     await expect(volunteer.getByRole('button', { name: 'Xác nhận check-in', exact: true })).toHaveCount(0)
-    await expect(volunteer.getByText('Hình thức: Quét QR')).toBeVisible()
+    await expect(volunteer.locator('.vci-success dl > div').filter({ has: volunteer.locator('dt', { hasText: 'Hình thức' }) })).toContainText('Quét QR')
   } finally { await context.close() }
 })
 
@@ -116,6 +120,7 @@ test('Camera không khả dụng, mã hết hạn và check-in bằng mã dự p
     })
     for (const target of [page, volunteer]) await setTime(target, start + 60000)
     await page.goto(`/nha-to-chuc/hoat-dong/${id}/diem-danh`)
+    await page.locator('.operation-code > summary').click()
     await page.getByRole('button', { name: 'Tạo mã mới', exact: true }).click()
     const code = page.getByTestId('attendance-code')
     await expect(code).toBeVisible()
@@ -124,6 +129,7 @@ test('Camera không khả dụng, mã hết hạn và check-in bằng mã dự p
     await volunteer.getByRole('button', { name: 'Mở camera quét QR' }).click()
     await expect(volunteer.getByRole('alert')).toContainText('Không mở được camera')
     await volunteer.getByRole('button', { name: 'Tắt camera' }).click()
+    await volunteer.getByRole('tab', { name: 'Nhập mã', exact: true }).click()
     await setTime(volunteer, start + 7 * 60000)
     await volunteer.getByLabel('Mã check-in (8 chữ số)').fill(expiredCode)
     await volunteer.getByRole('button', { name: 'Xác nhận check-in', exact: true }).click()
@@ -140,8 +146,11 @@ test('Camera không khả dụng, mã hết hạn và check-in bằng mã dự p
     await mkdir(process.env.E2E_ARTIFACT_DIR, { recursive: true })
     await volunteer.screenshot({ path: path.join(process.env.E2E_ARTIFACT_DIR, `${info.project.name}-checkin-code-form.png`), fullPage: true })
     await volunteer.getByRole('button', { name: 'Xác nhận check-in', exact: true }).click()
-    await expect(volunteer.getByText('Hình thức: Nhập mã')).toBeVisible()
-    await page.getByRole('button', { name: 'Làm mới', exact: true }).last().click()
-    await expect(page.getByText('Hình thức: Nhập mã')).toBeVisible()
+    await expect(volunteer.locator('.vci-success dl > div').filter({ has: volunteer.locator('dt', { hasText: 'Hình thức' }) })).toContainText('Nhập mã')
+    await page.locator('.list-results-toolbar').getByRole('button', { name: 'Làm mới', exact: true }).click()
+    await expect(page.locator('.operation-row .operation-status')).toHaveText('Đã có mặt')
+    await expect(page.getByText('Điểm danh lúc:', { exact: false })).toBeVisible()
+    const evidence = await (await page.request.get(`/api/v1/organizer/activities/${id}/attendance/`)).json()
+    expect(evidence.results[0].attendance.method).toBe('code')
   } finally { await context.close() }
 })

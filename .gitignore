@@ -9,6 +9,8 @@ __pycache__/
 *.sqlite3
 backend/media/
 .npm-cache/
+.pip-cache/
+backend/.models/
 tmp/
 .pytest_cache/
 backend/staticfiles/

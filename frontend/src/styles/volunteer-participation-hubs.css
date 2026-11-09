@@ -1,0 +1,38 @@
+.vs-participations.vp-checkin .vs-page-heading, .vs-participations.vp-history .vs-page-heading { align-items: center; }
+.vp-hub-filters { border: 1px solid #dfe8e2; border-radius: 12px; padding: 20px; background: #fff; }
+.vp-hub-search > label { display: block; margin-bottom: 8px; color: #385b4c; font-size: 14px; font-weight: 600; }
+.vp-history-date-filters { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.vp-history-date-filters label { display: grid; gap: 7px; flex: 1 1 180px; min-width: 0; color: #385b4c; font-size: 13px; }
+.vp-history-date-filters input { width: 100%; min-width: 0; min-height: 44px; padding: 9px 12px; border: 1px solid #bccfc3; border-radius: 8px; background: #fff; font: inherit; }
+.vp-hub-filters .button { min-height: 44px; }
+.vp-hub-filters .vp-clear-filters { display: inline-block; min-height: 40px; margin-top: 12px; padding: 6px 0; font-size: 13px; color: #276650; text-decoration: underline; text-underline-offset: 3px; }
+.vs-participations.vp-checkin .vp-list { grid-template-columns: 1fr; }
+.vs-participations .vp-checkin.vp-row { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.15fr) auto; align-items: center; border-top: 1px solid #dfe8e2; border-left: 4px solid #d1bc83; }
+.vs-participations .vp-checkin.vp-window-open { border-left-color: #377f61; }
+.vs-participations .vp-checkin.vp-window-attended { border-left-color: #80ad94; }
+.vs-participations .vp-checkin.vp-window-closed { border-left-color: #acb7b0; }
+.vs-participations .vp-checkin .vp-row-actions { grid-column: auto; flex-direction: column; align-items: stretch; }
+.vs-participations .vp-checkin .vp-row-actions.row-empty-actions { display: none; }
+.vs-participations .vp-checkin:has(.vp-row-actions.row-empty-actions) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.vs-participations .vp-history.vp-row { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(145px, .75fr); align-items: center; }
+.vs-participations .vp-history .vp-history-result { grid-column: auto; flex-direction: column; align-items: flex-start; min-width: 0; }
+.vs-participations .vp-history .vp-row-actions { justify-content: flex-end; }
+.vp-feedback-state { font-size: 13px !important; }
+.vp-feedback-state.is-submitted { color: #276d50; }
+.vp-feedback-state.is-pending { color: #8a661e; }
+.vs-participations.vp-checkin .vs-list-toolbar, .vs-participations.vp-history .vs-list-toolbar { margin-top: 18px; margin-bottom: 0; }
+.vs-participations.vp-checkin .vp-list, .vs-participations.vp-history .vp-list { margin-top: 12px; }
+@media (max-width: 1000px) {
+  .vs-participations .vp-checkin.vp-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .vs-participations .vp-checkin .vp-row-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; justify-content: flex-end; }
+  .vs-participations .vp-history.vp-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .vs-participations .vp-history .vp-history-result { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+}
+@media (max-width: 700px) {
+  .vs-participations.vp-checkin .vs-page-heading, .vs-participations.vp-history .vs-page-heading { align-items: flex-start; }
+  .vp-hub-filters { padding: 16px; }
+  .vs-participations .vp-checkin.vp-row, .vs-participations .vp-checkin:has(.vp-row-actions.row-empty-actions), .vs-participations .vp-history.vp-row { grid-template-columns: 1fr; }
+  .vs-participations .vp-checkin .vp-row-actions, .vs-participations .vp-history .vp-row-actions { grid-column: auto; justify-content: flex-start; }
+  .vs-participations .vp-history .vp-history-result { grid-column: auto; }
+  .vp-history-date-filters > .button { width: 100%; }
+}

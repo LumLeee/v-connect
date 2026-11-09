@@ -37,6 +37,43 @@
 @media (max-width: 800px) { .profile-layout { grid-template-columns: 1fr; } .profile-summary { max-width: none; } .profile-file { width: auto; } }
 @media (max-width: 420px) { .profile-card { padding: 20px; } .profile-actions .button { width: 100%; } }
 .profile-preview { border: 0; padding: 0; margin: 0; min-width: 0; }
+.organizer-profile .profile-summary .image-paste-actions { justify-content: center; gap: 8px; }
+.organizer-profile .profile-summary .image-paste-button { padding: 10px 12px; font-size: 13px; }
+.organizer-profile .profile-summary .image-paste-hint { font-size: 12px; }
+.organizer-profile .profile-summary .image-cover-remove { padding: 8px 10px; }
+.profile-save-status { margin: 24px 0 0; color: var(--muted); font-size: 14px; }
+.profile-save-status.is-dirty { color: #926321; }
+.organizer-profile .profile-actions { margin-top: 12px; }
+.volunteer-profile-page > h1 { margin-bottom: 24px; }
+.volunteer-profile .profile-layout { grid-template-columns: 250px minmax(0, 1fr); gap: 24px; }
+.volunteer-profile .profile-summary { position: sticky; top: 24px; }
+.volunteer-profile .profile-summary .image-paste-actions { justify-content: center; gap: 8px; }
+.volunteer-profile .profile-summary .image-paste-button { padding: 10px 12px; font-size: 13px; }
+.volunteer-profile .profile-summary .image-cover-remove { padding: 8px 10px; }
+.volunteer-profile .profile-summary .image-paste-hint { font-size: 12px; }
+.volunteer-profile .profile-field, .volunteer-profile .profile-skill-options label { font-size: 15px; }
+.volunteer-profile .profile-hint { font-size: 14px; line-height: 1.6; }
+.volunteer-profile .profile-subtitle { font-size: 18px; }
+.volunteer-profile .profile-matching-preference { padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: #f4f8f5; }
+.volunteer-profile .profile-matching-preference > label { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.volunteer-profile .profile-matching-preference input { flex-shrink: 0; margin-top: 4px; accent-color: var(--green); }
+.volunteer-profile .profile-matching-preference details { margin-top: 10px; font-size: 13px; }
+.volunteer-profile .profile-matching-preference summary { cursor: pointer; color: var(--green); }
+.volunteer-profile .profile-field-group { margin-top: 24px; }
+.volunteer-profile .profile-field-group > h2 { margin-top: 0; }
+.volunteer-profile .profile-actions { margin-top: 12px; align-items: center; }
+.volunteer-profile .profile-actions .profile-refresh { margin-left: auto; }
+.volunteer-profile .profile-save-status { padding-top: 20px; border-top: 1px solid var(--border); }
+.volunteer-profile .availability-slot { grid-template-columns: minmax(100px, 1fr) repeat(2, minmax(80px, 1fr)) auto; }
+@media (max-width: 1100px) { .volunteer-profile .availability-slot { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .volunteer-profile .profile-layout { grid-template-columns: 1fr; }
+  .volunteer-profile .profile-summary { position: static; }
+}
+@media (max-width: 420px) {
+  .volunteer-profile .profile-card { padding: 18px; }
+  .volunteer-profile .profile-actions .profile-refresh { margin-left: auto; }
+}
 .applicant-profile-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
 .applicant-profile-heading h1 { margin: 0; min-width: 0; }
 .applicant-profile-heading > .button { flex-shrink: 0; }

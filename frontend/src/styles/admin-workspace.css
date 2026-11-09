@@ -16,3 +16,37 @@
 .ad-content .activity-field { min-width:0; }.ad-content select { max-width:100%; }
 @media(max-width:1100px) { .ad-task-grid { grid-template-columns:1fr; }.ad-account-row { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }.ad-account-row > button { justify-self:start; } }
 @media(max-width:700px) { .ad-welcome { align-items:flex-start; flex-direction:column; padding:20px; }.ad-overview-grid { grid-template-columns:1fr; }.ad-panel { padding:20px; }.ad-account-row { grid-template-columns:1fr; gap:12px; }.ad-content .om-summary { grid-template-columns:1fr; } }
+
+/* Admin shell: shared spacing and navigation, scoped to this role. */
+.ad-shell { background:#f5f8f6; }
+.ad-shell .od-sidebar { padding:24px 16px 20px; gap:16px; }
+.ad-shell .od-brand { min-height:40px; margin-bottom:8px; }
+.ad-shell .od-sidebar nav { gap:5px; }
+.ad-shell .od-sidebar nav a { min-height:44px; padding:10px 12px; font-size:13px; line-height:1.45; }
+.ad-shell .od-sidebar nav a svg { flex-shrink:0; }
+.ad-shell .od-sidebar-account { margin-top:auto; padding:16px 8px 0; }
+.ad-shell .od-sidebar-account strong { font-size:12px; line-height:1.5; }
+.ad-shell .od-sidebar-account div > span { font-size:12px; }
+.ad-shell .od-logout { min-height:36px; padding:4px 8px; font-size:13px; }
+.ad-shell .od-home-link { padding:0 8px; font-size:12px; }
+.ad-shell .od-topbar { min-height:72px; padding:16px 28px; }
+.ad-shell .om-breadcrumb { gap:10px; font-size:12px; line-height:1.5; }
+.ad-shell .od-role { font-size:12px; }
+.ad-shell .ad-content { padding:28px 30px 48px; }
+.ad-shell .ad-content .button { min-height:40px; }
+.ad-shell .ad-content .button:focus-visible,
+.ad-shell .od-sidebar nav a:focus-visible,
+.ad-shell .ad-content input:focus-visible,
+.ad-shell .ad-content select:focus-visible,
+.ad-shell .ad-content textarea:focus-visible { outline:2px solid #37785f; outline-offset:3px; }
+@media(min-width:1500px) {
+  .ad-shell .od-sidebar { padding-inline:22px; }
+}
+@media(max-width:1050px) {
+  .ad-shell .od-sidebar { padding:24px 18px 20px; }
+}
+@media(max-width:700px) {
+  .ad-shell .od-topbar { padding:12px 14px; min-height:66px; gap:10px; }
+  .ad-shell .om-breadcrumb { gap:6px; font-size:11px; }
+  .ad-shell .ad-content { padding:22px 16px 36px; }
+}

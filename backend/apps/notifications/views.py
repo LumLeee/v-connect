@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Count, Q
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -13,6 +14,19 @@ from .models import Notification, NotificationPreference
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+    href = serializers.SerializerMethodField()
+
+    def get_href(self, notification):
+        # Old public links stop working when an activity is completed/cancelled.
+        # Keep saved notices useful without rewriting stored inbox records.
+        request = self.context.get('request')
+        if (request and request.user.role == 'volunteer' and notification.activity_id
+                and notification.href == f'/hoat-dong/{notification.activity_id}'
+                and notification.activity.status != 'published'):
+            return ('/tinh-nguyen-vien/dang-ky?status=cancelled'
+                    if notification.activity.status == 'cancelled' else '/tinh-nguyen-vien/dang-ky')
+        return notification.href
+
     class Meta:
         model = Notification
         fields = ['id', 'kind', 'title', 'body', 'href', 'created_at', 'read_at']
@@ -37,11 +51,24 @@ class NotificationList(generics.ListAPIView):
     serializer_class = NotificationSerializer
 
     def get_queryset(self):
-        entries = Notification.objects.filter(recipient=self.request.user)
+        return Notification.objects.filter(recipient=self.request.user).select_related('activity')
+
+    def list(self, request, *args, **kwargs):
+        entries = self.filter_queryset(self.get_queryset())
         state = self.request.query_params.get('state', 'all')
         if state not in ['all', 'unread', 'read']:
             raise ValidationError({'state': 'Bộ lọc không hợp lệ.'})
-        return entries if state == 'all' else entries.filter(read_at__isnull=state == 'unread')
+        summary = entries.aggregate(total=Count('pk'), unread=Count('pk', filter=Q(read_at__isnull=True)))
+        summary['read'] = summary['total'] - summary['unread']
+        if state != 'all':
+            entries = entries.filter(read_at__isnull=state == 'unread')
+        page = self.paginate_queryset(entries)
+        if page is not None:
+            response = self.get_paginated_response(self.get_serializer(page, many=True).data)
+            response.data['summary'] = summary
+            return response
+        return Response({'count': entries.count(), 'results': self.get_serializer(entries, many=True).data,
+                         'summary': summary})
 
 
 @method_decorator(never_cache, name='dispatch')

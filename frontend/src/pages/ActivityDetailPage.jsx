@@ -12,35 +12,43 @@ import '../styles/activities.css'
 import ActivityCoverEditor from '../components/ActivityCoverEditor.jsx'
 import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
 import ActivityTimeline from '../components/ActivityTimeline.jsx'
+import '../styles/organizer-activity-detail.css'
+import '../styles/volunteer-activity-detail.css'
 
 function RequiredSkills({ activity }) {
   return activity.skill_details?.length ? <section className="activity-required-skills"><h2>Kỹ năng yêu cầu</h2><div className="activity-skill-tags">{activity.skill_details.map(skill => <span key={skill.id}>{skill.name}</span>)}</div><p className="muted">Nhà tổ chức xét duyệt từng đơn; kỹ năng không tự động giới hạn quyền đăng ký.</p></section> : null
 }
 
-function PublicActivityDetail({ activity, refresh }) {
-  return <>
-    <div className="activity-detail-heading"><h1>{activity.title}</h1><p>{activity.organizer_name} · {activityTime(activity.starts_at)}</p></div>
-    <div className="activity-detail-layout">
-      <div className="activity-main-column">
-        <ActivityVisual id={activity.id} coverUrl={activity.cover_url} large />
-        <section className="activity-info-card"><span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span>
-          <div className="activity-organizer-block"><span><UserRound size={22} aria-hidden="true" /></span><div><small>NHÀ TỔ CHỨC</small><p>{activity.organizer_name}</p></div></div>
-          <RequiredSkills activity={activity} />
-          <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
-          <ActivityTimeline items={activity.timeline} />
-          {activity.status === 'cancelled' && <p className="activity-empty" role="status">Hoạt động này đã bị hủy.</p>}
-        </section>
-      </div>
-      <aside className="activity-side-column" aria-label="Thông tin và đăng ký tham gia">
+export function PublicActivityDetail({ activity, refresh, preview = false }) {
+  const remaining = Math.max(0, activity.capacity - activity.approved_count)
+  return <div className={`va-detail${preview ? ' va-detail-preview' : ''}`}>
+    <header className="activity-detail-heading va-detail-heading">
+      <span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span>
+      <h1>{activity.title}</h1>
+      <p><UserRound size={17} aria-hidden="true" />{activity.organizer_name}</p>
+    </header>
+    <div className="activity-detail-layout va-detail-layout">
+      <div className="va-detail-cover"><ActivityVisual id={activity.id} coverUrl={activity.cover_url} large /></div>
+      <aside className="activity-side-column va-detail-side" aria-label="Thông tin và đăng ký tham gia">
+        {!preview && <ParticipationPanel activity={activity} refresh={refresh} />}
         <section className="activity-logistics"><h2>Thông tin tham gia</h2>
-          <div className="activity-logistic-item"><CalendarDays size={20} aria-hidden="true" /><div><h3>Thời gian</h3><dl><dt>Bắt đầu</dt><dd>{activityTime(activity.starts_at)}</dd><dt>Kết thúc</dt><dd>{activityTime(activity.ends_at)}</dd></dl><p>Giờ Việt Nam (UTC+7)</p></div></div>
+          <div className="activity-logistic-item"><CalendarDays size={20} aria-hidden="true" /><div><h3>Thời gian</h3><dl><dt>Bắt đầu</dt><dd><time dateTime={activity.starts_at}>{activityTime(activity.starts_at)}</time></dd><dt>Kết thúc</dt><dd><time dateTime={activity.ends_at}>{activityTime(activity.ends_at)}</time></dd></dl></div></div>
           <div className="activity-logistic-item"><MapPin size={20} aria-hidden="true" /><div><h3>Địa điểm</h3><p>{activity.address}</p></div></div>
-          <div className="activity-logistic-item"><Users size={20} aria-hidden="true" /><div><h3>Người tham gia</h3><p>Đã được duyệt: {activity.approved_count}/{activity.capacity} người.</p><p>Sức chứa: {activity.capacity} người</p></div></div>
+          <div className="activity-logistic-item"><Users size={20} aria-hidden="true" /><div><h3>Người tham gia</h3><dl className="va-detail-capacity">
+            <div><dt>Đã duyệt</dt><dd>{activity.approved_count} người</dd></div>
+            <div><dt>Cần tuyển</dt><dd>{activity.capacity} người</dd></div>
+            <div><dt>Còn lại</dt><dd>{remaining} chỗ</dd></div>
+          </dl></div></div>
         </section>
-        <ParticipationPanel activity={activity} refresh={refresh} />
       </aside>
+      <section className="activity-info-card va-detail-content">
+        {activity.skill_details?.length > 0 && <section className="activity-required-skills"><h2>Kỹ năng yêu cầu</h2><div className="activity-skill-tags">{activity.skill_details.map(skill => <span key={skill.id}>{skill.name}</span>)}</div><p className="muted">Nhà tổ chức xét duyệt từng đơn; kỹ năng không tự động giới hạn quyền đăng ký.</p></section>}
+        <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
+        <ActivityTimeline items={activity.timeline} />
+        {activity.status === 'cancelled' && <p className="activity-empty" role="status">Hoạt động này đã bị hủy.</p>}
+      </section>
     </div>
-  </>
+  </div>
 }
 
 function ActivityDetail({ activity, managed, refresh }) {
@@ -54,31 +62,37 @@ function ActivityDetail({ activity, managed, refresh }) {
     finally { setBusy(false) }
   }
   const editable = ['draft', 'published'].includes(activity.status)
+  const completionBlocked = !activity.time_checks_disabled && new Date(activity.ends_at) > new Date()
   if (!managed) return <PublicActivityDetail activity={activity} refresh={refresh} />
   return <>
-    <h1>{activity.title}</h1>
-    <p className="lead">Nhà tổ chức: {activity.organizer_name}</p>
-    <OrganizerActivityHeader activity={activity} selected="detail" />
+    <section className="om-detail-overview" aria-label="Tổng quan hoạt động">
+      <div className="om-detail-heading">
+        <div className="om-detail-title"><span className={`activity-status status-${activity.status}`}>{activityStatuses[activity.status]}</span><h1>{activity.title}</h1></div>
+        {editable && <div className="om-detail-actions" aria-label="Thao tác quản lý hoạt động">
+          <div className="om-detail-main-actions">
+            <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/sua`}>Chỉnh sửa hoạt động</Link>
+            {activity.status === 'draft' && <button className="button primary" onClick={() => { setPending('published'); setError('') }}>Công khai hoạt động</button>}
+            {activity.status === 'published' && <button className="button primary" disabled={completionBlocked} aria-describedby={completionBlocked ? 'completion-hint' : undefined} onClick={() => { setPending('completed'); setError('') }}>Hoàn thành hoạt động</button>}
+          </div>
+          <div className="om-detail-cancel"><button className="button secondary" onClick={() => { setPending('cancelled'); setError('') }}>Hủy hoạt động</button></div>
+        </div>}
+      </div>
+      {activity.status === 'published' && completionBlocked && <p id="completion-hint" className="om-detail-hint">Chỉ có thể hoàn thành sau thời gian kết thúc.</p>}
+      <dl className="om-detail-facts">
+        <div><dt><CalendarDays size={17} aria-hidden="true" />Bắt đầu</dt><dd>{activityTime(activity.starts_at)}</dd></div>
+        <div><dt><CalendarDays size={17} aria-hidden="true" />Kết thúc</dt><dd>{activityTime(activity.ends_at)}</dd></div>
+        <div><dt><MapPin size={17} aria-hidden="true" />Địa điểm</dt><dd>{activity.address}</dd></div>
+        <div><dt><Users size={17} aria-hidden="true" />Người tham gia</dt><dd>Đã duyệt: {activity.approved_count} người<span>Cần tuyển: {activity.capacity} người</span></dd></div>
+      </dl>
+    </section>
+    <OrganizerActivityHeader activity={activity} selected="detail" navigationOnly />
     <div className="om-detail-body">
     <ActivityCoverEditor activity={activity} refresh={refresh} />
     <RequiredSkills activity={activity} />
-    <dl className="activity-facts"><div><dt>Bắt đầu</dt><dd>{activityTime(activity.starts_at)}</dd></div><div><dt>Kết thúc</dt><dd>{activityTime(activity.ends_at)}</dd></div>
-      <div><dt>Địa điểm</dt><dd>{activity.address}</dd></div><div><dt>Sức chứa</dt><dd>{activity.capacity} người</dd></div></dl>
-    <p className="muted">Thời gian hiển thị theo giờ Việt Nam (UTC+7).</p>
     <h2>Về hoạt động</h2><p className="activity-description">{activity.description}</p>
     <ActivityTimeline items={activity.timeline} />
-    {activity.status === 'cancelled' && <p role="status">Hoạt động này đã bị hủy.</p>}
-    <p>Đã được duyệt: {activity.approved_count}/{activity.capacity} người.</p>
     </div>
     {activity.time_checks_disabled && <p className="activity-empty" role="note">Đang thử nghiệm: các giới hạn thời gian hoạt động đang tạm tắt.</p>}
-    {!managed && <ParticipationPanel activity={activity} refresh={refresh} />}
-    {managed && <div className="activity-actions">
-      {editable && <Link className="button secondary" to={`/nha-to-chuc/hoat-dong/${activity.id}/sua`}>Chỉnh sửa hoạt động</Link>}
-      {activity.status === 'draft' && <button className="button primary" onClick={() => { setPending('published'); setError('') }}>Công khai hoạt động</button>}
-      {activity.status === 'published' && <button className="button primary" disabled={!activity.time_checks_disabled && new Date(activity.ends_at) > new Date()} onClick={() => { setPending('completed'); setError('') }}>Hoàn thành hoạt động</button>}
-      {editable && <button className="button secondary" onClick={() => { setPending('cancelled'); setError('') }}>Hủy hoạt động</button>}
-    </div>}
-    {managed && activity.status === 'published' && <p className="muted">Chỉ có thể hoàn thành sau thời gian kết thúc.</p>}
     {pending && <ConfirmationDialog title="Xác nhận chuyển trạng thái" busy={busy} onClose={() => setPending(null)}><div className="activity-confirm" aria-label="Xác nhận chuyển trạng thái">
       <p>Chuyển hoạt động sang “{activityStatuses[pending]}”?{pending !== 'published' && ' Sau đó bạn không thể chỉnh sửa hoạt động.'}</p>
       {error && <p role="alert" className="request-error">{error}</p>}

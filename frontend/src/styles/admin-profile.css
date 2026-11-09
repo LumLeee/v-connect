@@ -1,0 +1,30 @@
+.ad-profile-page > h1 { margin:0 0 24px; }
+.ad-profile-editor .profile-layout { grid-template-columns:250px minmax(0,1fr); gap:24px; }
+.ad-profile-editor .profile-card { border-radius:14px; padding:24px; }
+.ad-profile-editor .profile-summary { align-self:start; position:sticky; top:24px; }
+.ad-profile-editor .profile-summary h2 { font-size:17px; margin:16px 0 8px; }
+.ad-profile-editor .profile-summary > p { font-size:13px; }
+.ad-profile-editor .profile-avatar { width:104px; height:104px; }
+.ad-profile-editor .image-paste-actions { justify-content:center; gap:8px; }
+.ad-profile-editor .image-paste-button { padding:10px 12px; font-size:13px; }
+.ad-profile-editor .image-cover-remove { padding:8px 10px; }
+.ad-profile-editor .image-paste-hint { font-size:12px; }
+.ad-profile-editor .profile-form legend { font-size:18px; margin-bottom:16px; }
+.ad-profile-editor .profile-field { font-size:14px; margin-top:18px; }
+.ad-profile-editor .profile-field input,.ad-profile-editor .profile-field textarea { font-size:14px; border-radius:8px; }
+.ad-profile-editor .profile-field input { min-height:44px; }
+.ad-profile-editor .profile-hint { font-size:13px; line-height:1.7; }
+.ad-profile-editor .profile-save-status { padding-top:18px; border-top:1px solid #e2eae5; font-size:13px; }
+.ad-profile-editor .profile-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+.ad-profile-editor .profile-actions .button { font-size:13px; padding:10px 14px; }
+.ad-profile-editor .profile-refresh { margin-left:auto; }
+.ad-profile-editor .profile-summary .success,.ad-profile-editor .profile-feedback { font-size:13px; line-height:1.6; }
+@media(max-width:1000px) {
+  .ad-profile-editor .profile-layout { grid-template-columns:1fr; }
+  .ad-profile-editor .profile-summary { position:static; }
+}
+@media(max-width:450px) {
+  .ad-profile-editor .profile-card { padding:18px; }
+  .ad-profile-editor .profile-actions .button { width:auto; }
+  .ad-profile-editor .profile-actions .profile-refresh { margin-left:auto; }
+}

@@ -2,7 +2,7 @@ import { useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import '../styles/confirmation-dialog.css'
 
-export default function ConfirmationDialog({ title, busy = false, onClose, children }) {
+export default function ConfirmationDialog({ title, busy = false, onClose, children, className = '' }) {
   const ref = useRef(null)
   const titleId = useId()
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function ConfirmationDialog({ title, busy = false, onClose, child
       if (previous instanceof HTMLElement && previous.isConnected) previous.focus()
     }
   }, [])
-  return createPortal(<dialog ref={ref} className="confirmation-dialog" aria-labelledby={titleId} aria-busy={busy}
+  return createPortal(<dialog ref={ref} className={`confirmation-dialog ${className}`.trim()} aria-labelledby={titleId} aria-busy={busy}
     onCancel={event => { event.preventDefault(); if (!busy) onClose() }}>
     <header className="confirmation-dialog-heading"><h2 id={titleId}>{title}</h2>
       <button type="button" className="confirmation-dialog-close" aria-label="Đóng hộp thoại" disabled={busy} onClick={onClose}>×</button>

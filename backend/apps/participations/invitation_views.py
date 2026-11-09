@@ -1,8 +1,10 @@
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework import generics, serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -77,7 +79,32 @@ class MyInvitations(generics.ListAPIView):
     serializer_class = InvitationSerializer
 
     def get_queryset(self):
-        return entries().filter(volunteer=self.request.user)
+        self.invitation_status = self.request.query_params.get('status', 'all').strip()
+        if self.invitation_status not in ['all', *Invitation.Status.values]:
+            raise ValidationError({'status': 'Trạng thái lời mời không hợp lệ.'})
+        term = self.request.query_params.get('search', '').strip()
+        if len(term) > 200:
+            raise ValidationError({'search': 'Từ khóa không được vượt quá 200 ký tự.'})
+        queryset = entries().filter(volunteer=self.request.user)
+        if term:
+            queryset = queryset.filter(Q(activity__title__icontains=term) | Q(activity__organizer__full_name__icontains=term))
+        return queryset.order_by('-created_at', '-pk')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        summary = queryset.aggregate(total=Count('pk'), **{
+            status: Count('pk', filter=Q(status=status)) for status in Invitation.Status.values
+        })
+        if self.invitation_status != 'all':
+            queryset = queryset.filter(status=self.invitation_status)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            response = self.get_paginated_response(self.get_serializer(page, many=True).data)
+        else:
+            results = self.get_serializer(queryset, many=True).data
+            response = Response({'count': len(results), 'next': None, 'previous': None, 'results': results})
+        response.data['summary'] = summary
+        return response
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -87,7 +114,32 @@ class ManagedInvitations(generics.ListAPIView):
 
     def get_queryset(self):
         activity = get_object_or_404(Activity, pk=self.kwargs['pk'], organizer=self.request.user)
-        return entries().filter(activity=activity)
+        self.invitation_status = self.request.query_params.get('status', 'all').strip()
+        if self.invitation_status not in ['all', *Invitation.Status.values]:
+            raise ValidationError({'status': 'Trạng thái lời mời không hợp lệ.'})
+        term = self.request.query_params.get('search', '').strip()
+        if len(term) > 200:
+            raise ValidationError({'search': 'Từ khóa không được vượt quá 200 ký tự.'})
+        queryset = entries().filter(activity=activity)
+        if term:
+            queryset = queryset.filter(volunteer__full_name__icontains=term)
+        return queryset.order_by('-created_at', '-pk')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        summary = queryset.aggregate(total=Count('pk'), **{
+            status: Count('pk', filter=Q(status=status)) for status in Invitation.Status.values
+        })
+        if self.invitation_status != 'all':
+            queryset = queryset.filter(status=self.invitation_status)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            response = self.get_paginated_response(self.get_serializer(page, many=True).data)
+        else:
+            results = self.get_serializer(queryset, many=True).data
+            response = Response({'count': len(results), 'next': None, 'previous': None, 'results': results})
+        response.data['summary'] = summary
+        return response
 
     def post(self, request, pk):
         serializer = SendSerializer(data=request.data)

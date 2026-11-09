@@ -59,7 +59,7 @@ test('Không gian Tình nguyện viên: các trang, lịch sử thật và gửi
       if (['Hồ sơ cá nhân', 'Thông báo'].includes(active)) {
         await expect(page.locator('.vs-breadcrumb strong')).toHaveText(active)
       } else {
-        await expect(page.getByRole('navigation', { name: 'Điều hướng Tình nguyện viên' }).getByRole('link', { name: active, exact: true })).toHaveAttribute('aria-current', 'page')
+        await expect(page.getByRole('navigation', { name: 'Điều hướng Tình nguyện viên', includeHidden: true }).getByRole('link', { name: active, exact: true, includeHidden: true })).toHaveAttribute('aria-current', 'page')
       }
       for (const width of [320, 390, 768, 1280]) {
         await page.setViewportSize({ width, height: 900 })
@@ -70,8 +70,8 @@ test('Không gian Tình nguyện viên: các trang, lịch sử thật và gửi
     }
     await page.goto('/tinh-nguyen-vien/lich-su')
     await page.getByRole('link', { name: 'Gửi phản hồi', exact: true }).click()
-    await page.getByRole('button', { name: '5 sao', exact: true }).click()
-    await expect(page.getByLabel('Điểm đánh giá (1–5)', { exact: true })).toHaveValue('5')
+    await page.getByRole('radio', { name: '5 sao', exact: true }).check()
+    await expect(page.getByRole('radio', { name: '5 sao', exact: true })).toBeChecked()
     await page.getByLabel('Nội dung phản hồi', { exact: true }).fill('Hoạt động thiết thực, mọi người hỗ trợ nhau rất tốt.')
     await page.getByRole('button', { name: 'Gửi phản hồi', exact: true }).click()
     await expect(page.getByText('Bạn đã gửi phản hồi cho hoạt động này.', { exact: true })).toBeVisible()

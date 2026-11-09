@@ -92,13 +92,15 @@ class ManagedActivityListSerializer(ActivitySerializer):
     registration_count = serializers.IntegerField(read_only=True)
     pending_count = serializers.IntegerField(read_only=True)
     attendance_count = serializers.IntegerField(read_only=True)
+    attendance_pending_count = serializers.IntegerField(read_only=True)
     feedback_count = serializers.IntegerField(read_only=True)
     contribution_count = serializers.IntegerField(read_only=True)
+    contribution_pending_count = serializers.IntegerField(read_only=True)
     invitation_count = serializers.IntegerField(read_only=True)
 
     class Meta(ActivitySerializer.Meta):
         fields = ActivitySerializer.Meta.fields + ['registration_count', 'pending_count', 'attendance_count',
-            'feedback_count', 'contribution_count', 'invitation_count']
+            'feedback_count', 'contribution_count', 'invitation_count', 'attendance_pending_count', 'contribution_pending_count']
 
 
 class TransitionSerializer(StrictFieldsMixin, serializers.Serializer):

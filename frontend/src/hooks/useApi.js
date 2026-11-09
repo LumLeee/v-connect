@@ -5,6 +5,7 @@ export default function useApi(path) {
   const [attempt, setAttempt] = useState(0)
   const [state, setState] = useState({ path, attempt, data: null, loading: true, error: null })
   useEffect(() => {
+    if (!path) return
     const controller = new AbortController()
     setState({ path, attempt, data: null, loading: true, error: null })
     apiGet(path, { signal: controller.signal })
@@ -15,5 +16,5 @@ export default function useApi(path) {
   const retry = useCallback(() => setAttempt((value) => value + 1), [])
   // A changed URL/retry must not briefly expose the preceding response before the effect runs.
   const current = state.path === path && state.attempt === attempt ? state : { data: null, loading: true, error: null }
-  return { ...current, retry }
+  return path ? { ...current, retry } : { data: null, loading: false, error: null, retry }
 }

@@ -1,11 +1,57 @@
 .document-sheet { background:#fff; border:1px solid #d6e3db; padding:40px; margin:28px auto; color:#173c34; overflow-wrap:anywhere; }
 .document-brand { text-align:center; letter-spacing:2px; font-size:12px; font-weight:700; color:#37735b; margin-bottom:24px; }
-.summary-sheet { max-width:850px; }.summary-sheet > h2,.summary-title { text-align:center; }.summary-sheet > h3 { margin-top:28px; }
-.summary-metrics { margin:20px 0; }.summary-metrics > div { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:16px; padding:10px 0; border-bottom:1px solid #dce6df; }.summary-metrics dd { margin:0; font-weight:600; }
-.summary-timeline { padding-left:22px; }.summary-timeline li { padding:8px 0; }.summary-footer { border-top:1px solid #dce6df; margin-top:30px; padding-top:18px; font-size:12px; }
-@media(max-width:600px) { .document-sheet { padding:22px 16px; }.summary-metrics > div { grid-template-columns:1fr; gap:5px; } }
+
+.summary-document-page .summary-document-toolbar { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.summary-document-page .summary-document-toolbar h1 { margin:0; }
+.summary-document-page .summary-document-actions { display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:10px; flex-shrink:0; }
+.summary-document-page .summary-document-actions .refresh-button { margin-left:0; order:0; }
+.summary-document-page .summary-print-hint { margin:12px 0 0; font-size:14px; }
+.summary-document-page .summary-print-time { display:none; }
+.summary-document-page .summary-sheet { max-width:850px; border-radius:10px; font-size:15px; line-height:1.65; }
+.summary-document-page .summary-sheet p { color:inherit; }
+.summary-document-page .summary-document-heading > h2, .summary-document-page .summary-title { text-align:center; }
+.summary-document-page .summary-document-heading > h2 { font-size:24px; }
+.summary-document-page .summary-title { font-size:20px; margin:0 0 26px; }
+.summary-document-page .summary-activity-info { margin:0; padding:18px 0; border-block:1px solid #dce6df; }
+.summary-document-page .summary-activity-info > div { display:grid; grid-template-columns:145px minmax(0,1fr); gap:14px; padding:5px 0; }
+.summary-document-page .summary-activity-info dt { color:#63786e; }
+.summary-document-page .summary-activity-info dd { margin:0; }
+.summary-document-page .summary-document-section { margin-top:28px; }
+.summary-document-page .summary-document-section > h3 { font-size:19px; margin:0 0 14px; }
+.summary-document-page .summary-document-section > p:last-child { margin-bottom:0; }
+.summary-document-page .summary-metrics { display:grid; gap:18px; margin:0; }
+.summary-document-page .summary-metric-group { min-width:0; }
+.summary-document-page .summary-metric-group h4 { margin:0; padding:10px 14px; background:#f0f5f2; border-bottom:1px solid #dce6df; font-size:15px; }
+.summary-document-page .summary-metric-list { margin:0; }
+.summary-document-page .summary-metric-list > div { display:grid; grid-template-columns:minmax(0,1fr) minmax(70px,auto); gap:16px; padding:9px 14px; border-bottom:1px solid #e7ede9; }
+.summary-document-page .summary-metric-list dd { margin:0; font-weight:600; text-align:right; }
+.summary-document-page .summary-sheet .summary-metric-note { color:#63786e; font-size:13px; margin:16px 0 0; }
+.summary-document-page .summary-timeline { padding-left:22px; margin:0; }
+.summary-document-page .summary-timeline li { padding:8px 0; }
+.summary-document-page .summary-timeline p { margin:5px 0 0; }
+.summary-document-page .summary-timeline .summary-timeline-time { color:#63786e; font-size:14px; }
+.summary-document-page .summary-footer { border-top:1px solid #dce6df; margin-top:30px; padding-top:18px; font-size:12px; }
+.summary-document-page .summary-footer p { margin:4px 0; }
+
+@media(max-width:700px) {
+  .summary-document-page .summary-document-toolbar { flex-wrap:wrap; gap:14px; }
+  .summary-document-page .summary-document-actions { margin-left:auto; }
+}
+@media(max-width:600px) {
+  .document-sheet { padding:22px 16px; }
+  .summary-document-page .summary-sheet { font-size:14px; margin-top:20px; }
+  .summary-document-page .summary-document-heading > h2 { font-size:20px; }
+  .summary-document-page .summary-title { font-size:18px; margin-bottom:20px; }
+  .summary-document-page .summary-activity-info > div { grid-template-columns:1fr; gap:1px; padding:7px 0; }
+  .summary-document-page .summary-document-section { margin-top:24px; }
+  .summary-document-page .summary-document-section > h3 { font-size:17px; }
+  .summary-document-page .summary-metric-group h4 { padding:9px 10px; }
+  .summary-document-page .summary-metric-list > div { grid-template-columns:minmax(0,1fr) minmax(40px,auto); gap:10px; padding:9px 10px; }
+  .summary-document-page .summary-metric-note { line-height:1.6; }
+}
 @media print {
   @page vconnect-summary { size:A4 portrait; margin:15mm; }
+  html:has(.document-page) { background:white !important; }
   body:has(.summary-document-page) { page:vconnect-summary; }
   body:has(.document-page) { background:white; color:black; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
   body:has(.document-page) .site-header, body:has(.document-page) .site-footer, body:has(.document-page) .od-sidebar, body:has(.document-page) .od-topbar, body:has(.document-page) .vd-sidebar, body:has(.document-page) .vd-topbar, body:has(.document-page) .skip-link, .document-page .no-print { display:none !important; }
@@ -15,6 +61,21 @@
   body:has(.document-page) .od-footer { display:none !important; }
   .document-page.section.interior { width:100%; max-width:none; padding:0; margin:0; min-height:0; }
   .document-sheet { box-shadow:none; width:100%; max-width:none; margin:0; font-size:10pt; }
-  .summary-sheet { border:0; padding:0; }.summary-metrics > div { grid-template-columns:2fr 1fr; padding:6px 0; break-inside:avoid; }
-  .summary-sheet h3 { break-after:avoid; }.summary-timeline li { break-inside:avoid; }.summary-footer { break-inside:avoid; }
+  .summary-document-page .summary-sheet { border:0; border-radius:0; padding:0; max-width:none; margin:0; font-size:10pt; line-height:1.45; }
+  .summary-document-page .summary-screen-time { display:none; }
+  .summary-document-page .summary-print-time { display:inline; }
+  .summary-document-page .summary-document-heading { break-inside:avoid; }
+  .summary-document-page .summary-document-heading > h2 { font-size:16pt; }
+  .summary-document-page .summary-title { font-size:13pt; margin-bottom:16px; }
+  .summary-document-page .summary-activity-info { padding:10px 0; }
+  .summary-document-page .summary-activity-info > div { grid-template-columns:34mm minmax(0,1fr); gap:4mm; padding:3px 0; }
+  .summary-document-page .summary-document-section { margin-top:18px; }
+  .summary-document-page .summary-document-section > h3 { font-size:12pt; margin-bottom:10px; break-after:avoid; }
+  .summary-document-page .summary-metrics { gap:12px; }
+  .summary-document-page .summary-metric-group h4 { font-size:10pt; padding:6px 10px; break-after:avoid; }
+  .summary-document-page .summary-metric-list > div { grid-template-columns:minmax(0,1fr) minmax(20mm,auto); padding:5px 10px; break-inside:avoid; }
+  .summary-document-page .summary-sheet .summary-metric-note, .summary-document-page .summary-timeline .summary-timeline-time { font-size:9pt; }
+  .summary-document-page .summary-sheet p { orphans:3; widows:3; }
+  .summary-document-page .summary-timeline li { break-inside:avoid; }
+  .summary-document-page .summary-footer { break-inside:avoid; font-size:8pt; margin-top:20px; padding-top:12px; }
 }

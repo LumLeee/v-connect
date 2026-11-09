@@ -5,11 +5,13 @@ import useApi from '../hooks/useApi.js'
 import RequestState from '../components/RequestState.jsx'
 import ProfileEditor from '../components/ProfileEditor.jsx'
 import '../styles/profile.css'
+import '../styles/admin-profile.css'
 
 function ProfileContent() {
+  const { user } = useAuth()
   const { data, loading, error, retry } = useApi('/auth/profile/')
-  return <section className="page-width section interior profile-page">
-    <p className="eyebrow">TÀI KHOẢN CỦA BẠN</p><h1>Hồ sơ của tôi</h1>
+  return <section className={`page-width section interior profile-page${user.role === 'volunteer' ? ' volunteer-profile-page' : ''}${user.role === 'admin' ? ' ad-profile-page' : ''}`}>
+    <h1>Hồ sơ của tôi</h1>
 
     <RequestState loading={loading} error={error} retry={retry} />
     {data && <ProfileEditor key={data.profile.id} initial={data.profile} />}

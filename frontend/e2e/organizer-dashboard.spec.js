@@ -56,8 +56,8 @@ test('Tổng quan Nhà tổ chức: dữ liệu thật, xét duyệt, điểm da
     await expect(page).toHaveURL(new RegExp(`${activities[0].id}/diem-danh$`))
     await page.goto('/nha-to-chuc/')
     await expect(page.locator('.site-header')).toHaveCount(0)
-    await page.getByRole('link', { name: 'Xem đơn đăng ký', exact: true }).click()
-    await expect(page).toHaveURL(new RegExp(`${activities[1].id}/dang-ky$`))
+    await page.locator('.od-pending-row').click()
+    await expect(page).toHaveURL(new RegExp(`${activities[1].id}/dang-ky\\?status=pending$`))
   } finally { await context.close() }
 })
 
@@ -71,7 +71,7 @@ test('Tổng quan Nhà tổ chức: trạng thái trống, lỗi mạng và th�
   await page.getByRole('button', { name: 'Thử lại' }).click()
   await expect(page.getByTestId('od-total')).toHaveText('0')
   await expect(page.getByText('Chưa có hoạt động đang diễn ra', { exact: true })).toBeVisible()
-  await expect(page.getByText('Không có đơn cần xét duyệt', { exact: true })).toBeVisible()
-  await page.getByRole('link', { name: 'Chỉnh sửa hồ sơ', exact: true }).click()
+  await expect(page.getByText('Không có đơn chờ xét duyệt.', { exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Tài khoản của tôi', exact: true }).click()
   await expect(page).toHaveURL(/\/ho-so$/)
 })

@@ -7,12 +7,31 @@ import RequestState from '../components/RequestState.jsx'
 import AttendanceStatus from '../components/AttendanceStatus.jsx'
 import ReportMetrics, { ReportPagination } from '../components/ReportMetrics.jsx'
 import OrganizerActivityHeader from '../components/OrganizerActivityHeader.jsx'
+import OrganizerReportsView from '../components/OrganizerReportsView.jsx'
+import OrganizerActivityResultPage from './OrganizerActivityResultPage.jsx'
+import AdminActivitiesPage from './AdminActivitiesPage.jsx'
+import AdminActivityResultPage from './AdminActivityResultPage.jsx'
+import AdminReportsPage from './AdminReportsPage.jsx'
+import AdminParticipationsPage from './AdminParticipationsPage.jsx'
 import { metricLabels } from '../api/reportFormat.js'
 import { activityStatuses, activityTime } from '../api/activityFormat.js'
 import { participationLabels } from '../api/participationFormat.js'
 import '../styles/activities.css'
 
 export default function ReportsPage({ mode = 'overview' }) {
+  const { user } = useAuth()
+  if (user.role === 'admin' && mode === 'overview') return <AdminReportsPage />
+  if (user.role === 'admin' && mode === 'participations') return <AdminParticipationsPage />
+  if (user.role === 'admin' && mode === 'activities') return <AdminActivitiesPage />
+  if (user.role === 'admin' && mode === 'result') return <AdminActivityResultPage />
+  if (user.role === 'organizer' && ['overview', 'activities'].includes(mode)) {
+    return <OrganizerReportsView initialTab={mode === 'activities' ? 'activities' : 'summary'} />
+  }
+  if (user.role === 'organizer' && mode === 'result') return <OrganizerActivityResultPage />
+  return <LegacyReportsPage mode={mode} />
+}
+
+function LegacyReportsPage({ mode }) {
   const { user } = useAuth()
   const { id } = useParams()
   const [params, setParams] = useSearchParams()
@@ -26,7 +45,7 @@ export default function ReportsPage({ mode = 'overview' }) {
 
     <h1>{title}</h1><div className="list-results-toolbar">{data && ['activities', 'participations'].includes(mode) && <p>{data.count} {mode === 'activities' ? 'hoạt động' : 'đơn đăng ký'}.</p>}<button type="button" className="button secondary refresh-button" onClick={retry}>Làm mới</button></div>
     {user.role === 'organizer' && mode === 'result' && <OrganizerActivityHeader id={id} selected="reports" />}
-    {user.role !== 'volunteer' && <p><Link className="button primary" to="/bao-cao/mo-rong">Báo cáo mở rộng</Link></p>}
+    {user.role !== 'volunteer' && <p><Link className="button primary" to={user.role === 'organizer' ? '/bao-cao' : '/bao-cao/mo-rong'}>{user.role === 'organizer' ? 'Báo cáo tổng hợp' : 'Báo cáo mở rộng'}</Link></p>}
     <RequestState loading={loading} error={error} retry={retry} />
     {data && mode === 'overview' && <>
       {data.accounts && <p className="activity-empty">Tài khoản: {data.accounts.total} tổng cộng, {data.accounts.active} hoạt động, {data.accounts.locked} bị khóa. <Link to="/quan-tri/tai-khoan">Quản lý tài khoản</Link></p>}

@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.db.models import Count, F, Q
+from django.db.models import Count, F, Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -46,7 +46,7 @@ class PublicList(generics.ListAPIView):
         ).filter(discovery_approved__lt=F('capacity'))
         if enabled():
             open_activities = open_activities.filter(starts_at__gt=timezone.now())
-        return filter_activities(search(open_activities, self.request), self.request)
+        return filter_activities(search(open_activities, self.request), self.request).order_by('starts_at', 'pk')
 
 
 class PublicDetail(generics.RetrieveAPIView):
@@ -63,17 +63,62 @@ class ManagedList(generics.ListCreateAPIView):
     serializer_class = ManagedActivityListSerializer
 
     def get_queryset(self):
+        eligible_contribution = Q(status='completed', participations__status='approved')
+        if enabled():
+            eligible_contribution &= Q(ends_at__lte=timezone.now())
         queryset = activities().filter(organizer=self.request.user).annotate(
             matching_approved=Count('participations', filter=Q(participations__status='approved'), distinct=True),
             registration_count=Count('participations', distinct=True),
             pending_count=Count('participations', filter=Q(participations__status='pending'), distinct=True),
             attendance_count=Count('participations__attendance', distinct=True),
+            attendance_pending_count=Count('participations',
+                filter=Q(participations__status='approved', participations__attendance__isnull=True), distinct=True),
             feedback_count=Count('participations__attendance__feedback',
-                filter=Q(participations__attendance__feedback__is_hidden=False), distinct=True),
-            contribution_count=Count('participations__attendance__contribution', distinct=True),
+                filter=Q(participations__attendance__feedback__is_hidden=False,
+                         participations__status='approved', status='completed'), distinct=True),
+            contribution_count=Count('participations__attendance__contribution', filter=eligible_contribution, distinct=True),
+            contribution_pending_count=Count('participations__attendance',
+                filter=eligible_contribution & Q(participations__attendance__contribution__isnull=True), distinct=True),
             invitation_count=Count('invitations', distinct=True),
         )
-        return filter_activities(search(queryset, self.request), self.request, managed=True)
+        return filter_activities(search(queryset, self.request), self.request, managed=True).order_by('-created_at', '-pk')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        mode = request.query_params.get('mode')
+        if mode and mode not in ['matching', 'attendance', 'contributions', 'feedback']:
+            raise ValidationError({'mode': 'Chức năng quản lý không hợp lệ.'})
+        summary = None
+        if mode:
+            summary = queryset.aggregate(
+                activities=Count('pk', distinct=True),
+                registered=Sum('registration_count', default=0),
+                pending=Sum('pending_count', default=0),
+                approved=Sum('matching_approved', default=0),
+                attended=Sum('attendance_count', default=0),
+                attendance_pending=Sum('attendance_pending_count', default=0),
+                confirmed=Sum('contribution_count', default=0),
+                contribution_pending=Sum('contribution_pending_count', default=0),
+                feedback=Sum('feedback_count', default=0),
+                invitations=Sum('invitation_count', default=0),
+            )
+            if mode == 'feedback':
+                summary['with_feedback'] = queryset.filter(feedback_count__gt=0).count()
+            if mode == 'matching':
+                available = queryset.filter(status='published', published_at__isnull=False,
+                                            organizer__is_active=True, capacity__gt=F('matching_approved'))
+                if enabled():
+                    available = available.filter(starts_at__gt=timezone.now())
+                summary['remaining_places'] = available.aggregate(total=Sum(F('capacity') - F('matching_approved'), default=0))['total']
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            response = self.get_paginated_response(self.get_serializer(page, many=True).data)
+        else:
+            results = self.get_serializer(queryset, many=True).data
+            response = Response({'count': len(results), 'next': None, 'previous': None, 'results': results})
+        if summary is not None:
+            response.data['summary'] = summary
+        return response
 
     def perform_create(self, serializer):
         with transaction.atomic():

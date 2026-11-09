@@ -13,9 +13,11 @@ from apps.accounts.models import User
 from apps.accounts.profile_serializers import ProfileSerializer
 from apps.participations.views import IsVolunteer, entries
 from apps.activities.serializers import ActivitySerializer
+from apps.activities.time_policy import enabled as time_checks_enabled
 from apps.activities.views import search
 from apps.feedback.views import IsAdmin
 from apps.participations.serializers import ApplicantSerializer, ParticipationSerializer
+from apps.participations.models import Invitation
 from .models import AuditEvent
 from .serializers import AccountSerializer, AccountStatusSerializer, AuditSerializer, AuditDetailSerializer
 from .audit_filters import filter_audit
@@ -45,13 +47,27 @@ class VolunteerDashboard(APIView):
 
     def get(self, request):
         own = entries().filter(volunteer=request.user)
+        now = timezone.now()
         upcoming = own.filter(status='approved', activity__status='published',
-                              activity__starts_at__gt=timezone.now()).order_by('activity__starts_at', 'id')
+                              activity__starts_at__gt=now).order_by('activity__starts_at', 'id')
+        checkin_now = own.filter(
+            status='approved', activity__status='published', activity__published_at__isnull=False,
+            attendance__isnull=True,
+        )
+        if time_checks_enabled():
+            checkin_now = checkin_now.filter(activity__starts_at__lte=now, activity__ends_at__gte=now)
+        checkin_now = checkin_now.order_by('activity__starts_at', 'id')
         history = own.filter(attendance__isnull=False).order_by('-attendance__confirmed_at', '-id')
         return Response({
             'profile': ProfileSerializer(request.user).data,
             'member_since': request.user.date_joined,
             'metrics': services.metrics_for(request.user),
+            'summary': {
+                'pending_registrations': own.filter(status='pending').count(),
+                'pending_invitations': Invitation.objects.filter(volunteer=request.user, status='pending').count(),
+            },
+            'checkin_now_count': checkin_now.count(),
+            'checkin_now': ParticipationSerializer(checkin_now[:3], many=True).data,
             'upcoming_count': upcoming.count(),
             'upcoming': ParticipationSerializer(upcoming[:3], many=True).data,
             'history': ParticipationSerializer(history[:3], many=True).data,

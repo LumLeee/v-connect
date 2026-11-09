@@ -4,7 +4,7 @@ import '../styles/image-paste.css'
 
 const supportedTypes = ['image/png', 'image/jpeg', 'image/webp']
 
-export default function ImagePasteInput({ onImage, disabled = false, label = 'Dán ảnh', compact = false, children, actions }) {
+export default function ImagePasteInput({ onImage, disabled = false, label = 'Dán ảnh', compact = false, groupLabel = 'Tải ảnh bìa', children, actions }) {
   const [error, setError] = useState('')
   const pasteTarget = useRef(null)
   const hintId = useId()
@@ -50,7 +50,7 @@ export default function ImagePasteInput({ onImage, disabled = false, label = 'D�
   }
   return <div className={`image-paste-input${compact ? ' image-paste-compact' : ''}`} onPaste={paste}
     ref={compact ? pasteTarget : undefined} tabIndex={compact && !disabled ? 0 : undefined}
-    role={compact ? 'group' : undefined} aria-disabled={compact ? disabled : undefined} aria-label={compact ? 'Tải ảnh bìa' : undefined} aria-describedby={compact ? hintId : undefined}>
+    role={compact ? 'group' : undefined} aria-disabled={compact ? disabled : undefined} aria-label={compact ? groupLabel : undefined} aria-describedby={compact ? hintId : undefined}>
     <div className="image-paste-actions">
     {children}
     <button type="button" className="button secondary image-paste-button" disabled={disabled} onClick={readClipboard}><ClipboardPaste size={17} aria-hidden="true" />{label}</button>

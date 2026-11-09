@@ -41,8 +41,40 @@
 .analytics-details small { display: block; margin-top: 6px; color: #64786c; }
 .analytics-details a { color: #205e4b; text-decoration: underline; }
 .analytics-other-page { display: none; }
+.organizer-report-heading { margin-top: 0; align-items: center; }
+.organizer-report-heading h1 { margin: 0; }
+.organizer-report-heading > .analytics-actions { margin: 0 0 0 auto; justify-content: flex-end; }
+.organizer-report-filters { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.organizer-report-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.organizer-report-tabs .button { min-width: 125px; }
+.organizer-report-rules { margin: 16px 0; font-size: 14px; line-height: 1.7; }
+.organizer-report-rules > summary { display: list-item; width: fit-content; cursor: pointer; color: #205e4b; font-weight: 600; }
+.organizer-report-rules p { max-width: 90ch; color: #61776b; }
+.organizer-report-context { display: flex; flex-wrap: wrap; column-gap: 28px; margin-bottom: 26px; }
+.organizer-report-context > p:last-child { flex-basis: 100%; }
+.organizer-report-panel { min-width: 0; margin-top: 26px; }
+.organizer-report-panel[hidden] { display: none; }
+.organizer-report-section-title { font-size: 21px; margin: 0 0 18px; }
+.organizer-report-breakdown { display: grid; gap: 14px; }
+.organizer-report-disclosure { background: #fff; border: 1px solid #dce6df; border-radius: 12px; padding: 20px; min-width: 0; }
+.organizer-report-disclosure > summary { cursor: pointer; color: #205e4b; font-size: 17px; font-weight: 600; line-height: 1.6; }
+.organizer-report-disclosure dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 32px; margin-bottom: 0; }
+.organizer-report-disclosure dl > div { display: flex; justify-content: space-between; gap: 16px; font-size: 15px; }
+.organizer-report-disclosure dd { font-weight: 600; margin: 0; }
+.organizer-report-rows { display: grid; gap: 14px; }
+.organizer-report-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(210px, .6fr); align-items: center; gap: 28px; background: #fff; padding: 24px; border: 1px solid #dce6df; border-radius: 12px; }
+.organizer-report-row h3 { font-size: 19px; line-height: 1.5; margin: 12px 0 8px; }
+.organizer-report-row h3 a { color: #173c34; text-decoration: none; }
+.organizer-report-row p { margin: 0; color: #61776b; font-size: 14px; }
+.organizer-report-row dl { margin: 0; display: grid; gap: 10px; }
+.organizer-report-row dl > div { display: flex; justify-content: space-between; gap: 16px; font-size: 15px; }
+.organizer-report-row dt { color: #61776b; }
+.organizer-report-row dd { margin: 0; font-weight: 500; }
+.organizer-report-other-page { display: none; }
 @media(max-width: 800px) { .analytics-summary, .analytics-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.analytics-charts { grid-template-columns: 1fr; } }
 @media(max-width: 500px) { .analytics-filter-grid, .analytics-months ul { grid-template-columns: 1fr; }.analytics-filters, .analytics-chart { padding: 18px; }.analytics-summary article { padding: 14px; }.analytics-actions .button { width: 100%; }.analytics-heading { align-items: stretch; }.analytics-heading > .analytics-actions { width: 100%; } }
+@media(max-width: 800px) { .organizer-report-row { grid-template-columns: 1fr; gap: 18px; }.organizer-report-disclosure dl { grid-template-columns: 1fr; } }
+@media(max-width: 500px) { .organizer-report-heading > .analytics-actions { margin-left: auto; }.organizer-report-heading .analytics-actions .button { width: auto; flex: 1 1 auto; }.organizer-report-heading .analytics-actions .refresh-button { flex: 0 0 auto; margin-left: auto; }.organizer-report-tabs { flex-wrap: nowrap; gap: 6px; }.organizer-report-tabs .button { min-width: 0; padding: 12px 8px; font-size: 13px; flex: 1; }.organizer-report-row { padding: 18px; }.organizer-report-row h3 { font-size: 17px; }.organizer-report-disclosure { padding: 16px; }.organizer-report-disclosure > summary { font-size: 16px; } }
 @media print {
   @page analytics-report { size: A4 landscape; margin: 12mm; @bottom-center { content: "V-Connect · Trang " counter(page); font-size: 8pt; color: #526359; } }
   html:has(.analytics-page) { background: white; }
@@ -67,4 +99,13 @@
   .analytics-context p { margin: 4px 0; }.analytics-rules { margin: 12px 0; }.analytics-details small { margin-top: 3px; }
   .analytics-details { margin-top: 12px; }.analytics-details .analytics-heading { display: block; margin: 8px 0; }
   .analytics-details h2 { margin: 0; }.analytics-details caption { padding: 4px 0; }
+  .organizer-report-heading { margin: 0 0 12px; }.organizer-report-heading h1 { font-size: 20pt; }
+  .organizer-report-panel[hidden] { display: block !important; }
+  .organizer-report-panel { margin-top: 16px; }.organizer-report-section-title { font-size: 14pt; }
+  .organizer-report-context { margin-bottom: 12px; }
+  .organizer-report-breakdown { display: none; }
+  .organizer-report-panel[aria-label="Tổng hợp báo cáo"] { display: none !important; }
+  .organizer-report-rows { gap: 7px; }
+  .organizer-report-row, .organizer-report-other-page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .5fr); gap: 20px; padding: 10px; break-inside: avoid; }
+  .organizer-report-row h3 { font-size: 11pt; margin: 7px 0; }.organizer-report-row p, .organizer-report-row dl > div { font-size: 9pt; }.organizer-report-row dl { gap: 5px; }
 }

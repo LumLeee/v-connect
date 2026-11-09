@@ -1,0 +1,44 @@
+.volunteer-matching-page h1 { margin-bottom: 20px; }
+.volunteer-matching-page .matching-toolbar { justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+.volunteer-matching-page .vm-toolbar-actions { display: flex; flex-wrap: wrap; gap: 10px; min-width: 0; }
+.volunteer-matching-page .matching-toolbar .refresh-button { margin-left: auto; flex-shrink: 0; }
+.volunteer-matching-page .vm-results-count { margin: 20px 0 0; color: #667e75; font-size: 14px; }
+.volunteer-matching-page .vm-match-row { align-items: start; gap: 22px; }
+.volunteer-matching-page .matching-score { white-space: nowrap; font-size: 14px; padding: 10px 14px; }
+.volunteer-matching-page .matching-card-info h2 { margin: 0 0 8px; font-size: 20px; line-height: 1.45; }
+.volunteer-matching-page .vm-activity-meta { font-size: 14px; color: #667e75; margin: 0; }
+.volunteer-matching-page .vm-skills-group { margin-top: 14px; }
+.volunteer-matching-page .vm-skills-label { margin: 0 0 7px; font-size: 12px; color: #667e75; }
+.volunteer-matching-page .activity-skill-tags { margin: 0; gap: 7px; }
+.volunteer-matching-page .activity-skill-tags span { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; border: 1px solid transparent; }
+.volunteer-matching-page .vm-matched-skills span { background: #e6f2eb; color: #1e634d; border-color: #bdd8c9; }
+.volunteer-matching-page .vm-other-skills span { background: #f6f8f7; color: #536b61; border-color: #dce5df; }
+.volunteer-matching-page .vm-match-explanation { margin-top: 16px; cursor: default; }
+.volunteer-matching-page .vm-match-explanation > summary { display: flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; min-height: 36px; list-style: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #296c56; }
+.volunteer-matching-page .vm-match-explanation > summary::-webkit-details-marker { display: none; }
+.volunteer-matching-page .vm-match-explanation > summary:focus-visible { outline: 3px solid #d89d37; outline-offset: 3px; border-radius: 4px; }
+.volunteer-matching-page .vm-match-explanation[open] > summary svg { transform: rotate(180deg); }
+.volunteer-matching-page .vm-match-explanation-content { background: #f6f9f7; border: 1px solid #e0e9e3; border-radius: 10px; padding: 14px; margin-top: 7px; }
+.volunteer-matching-page .vm-match-explanation ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; }
+.volunteer-matching-page .vm-match-explanation li + li { margin-top: 6px; }
+.volunteer-matching-page .vm-score-breakdown { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid #dfe8e2; font-size: 13px; }
+.volunteer-matching-page .vm-score-breakdown div { display: flex; align-items: baseline; gap: 8px; }
+.volunteer-matching-page .vm-score-breakdown dt { color: #667e75; }
+.volunteer-matching-page .vm-score-breakdown dd { margin: 0; color: #244f40; font-weight: 600; }
+.volunteer-matching-page .matching-card-actions { padding-top: 0; }
+.volunteer-matching-page .vm-empty-state h2 { font-size: 19px; margin: 0 0 8px; }
+.volunteer-matching-page .vm-empty-state p { margin: 0 0 16px; max-width: 650px; font-size: 14px; line-height: 1.7; }
+@media (max-width: 1000px) {
+  .volunteer-matching-page .vm-match-row { gap: 16px; }
+  .volunteer-matching-page .matching-card-actions { grid-column: 2; }
+}
+@media (max-width: 560px) {
+  .volunteer-matching-page .matching-toolbar { gap: 10px; }
+  .volunteer-matching-page .matching-toolbar .button { padding-inline: 12px; font-size: 13px; }
+  .volunteer-matching-page .vm-toolbar-actions { gap: 8px; }
+  .volunteer-matching-page .vm-match-row { padding: 18px; gap: 16px; }
+  .volunteer-matching-page .matching-card-info h2 { font-size: 19px; }
+  .volunteer-matching-page .matching-card-actions { grid-column: 1; justify-self: start; justify-content: flex-start; }
+  .volunteer-matching-page .vm-score-breakdown { display: grid; grid-template-columns: 1fr; gap: 7px; }
+  .volunteer-matching-page .vm-score-breakdown div { justify-content: space-between; }
+}

@@ -12,3 +12,29 @@
   .invitation-row .activity-actions { flex-wrap: nowrap; }
   .invitation-row .activity-actions > .button { width: auto; flex: 1; min-width: 0; }
 }
+.managed-invitation-filters button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.managed-invitation-filters button > span { min-width: 22px; padding: 1px 6px; border-radius: 12px; background: #edf3ef; color: #496a59; font-size: 11px; }
+.managed-invitation-filters button[aria-pressed=true] > span { background: #ffffff26; color: white; }
+.om-content .activity-grid.managed-invitation-list { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.managed-invitation-row { display: grid; grid-template-columns: minmax(150px, .9fr) minmax(0, 2fr) auto; align-items: center; gap: 24px; }
+.managed-invitation-row > div { min-width: 0; overflow-wrap: anywhere; }
+.om-content .managed-invitation-recipient h2 { margin: 0 0 12px; font-size: 17px; }
+.managed-invitation-status { display: inline-block; border-radius: 20px; padding: 5px 10px; font-size: 12px; color: #62766b; background: #edf1ef; }
+.managed-invitation-status.is-pending { color: #82621c; background: #fff3d9; }
+.managed-invitation-status.is-accepted { color: #23644d; background: #e4f1e9; }
+.managed-invitation-status.is-declined { color: #9a4e42; background: #fbe9e5; }
+.om-content .managed-invitation-content p { margin: 6px 0; font-size: 13px; }
+.managed-invitation-message { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; }
+.managed-invitation-note { color: #82621c !important; }
+.managed-invitation-actions { justify-self: end; }
+.managed-invitation-row > [data-record-details] { display: none; }
+.managed-invitation-result { margin-block: 18px !important; }
+@media (max-width: 800px) {
+  .managed-invitation-row { grid-template-columns: minmax(0, 1fr) auto; gap: 16px; }
+  .managed-invitation-content { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (max-width: 480px) {
+  .managed-invitation-row { grid-template-columns: minmax(0, 1fr); }
+  .managed-invitation-actions { justify-self: start; }
+  .managed-invitation-content { grid-row: auto; }
+}

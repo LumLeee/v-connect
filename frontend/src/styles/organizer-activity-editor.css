@@ -1,0 +1,34 @@
+.om-activity-editor { padding-bottom: 8px; }
+.om-editor-savebar { position: sticky; bottom: 12px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; margin-top: 24px; padding: 16px 20px; background: white; border: 1px solid #dce7df; border-radius: 11px; box-shadow: 0 4px 22px #174f4414; }
+.om-content .om-editor-savebar > p { margin: 0; font-size: 13px; }
+.om-editor-savebar > div { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.om-editor-savebar .button { min-height: 42px; }
+.om-editor-savebar [aria-disabled=true] { opacity: .55; cursor: not-allowed; }
+.om-editor-errors { padding: 20px 24px; border: 1px solid #dbb3a9; border-radius: 11px; background: #fff7f4; margin: 20px 0; scroll-margin-block: 30px; }
+.om-content .om-editor-errors h2 { margin: 0 0 8px; font-size: 18px; color: #8f3e2e; }
+.om-content .om-editor-errors p { margin: 8px 0; color: #8f3e2e; white-space: pre-line; }
+.om-editor-errors ul { padding-left: 20px; margin: 12px 0 0; }
+.om-editor-errors li { margin-block: 8px; font-size: 13px; line-height: 1.7; color: #8f3e2e; }
+.om-editor-errors a { text-decoration: underline; text-underline-offset: 3px; }
+.om-editor-errors:focus, .om-activity-editor #required_skills:focus, .om-activity-editor #timeline:focus { outline: 2px solid #b8755e; outline-offset: 3px; }
+@media (max-width: 700px) {
+  .om-editor-savebar { bottom: 8px; flex-direction: column; align-items: stretch; padding: 12px; gap: 10px; }
+  .om-editor-savebar > div { flex-wrap: nowrap; }
+  .om-editor-savebar .button { flex: 1; min-width: 0; padding-inline: 10px; text-align: center; }
+  .om-content .om-editor-savebar > p { font-size: 12px; }
+  .om-editor-errors { padding: 18px; }
+}
+@media print { .om-editor-savebar { display: none; } }
+.activity-preview-dialog { width: min(1080px, calc(100% - 32px)); }
+.activity-preview-note { padding: 12px 16px; border-radius: 8px; background: #edf5ef; font-size: 13px; line-height: 1.6; }
+.activity-preview-content { padding-top: 8px; min-width: 0; }
+.activity-preview-content h1 { margin: 12px 0; overflow-wrap: anywhere; }
+.activity-preview-content .activity-detail-heading > p { margin-bottom: 20px; }
+.activity-preview-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+@media (max-width: 700px) {
+  .om-editor-savebar .editor-preview-button { flex: .95; }
+  .om-editor-savebar a.button { flex: .8; }
+  .om-editor-savebar .button.primary { flex: 1.25; }
+  .activity-preview-content .activity-detail-layout { grid-template-columns: minmax(0, 1fr); }
+  .activity-preview-content .activity-info-card, .activity-preview-content .activity-logistics { padding: 18px; }
+}

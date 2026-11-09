@@ -16,6 +16,17 @@ def feedback_entries():
     return Feedback.objects.select_related('attendance__participation__activity', 'attendance__participation__volunteer', 'hidden_by')
 
 
+def admin_feedback(filters):
+    """Use the same validated moderation scope for lists and explicit AI reads."""
+    queryset = feedback_entries()
+    if filters.get('activity'):
+        activity = get_object_or_404(Activity, pk=filters['activity'])
+        queryset = queryset.filter(attendance__participation__activity=activity)
+    if filters['status'] != 'all':
+        queryset = queryset.filter(is_hidden=filters['status'] == 'hidden')
+    return queryset
+
+
 def visible_feedback():
     # Use this queryset for both the organizer list and its rating statistics.
     return feedback_entries().filter(is_hidden=False, attendance__participation__status='approved',

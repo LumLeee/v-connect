@@ -83,7 +83,7 @@ test('Toàn bộ luồng chính qua giao diện với Guest, Volunteer, Organize
     await expect(page.locator('.activity-status')).toHaveText('Hoàn thành')
     await volunteer.goto('/tinh-nguyen-vien/lich-su')
     await volunteer.getByRole('link', { name: 'Gửi phản hồi', exact: true }).click()
-    await volunteer.getByLabel('Điểm đánh giá (1–5)', { exact: true }).fill('5')
+    await volunteer.getByRole('radio', { name: '5 sao', exact: true }).check()
     const feedback = `Hoạt động thiết thực ${info.project.name} ${id}`
     await volunteer.getByLabel('Nội dung phản hồi', { exact: true }).fill(feedback)
     await volunteer.getByRole('button', { name: 'Gửi phản hồi', exact: true }).click()

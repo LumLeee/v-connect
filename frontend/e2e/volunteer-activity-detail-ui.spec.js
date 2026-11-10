@@ -164,6 +164,26 @@ test('Chi tiết hoạt động: lỗi tải trạng thái có thử lại, khô
   await expect(panel.getByRole('button', { name: 'Đăng ký tham gia', exact: true })).toBeEnabled()
 })
 
+test('Nhà tổ chức bị khóa: ngừng nhận đăng ký nhưng vẫn cho hủy đơn hiện tại', async ({ page }) => {
+  const state = await fixtures(page)
+  state.activity.organizer_active = false
+  await page.goto(base)
+  const panel = page.locator('.va-participation')
+  await expect(panel).toContainText('Tạm ngừng nhận đăng ký vì tài khoản nhà tổ chức không còn hoạt động.')
+  await expect(panel.getByRole('button', { name: 'Đăng ký tham gia', exact: true })).toHaveCount(0)
+  await expect(panel.getByRole('link', { name: 'Khám phá hoạt động khác', exact: true })).toBeVisible()
+  state.participation = { status: 'pending', attendance: null }
+  await panel.getByRole('button', { name: 'Làm mới', exact: true }).click()
+  await panel.getByRole('button', { name: 'Hủy đăng ký', exact: true }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Xác nhận hủy đăng ký', exact: true }).click()
+  await expect(panel.locator('.va-participation-status')).toHaveText('Trạng thái: Đã hủy đăng ký')
+  await expect(panel.getByRole('button', { name: 'Đăng ký tham gia', exact: true })).toHaveCount(0)
+  state.activity.organizer_active = true
+  await panel.getByRole('button', { name: 'Làm mới', exact: true }).click()
+  await expect(panel.getByRole('button', { name: 'Đăng ký tham gia', exact: true })).toBeEnabled()
+  expect(state.writes).toBe(1)
+})
+
 test('Chi tiết hoạt động: hành động trước thông tin dài trên mobile, không tràn 320/390/768/1440px', async ({ page }, info) => {
   await fixtures(page, { status: 'pending' })
   await page.goto(base)

@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.accounts.profile_serializers import StrictFieldsMixin
+from .links import notification_href
 from .models import Notification, NotificationPreference
 
 
@@ -17,15 +18,8 @@ class NotificationSerializer(serializers.ModelSerializer):
     href = serializers.SerializerMethodField()
 
     def get_href(self, notification):
-        # Old public links stop working when an activity is completed/cancelled.
-        # Keep saved notices useful without rewriting stored inbox records.
         request = self.context.get('request')
-        if (request and request.user.role == 'volunteer' and notification.activity_id
-                and notification.href == f'/hoat-dong/{notification.activity_id}'
-                and notification.activity.status != 'published'):
-            return ('/tinh-nguyen-vien/dang-ky?status=cancelled'
-                    if notification.activity.status == 'cancelled' else '/tinh-nguyen-vien/dang-ky')
-        return notification.href
+        return notification_href(notification, request.user if request else None)
 
     class Meta:
         model = Notification

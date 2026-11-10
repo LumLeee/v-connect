@@ -42,8 +42,8 @@ class PublicList(generics.ListAPIView):
 
     def get_queryset(self):
         open_activities = activities().filter(published_at__isnull=False, status='published').annotate(
-            discovery_approved=Count('participations', filter=Q(participations__status='approved'), distinct=True),
-        ).filter(discovery_approved__lt=F('capacity'))
+            matching_approved=Count('participations', filter=Q(participations__status='approved'), distinct=True),
+        ).filter(matching_approved__lt=F('capacity'))
         if enabled():
             open_activities = open_activities.filter(starts_at__gt=timezone.now())
         return filter_activities(search(open_activities, self.request), self.request).order_by('starts_at', 'pk')

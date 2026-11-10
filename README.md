@@ -4,11 +4,11 @@ Website quản lý tình nguyện viên, xây mới bằng **React JavaScript + 
 
 ## Trạng thái
 
-Đã hoàn thành nghiệp vụ chính và kiểm tra tổng thể giai đoạn 9 trên nhánh `dev`, kế thừa giai đoạn 8 (`feature/reports-admin`, commit `f2a85f5`). Bao gồm xác thực/phân quyền, hồ sơ, avatar, hoạt động cơ bản/mở rộng, đăng ký/xét duyệt, điểm danh, phản hồi và thống kê/quản trị cơ bản. Đã bổ sung báo cáo mở rộng, thông báo trong website, nhắc lịch trước 1 giờ và hàng đợi email; SMTP thật chưa cấu hình. Đã tích hợp [AI ghép nối bằng embedding chạy local](document/AI_GHEP_NOI.md), kết hợp quy tắc và dự phòng khi model chưa sẵn sàng. Có thêm [AI hỗ trợ phản hồi và bản nháp báo cáo](document/AI_PHAN_HOI_VA_BAO_CAO.md) ở mức thử nghiệm: nhãn theo câu mẫu, cờ rà soát bằng quy tắc, chọn trích dẫn nguyên văn và mẫu số liệu; không phải mô hình cảm xúc chuyên dụng hoặc mô hình sinh văn bản. Xem [kết quả giai đoạn 9](document/GIAI_DOAN_9_KET_QUA.md) và [hướng dẫn vận hành, sao lưu](document/VAN_HANH_VA_SAO_LUU.md).
+Đã có xác thực/phân quyền, hồ sơ và avatar, hoạt động/timeline/ảnh bìa, đăng ký/xét duyệt, lời mời, điểm danh thủ công/QR, phản hồi, điểm đóng góp, xếp hạng và báo cáo/quản trị. Thông báo có nhắc trước 1 giờ và hàng đợi email; SMTP thật chưa cấu hình. [AI ghép nối](document/AI_GHEP_NOI.md) kết hợp quy tắc với embedding local và có dự phòng. [AI phản hồi/bản nháp báo cáo](document/AI_PHAN_HOI_VA_BAO_CAO.md) là công cụ hỗ trợ thử nghiệm, không phải mô hình cảm xúc chuyên dụng hoặc mô hình sinh văn bản. Xem [trạng thái và giới hạn](document/TRANG_THAI_VA_KIEM_THU.md).
 
-Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Kết quả kiểm tra và giới hạn: [giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md), [cập nhật username Admin](document/CAP_NHAT_ADMIN_USERNAME.md).
+Volunteer/Organizer dùng email đăng nhập; Admin dùng username, không bắt buộc email. Quyền truy cập được kiểm tra trên API. Không có tài khoản mẫu hoặc mật khẩu Admin mặc định. Chi tiết: [Tài khoản và hồ sơ](document/TAI_KHOAN_VA_HO_SO.md).
 
-Kế hoạch chi tiết: [document/KE_HOACH_TRIEN_KHAI.md](document/KE_HOACH_TRIEN_KHAI.md).
+Giới thiệu dành cho người không biết lập trình: [Mô tả dự án dễ hiểu](document/MO_TA_DU_AN_DE_HIEU.md). Mục lục chuyên đề: [document/README.md](document/README.md). Hướng dẫn [vận hành và sao lưu](document/VAN_HANH_VA_SAO_LUU.md).
 
 ## 1. Yêu cầu
 
@@ -59,7 +59,7 @@ Sau đó chạy:
 .\.venv\Scripts\python.exe backend/manage.py seed_data
 ```
 
-Script tạo database `v_connect` với `utf8mb4_unicode_ci` và tài khoản `v_connect@localhost`, cấp quyền giới hạn cho database ứng dụng cùng `test_v_connect`. Database test do Django tạo/xóa khi kiểm thử; không đặt `DB_TEST_NAME` trùng database có dữ liệu cần giữ. Quyền DDL là để chạy migration/test trong development; production nên dùng tài khoản migration riêng.
+Script tạo database `v_connect` với `utf8mb4_unicode_ci` và tài khoản `v_connect@localhost`, cấp quyền giới hạn cho database ứng dụng cùng `test_v_connect`. `DB_TEST_NAME` phải bắt đầu bằng `test_`, chỉ có chữ ASCII/số/gạch dưới và khác `DB_NAME` kể cả hoa/thường. Backend test và E2E chỉ tạo database mới, từ chối schema đã tồn tại; chỉ dọn database có dấu sở hữu của chính lượt chạy. Quyền DDL dành cho development; production nên dùng tài khoản migration riêng.
 
 Script không xóa database và không thay mật khẩu user đã tồn tại. Nếu tên user trùng tài khoản có sẵn, phải đặt `DB_PASSWORD` đúng với user đó hoặc chọn tên ứng dụng riêng. Không đổi thông tin ứng dụng sau khi provision nếu chưa cập nhật tương ứng trong MySQL.
 
@@ -146,7 +146,7 @@ npm.cmd run build
 cd ..
 ```
 
-Tests dùng MySQL thật trong database riêng. Hiện có 152 tests gồm nền tảng, xác thực, username Admin, migration, hồ sơ cơ bản/mở rộng, avatar, hoạt động cơ bản/mở rộng, đăng ký/xét duyệt, điểm danh, phản hồi, dashboard, thống kê/quản trị và thông báo/email/nhắc lịch, bao gồm thao tác đồng thời giữa các luồng. Có thêm 8 tests bảo vệ database và thời gian kiểm thử. Không dùng SQLite làm kết quả thay thế cho MySQL.
+Tests dùng MySQL thật trong database riêng, bao phủ nền tảng, xác thực, migration, hồ sơ, hoạt động, đăng ký/xét duyệt, điểm danh, phản hồi, đóng góp, báo cáo/quản trị, thông báo và AI. Có kiểm thử bảo vệ database và thời gian kiểm thử. Không dùng SQLite thay cho MySQL. Xem [phạm vi và cách kiểm tra](document/TRANG_THAI_VA_KIEM_THU.md).
 
 Kiểm tra đường đi qua Vite proxy sau khi hai server chạy:
 
@@ -165,7 +165,7 @@ Cần Google Chrome đã cài trên máy. Chạy từ thư mục dự án, sau b
 
 Runner khởi động backend ở cổng `8001`, Vite ở `5174` và chạy Chrome headless với profile kiểm thử riêng. Hai cổng phải trống. Có thể chọn Edge bằng biến `E2E_BROWSER_CHANNEL=msedge` nếu máy không có Chrome.
 
-Tests đi qua form React và API Django thật, dùng MySQL `DB_TEST_NAME` riêng; runner từ chối chạy nếu database test đã tồn tại. Không chạy đồng thời với bộ tests backend. Tài khoản Admin và các tài khoản đăng ký được tạo trong database test, sau đó database này được xóa khi kết thúc. Database ứng dụng được giữ nguyên.
+Tests đi qua form React và API Django thật, dùng MySQL `DB_TEST_NAME` riêng; cả Django runner và E2E đều từ chối database đã tồn tại. Không dùng `--keepdb` hoặc `--parallel > 1`, không chạy đồng thời hai bộ kiểm thử. Tài khoản thử chỉ được tạo trong database mới và database đó được dọn khi kết thúc. Nếu lượt chạy cũ bị ngắt, kiểm tra nguồn gốc schema còn lại trước khi dọn; không đổi tên trỏ sang database có dữ liệu để chạy tiếp.
 
 Email đặt lại mật khẩu được ghi ra file cục bộ, không gửi SMTP. Screenshot và email nằm trong `tmp/e2e-*/`; báo cáo HTML nằm trong `frontend/playwright-report/`. Các thư mục này bị Git bỏ qua. Không chia sẻ file email chứa liên kết reset.
 
@@ -181,7 +181,7 @@ Playwright có 62 ca trên desktop 1280px và màn hình hẹp 390px, đồng th
 | `DJANGO_ALLOWED_HOSTS` | Danh sách host, phân cách bằng dấu phẩy |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | Các origin được phép gửi request CSRF |
 | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Kết nối MySQL |
-| `DB_TEST_NAME` | Database kiểm thử riêng, mặc định `test_v_connect` |
+| `DB_TEST_NAME` | Schema kiểm thử chưa tồn tại, dạng `test_…`, tối đa 64 ký tự; mặc định `test_v_connect` |
 | `MATCHING_AI_ENABLED`, `MATCHING_AI_MODEL_DIR` | Bật AI ghép nối và thư mục model local; các giới hạn timeout/cache/đầu vào trong [hướng dẫn](document/AI_GHEP_NOI.md) |
 | `FEEDBACK_AI_ENABLED`, `FEEDBACK_AI_MAX_ITEMS` | Bật nhãn phản hồi bằng embedding, tối đa 40 phản hồi/lần mặc định; cờ quy tắc có nguồn riêng, vẫn cần đọc thủ công |
 | `REPORT_AI_ENABLED`, `REPORT_AI_MAX_FEEDBACK` | Bật chọn trích dẫn cho bản nháp, mặc định xét 40 phản hồi hợp lệ mới nhất; số liệu dùng mẫu cố định |
@@ -217,7 +217,7 @@ Admin dùng username trên cả `/dang-nhap` và Django Admin ở `http://127.0.
 .\.venv\Scripts\python.exe backend/manage.py changepassword admin
 ```
 
-Không gửi `role=admin`, `username` hoặc `is_staff` qua form đăng ký công khai. Backend sẽ từ chối. Các trang workspace có thông tin tài khoản và đường dẫn chỉnh sửa hồ sơ, chưa phải dashboard nghiệp vụ.
+Không gửi `role=admin`, `username` hoặc `is_staff` qua form đăng ký công khai. Backend sẽ từ chối. Mỗi vai trò có dashboard và các trang nghiệp vụ riêng; xem [Giao diện](document/GIAO_DIEN.md).
 
 ### API xác thực
 
@@ -262,13 +262,13 @@ API xác thực giới hạn 30 request/phút cho mỗi user đã đăng nhập 
 
 ### Hồ sơ cơ bản — giai đoạn 3 theo phạm vi ngày 22/09/2026
 
-Sau khi đăng nhập, chọn **Chỉnh sửa hồ sơ** trong khu vực tài khoản hoặc mở `/ho-so`.
+Sau khi đăng nhập, nhấn ô tài khoản hoặc ảnh đại diện để mở `/ho-so`.
 
 - Mọi tài khoản có thể sửa họ tên, số điện thoại, giới thiệu và avatar của chính mình. Email đăng nhập và vai trò không được sửa qua API hồ sơ.
 - Nhà tổ chức có thêm tên tổ chức, mô tả, website HTTP/HTTPS và địa chỉ liên hệ. Các trường bổ sung có thể để trống và hoàn thiện dần.
 - Nút **Lưu hồ sơ** lưu thông tin văn bản. Chọn ảnh sẽ tải lên và lưu avatar riêng; có nút xóa ảnh.
 - Nhận JPEG/PNG/WebP tối đa 5 MB và 16 triệu điểm ảnh. Backend đọc nội dung ảnh, chuyển thành JPEG tối đa 512 × 512, đặt tên ngẫu nhiên và loại metadata bằng cách mã hóa lại.
-- File nằm trong `backend/media/avatars/`, database lưu tên file. Ảnh hiện chỉ được chủ tài khoản xem qua API có xác thực; không mở đường dẫn `/media/` công khai.
+- File nằm trong `backend/media/avatars/`, database lưu tên file. Ảnh được đọc qua API có kiểm tra quyền: chủ tài khoản, Nhà tổ chức xem ứng viên trong hoạt động của mình hoặc ảnh được phép hiện trên bảng xếp hạng. Không mở toàn bộ `/media/` công khai.
 
 | Method | API | Chức năng |
 |---|---|---|
@@ -278,27 +278,25 @@ Sau khi đăng nhập, chọn **Chỉnh sửa hồ sơ** trong khu vực tài kh
 | POST | `/api/v1/auth/profile/avatar/` | Tải một file multipart có tên trường `avatar` |
 | DELETE | `/api/v1/auth/profile/avatar/` | Xóa avatar hiện tại |
 
-Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn, chạy `backend/manage.py migrate` bằng Python trong `.venv`. Migration hồ sơ `accounts.0002` phụ thuộc migration xác thực `accounts.0003`; Django chạy theo dependency. Không dùng `--fake` hoặc chạy lại migration đã áp dụng. Xem [kết quả giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
+Các thao tác ghi đều kiểm tra CSRF. Khi cập nhật bản cài có sẵn, chạy `backend/manage.py migrate` bằng Python trong `.venv`. Migration hồ sơ `accounts.0002` phụ thuộc migration xác thực `accounts.0003`; Django chạy theo dependency. Không dùng `--fake` hoặc chạy lại migration đã áp dụng. Xem [Tài khoản, phiên đăng nhập và hồ sơ](document/TAI_KHOAN_VA_HO_SO.md).
 
-### Tiến độ tiếp theo
+### Phạm vi hiện tại
 
-Giai đoạn 2 đã đẩy lên `feature/auth` ngày 21/09/2026, commit `0efe855`: 39 tests backend, 12 ca Playwright trên Chrome và 5 tests bảo vệ dọn database đạt; lint/build đạt. Giai đoạn 3 hoàn thiện hồ sơ, avatar và hồ sơ Nhà tổ chức trên nhánh `feature/profile`, kế thừa bản xác thực Admin bằng username. Xem [kết quả giai đoạn 2](document/GIAI_DOAN_2_KET_QUA.md) và [giai đoạn 3](document/GIAI_DOAN_3_KET_QUA.md).
-
-Theo kế hoạch điều chỉnh ngày 22/09/2026, nghiệp vụ chính đã hoàn thành kiểm tra tổng thể ở giai đoạn 9. Giai đoạn 10 đã bổ sung hồ sơ Tình nguyện viên mở rộng và kỹ năng yêu cầu, bộ lọc, ảnh bìa, timeline cho hoạt động; báo cáo mở rộng có biểu đồ, bộ lọc, Excel và in/lưu PDF; thông báo có trung tâm trong website, nhắc trước 1 giờ và hàng đợi email. SMTP thật chưa cấu hình. Đã bổ sung tự check-in bằng QR/mã có hạn và AI ghép nối dùng embedding local; AI hỗ trợ phản hồi và bản nháp báo cáo cũng dùng model này, ở mức thử nghiệm cần con người kiểm tra. Cờ sự cố còn bỏ sót, không dùng để xác nhận an toàn. Check-out và bản đồ chưa triển khai. Xem [kế hoạch](document/KE_HOACH_TRIEN_KHAI.md).
+Các chức năng đã có, phần chưa triển khai và cách kiểm tra được gom trong [Trạng thái và kiểm thử](document/TRANG_THAI_VA_KIEM_THU.md). Tài liệu chuyên đề thay cho báo cáo lặp theo từng giai đoạn; tra cứu tại [mục lục](document/README.md).
 
 Tài liệu kỹ thuật tham khảo: [Django MySQL](https://docs.djangoproject.com/en/5.2/ref/databases/#mysql-notes), [custom User](https://docs.djangoproject.com/en/5.2/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project), [Vite proxy](https://vite.dev/config/server-options.html#server-proxy).
 
 ## 10. Hoạt động
 
-Chạy migration khi cập nhật: `python backend/manage.py migrate --noinput`. Mở `/hoat-dong` để tìm và xem hoạt động công khai; Organizer mở `/nha-to-chuc/hoat-dong` để tạo và quản lý. Quy tắc, API và kết quả kiểm thử: [giai đoạn 4](document/GIAI_DOAN_4_KET_QUA.md).
+Chạy migration khi cập nhật: `python backend/manage.py migrate --noinput`. Mở `/hoat-dong` để tìm và xem hoạt động công khai; Organizer mở `/nha-to-chuc/hoat-dong` để tạo và quản lý. Quy tắc, API và kết quả kiểm thử: [Hoạt động và tham gia](document/HOAT_DONG_VA_THAM_GIA.md).
 
-Danh sách dùng lưới thẻ với khối tìm kiếm riêng; chi tiết công khai chia nội dung và thông tin tham gia thành hai cột trên desktop, một cột trên màn hình nhỏ. Chi tiết: [cập nhật giao diện hoạt động](document/CAP_NHAT_GIAO_DIEN_HOAT_DONG.md).
+Danh sách dùng lưới thẻ với khối tìm kiếm riêng; chi tiết công khai chia nội dung và thông tin tham gia thành hai cột trên desktop, một cột trên màn hình nhỏ. Chi tiết: [Giao diện V-Connect](document/GIAO_DIEN.md).
 
-Hoạt động có thể chọn tối đa 20 kỹ năng yêu cầu và một ảnh bìa. Bộ lọc kết hợp tên, trạng thái, khoảng ngày bắt đầu theo giờ Việt Nam, địa điểm và kỹ năng; điều kiện được giữ khi phân trang/tải lại. Kỹ năng không tự chặn người đăng ký. Chủ hoạt động tải/thay/xóa ảnh tại trang quản lý chi tiết khi còn Nháp/Công khai. Ảnh bản nháp chỉ chủ hoạt động xem được. Quy tắc, API và migration: [hoạt động mở rộng](document/HOAT_DONG_MO_RONG.md).
+Hoạt động có thể chọn tối đa 20 kỹ năng yêu cầu và một ảnh bìa. Bộ lọc kết hợp tên, trạng thái, khoảng ngày bắt đầu theo giờ Việt Nam, địa điểm và kỹ năng; điều kiện được giữ khi phân trang/tải lại. Kỹ năng không tự chặn người đăng ký. Chủ hoạt động tải/thay/xóa ảnh tại trang quản lý chi tiết khi còn Nháp/Công khai. Ảnh bản nháp chỉ chủ hoạt động xem được. Quy tắc, API và migration: [Hoạt động và tham gia](document/HOAT_DONG_VA_THAM_GIA.md).
 
 ## 11. Đăng ký và xét duyệt
 
-Volunteer đăng ký/hủy tại chi tiết hoạt động, xem kết quả tại `/tinh-nguyen-vien/dang-ky`. Organizer chọn **Xem danh sách đăng ký** trong hoạt động của mình để duyệt hoặc từ chối. Mọi thao tác phải trước giờ bắt đầu. Tự hủy được đăng ký lại về chờ duyệt; bị từ chối không được gửi lại. Sức chứa tính theo số người được duyệt.
+Volunteer đăng ký/hủy tại chi tiết hoạt động, xem kết quả tại `/tinh-nguyen-vien/dang-ky`. Organizer mở danh sách đăng ký của hoạt động mình để duyệt hoặc từ chối. Khi bật kiểm tra thời gian, các thao tác này phải trước giờ bắt đầu. Tự hủy được đăng ký lại về chờ duyệt; bị từ chối không được gửi lại. Sức chứa tính theo số người được duyệt. Quy tắc chế độ thử nằm trong tài liệu bên dưới.
 
 | Method | API | Chức năng |
 |---|---|---|
@@ -308,19 +306,19 @@ Volunteer đăng ký/hủy tại chi tiết hoạt động, xem kết quả tạ
 | GET | `/api/v1/organizer/activities/<id>/applicants/` | Chủ hoạt động xem danh sách ứng viên |
 | POST | `/api/v1/organizer/activities/<id>/applicants/<entry_id>/review/` | Body `{"status":"approved"}` hoặc `{"status":"rejected"}` |
 
-Các thao tác ghi kiểm tra CSRF, vai trò, chủ sở hữu, thời hạn và trạng thái. Migration `participations.0001_initial` thêm bảng đơn đăng ký. Chi tiết quy tắc và kiểm thử: [giai đoạn 5](document/GIAI_DOAN_5_KET_QUA.md).
+Các thao tác ghi kiểm tra CSRF, vai trò, chủ sở hữu, thời hạn và trạng thái. Migration `participations.0001_initial` thêm bảng đơn đăng ký. Chi tiết quy tắc và kiểm thử: [Hoạt động và tham gia](document/HOAT_DONG_VA_THAM_GIA.md).
 
 ## 12. Điểm danh thủ công
 
-Organizer mở chi tiết hoạt động → **Điểm danh người tham gia**, chọn người được duyệt và xác nhận có mặt. Chỉ thực hiện từ giờ bắt đầu đến giờ kết thúc, khi hoạt động còn Công khai. Mỗi đơn có một bản ghi; bấm lại không ghi trùng hoặc thay đổi người/thời điểm xác nhận. Volunteer xem kết quả tại đơn đăng ký và **Lịch sử tham gia** trong tài khoản.
+Organizer mở trang điểm danh của hoạt động để xác nhận người được duyệt có mặt. Hoạt động phải Công khai; khi bật kiểm tra thời gian, chỉ thực hiện từ giờ bắt đầu đến giờ kết thúc. Mỗi đơn có một bản ghi; bấm lại không ghi trùng hoặc đổi người/thời điểm xác nhận. Volunteer xem kết quả tại **Điểm danh của tôi** và **Lịch sử hoạt động**.
 
-Chạy migration khi cập nhật bằng Python trong `.venv`: `python backend/manage.py migrate --noinput`. Migration `participations.0002_attendance` thêm bảng điểm danh. API, quy tắc giữ lịch sử khi hủy hoạt động và kết quả kiểm thử: [giai đoạn 6](document/GIAI_DOAN_6_KET_QUA.md).
+Chạy migration khi cập nhật bằng Python trong `.venv`: `python backend/manage.py migrate --noinput`. Migration `participations.0002_attendance` thêm bảng điểm danh. API, quy tắc giữ lịch sử khi hủy hoạt động và kết quả kiểm thử: [Hoạt động và tham gia](document/HOAT_DONG_VA_THAM_GIA.md).
 
 ## 13. Đánh giá và phản hồi
 
 Volunteer đã có mặt mở **Lịch sử tham gia** → hoạt động Hoàn thành → **Gửi hoặc xem phản hồi của tôi**. Điểm 1–5 và nội dung tối đa 2.000 ký tự, chỉ gửi một lần, chưa sửa/xóa. Organizer chọn **Xem phản hồi hoạt động** để xem danh sách và điểm trung bình. Admin mở **Quản lý phản hồi** trong tài khoản để ẩn nội dung không phù hợp, bắt buộc nhập lý do.
 
-Phản hồi bị ẩn vẫn được lưu để đối chiếu nhưng không hiển thị cho Organizer và không tính vào điểm trung bình. Người gửi xem được lý do xử lý. Migration bổ sung `feedback.0001_initial`; chạy `python backend/manage.py migrate --noinput` bằng Python trong `.venv` khi cập nhật. API và kiểm thử: [giai đoạn 7](document/GIAI_DOAN_7_KET_QUA.md).
+Phản hồi bị ẩn vẫn được lưu để đối chiếu nhưng không hiển thị cho Organizer và không tính vào điểm trung bình. Người gửi xem được lý do xử lý. Migration bổ sung `feedback.0001_initial`; chạy `python backend/manage.py migrate --noinput` bằng Python trong `.venv` khi cập nhật. API và kiểm thử: [Hoạt động và tham gia](document/HOAT_DONG_VA_THAM_GIA.md).
 
 Nút **Phân tích AI** trong danh sách phản hồi của Organizer/Admin gợi ý sắc thái, chủ đề và nội dung cần xem lại theo bộ lọc. Đây là công cụ thử nghiệm; không có cờ không có nghĩa là không có sự cố hoặc quảng cáo. Kết quả đo, giới hạn và nguồn quy tắc/AI: [AI phản hồi và báo cáo](document/AI_PHAN_HOI_VA_BAO_CAO.md). Không tự ẩn phản hồi hoặc thay đổi điểm.
 
@@ -330,25 +328,25 @@ Chọn **Xem thống kê** trong tài khoản để xem số liệu theo vai tr�
 
 Admin có **Quản lý tài khoản** và **Nhật ký thao tác**. Khóa/mở khóa bắt buộc lý do, không áp dụng cho Admin và làm phiên cũ hết hiệu lực. Django Admin cung cấp màn hình chỉ đọc cho dữ liệu nghiệp vụ; trạng thái tài khoản được quản lý qua website để ghi lý do.
 
-Giao diện quản trị đã cập nhật đủ bốn đợt: khung menu/Tổng quan/Tài khoản; Hoạt động/Kết quả/Kiểm duyệt phản hồi; Báo cáo/Chi tiết đăng ký/Tổng kết AI/Bảng xếp hạng; Nhật ký/Thông báo/Hồ sơ. Bộ lọc giữ trong URL, số liệu mở đúng danh sách, báo cáo xuất Excel/in theo phạm vi đang xem; các thao tác xử lý có lý do và chặn gửi trùng. Bản nháp AI tách khỏi báo cáo số liệu gốc. Xem [phạm vi và kiểm chứng giao diện admin](document/GIAO_DIEN_QUAN_TRI.md).
+Admin có Tổng quan, Tài khoản, Hoạt động, Kiểm duyệt phản hồi, Báo cáo, Xếp hạng và Nhật ký. Bộ lọc giữ trong URL, số liệu mở đúng danh sách, Excel/in theo phạm vi đang xem; thao tác xử lý yêu cầu lý do và chặn gửi trùng. Bản nháp AI tách khỏi số liệu gốc. Xem [Giao diện V-Connect](document/GIAO_DIEN.md).
 
-Chạy migration bằng Python trong `.venv`: `python backend/manage.py migrate --noinput`. Bổ sung `accounts.0004_user_session_version` và `reports.0001_initial`. Quy tắc, API, giới hạn nhật ký và kiểm thử: [giai đoạn 8](document/GIAI_DOAN_8_KET_QUA.md).
+Chạy migration bằng Python trong `.venv`: `python backend/manage.py migrate --noinput`. Bổ sung `accounts.0004_user_session_version` và `reports.0001_initial`. Quy tắc, API, giới hạn nhật ký và kiểm thử: [Báo cáo, tổng kết và nhật ký quản trị](document/BAO_CAO_VA_NHAT_KY.md).
 
 ## 15. Không gian tình nguyện viên
 
-Trang `/tinh-nguyen-vien` dùng bố cục tham khảo Volunteer Dashboard trong báo cáo: thẻ chào mừng và hồ sơ, thao tác nhanh, ba ô thống kê, hoạt động sắp tới và lịch sử gần đây. Giữ màu sắc V-Connect, dùng dữ liệu thật và ẩn chức năng chưa triển khai. API riêng kiểm tra vai trò và chỉ trả dữ liệu của tài khoản trong phiên; không cần migration mới. Xem [chi tiết cập nhật dashboard](document/CAP_NHAT_VOLUNTEER_DASHBOARD.md).
+Trang `/tinh-nguyen-vien` ưu tiên lời mời, đơn chờ duyệt, hoạt động đang mở điểm danh, hoạt động sắp tới và lịch sử gần đây. Các ô số liệu dẫn tới chức năng tương ứng; API chỉ trả dữ liệu của tài khoản trong phiên. Ba trang đăng ký, điểm danh và lịch sử phục vụ các việc khác nhau. Xem [Giao diện V-Connect](document/GIAO_DIEN.md).
 
 ## 16. Hồ sơ tình nguyện viên mở rộng
 
 Trong `/ho-so`, Volunteer chọn kỹ năng, nhập sở thích (mỗi dòng một mục) và thêm lịch rảnh lặp hằng tuần theo giờ Việt Nam. Các mục đều tùy chọn và được lưu bằng nút **Lưu hồ sơ**. API kiểm tra giới hạn, dữ liệu trùng và lịch chồng lấn, chỉ cho chủ tài khoản cập nhật. Kỹ năng và sở thích được dùng cho [ghép nối AI](document/AI_GHEP_NOI.md); lịch rảnh được đối chiếu bằng code. Chỉ hồ sơ chủ động bật cho phép mới xuất hiện trong gợi ý ứng viên cho Nhà tổ chức. Gợi ý không tự đăng ký hoặc tự duyệt.
 
-Khi cập nhật bản cài, sao lưu rồi chạy `python backend/manage.py migrate --noinput` bằng Python trong `.venv`; migration `accounts.0005_volunteerprofile_availabilityslot` bổ sung bảng mới. Xem [quy tắc, API và kết quả hồ sơ mở rộng](document/HO_SO_MO_RONG.md).
+Khi cập nhật bản cài, sao lưu rồi chạy `python backend/manage.py migrate --noinput` bằng Python trong `.venv`; migration `accounts.0005_volunteerprofile_availabilityslot` bổ sung bảng mới. Xem [Tài khoản, phiên đăng nhập và hồ sơ](document/TAI_KHOAN_VA_HO_SO.md).
 
 ## 17. Báo cáo mở rộng
 
 Organizer/Admin mở **Xem thống kê → Báo cáo mở rộng** để xem biểu đồ, lọc theo tên, trạng thái và khoảng ngày bắt đầu hoạt động. Admin lọc thêm Nhà tổ chức. **Xuất Excel** tải toàn bộ kết quả bộ lọc; **In / Lưu PDF** dùng hộp thoại in của trình duyệt và hiển thị đủ dữ liệu qua các trang. Organizer chỉ truy cập hoạt động của mình. Giới hạn 2.000 hoạt động mỗi báo cáo, không tự cắt bớt kết quả.
 
-Không cần migration mới. Cập nhật thư viện bằng `python -m pip install -r backend/requirements.lock` trong môi trường `.venv`. Quy tắc số liệu, API, cấu trúc file và kiểm thử: [báo cáo mở rộng](document/BAO_CAO_MO_RONG.md).
+Không cần migration mới. Cập nhật thư viện bằng `python -m pip install -r backend/requirements.lock` trong môi trường `.venv`. Quy tắc số liệu, API, cấu trúc file và kiểm thử: [Báo cáo, tổng kết và nhật ký quản trị](document/BAO_CAO_VA_NHAT_KY.md).
 
 ## 18. Thông báo và email
 
@@ -358,6 +356,6 @@ Sau khi sao lưu và chạy migration, duy trì thêm tiến trình `.venv/Scrip
 
 ## 19. Điểm danh nâng cao
 
-Nhà tổ chức mở **Điểm danh người tham gia → Tạo mã mới** để hiển thị QR và mã 8 chữ số có hạn tối đa 5 phút. Volunteer đã được duyệt mở chi tiết hoạt động → **Check-in bằng QR hoặc mã**, quét camera/chọn ảnh QR/nhập mã rồi xác nhận. Có thể thay hoặc thu hồi mã; điểm danh thủ công vẫn dùng chung bản ghi, không tăng số lượt khi thao tác lặp.
+Nhà tổ chức mở trang điểm danh → **Tạo mã mới** để hiển thị QR và mã 8 chữ số. Khi bật kiểm tra thời gian, mã có hạn tối đa 5 phút. Volunteer đã được duyệt quét camera/chọn ảnh QR/nhập mã rồi xác nhận. Có thể thay hoặc thu hồi mã; điểm danh thủ công dùng chung bản ghi, không tăng số lượt khi thao tác lặp.
 
-Chỉ check-in trong thời gian hoạt động còn Công khai; chưa có check-out hoặc tính giờ đóng góp. Sau khi cập nhật code, chạy `npm ci` trong `frontend` và migration Django bằng Python của `.venv`. Quy tắc, API và kiểm thử: [điểm danh nâng cao](document/DIEM_DANH_NANG_CAO.md).
+Hoạt động phải Công khai; cửa sổ check-in và hạn mã tuân theo cấu hình kiểm tra thời gian. Chưa có check-out hoặc tính giờ đóng góp. Sau khi cập nhật code, chạy `npm ci` trong `frontend` và migration Django bằng Python của `.venv`. Quy tắc, API và chế độ thử: [Hoạt động và tham gia](document/HOAT_DONG_VA_THAM_GIA.md).

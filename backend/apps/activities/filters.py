@@ -1,14 +1,21 @@
-from datetime import datetime, time
+from datetime import date, datetime, time
 from zoneinfo import ZoneInfo
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from rest_framework import serializers
 from apps.core.models import Skill
 
 
 class ActivityFilters(serializers.Serializer):
     status = serializers.ChoiceField(choices=['published', 'completed', 'cancelled', 'draft'], required=False)
-    date_from = serializers.DateField(required=False)
-    date_to = serializers.DateField(required=False)
+    # Leave a day at each DATETIME boundary so converting local dates to UTC
+    # cannot underflow Python or MySQL's supported range.
+    date_from = serializers.DateField(required=False, validators=[
+        MinValueValidator(date(1000, 1, 2)), MaxValueValidator(date(9999, 12, 30)),
+    ])
+    date_to = serializers.DateField(required=False, validators=[
+        MinValueValidator(date(1000, 1, 2)), MaxValueValidator(date(9999, 12, 30)),
+    ])
     location = serializers.CharField(max_length=200, required=False)
     skill = serializers.PrimaryKeyRelatedField(queryset=Skill.objects.all(), required=False)
 

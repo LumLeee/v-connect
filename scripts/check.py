@@ -1,4 +1,4 @@
-"""Run the phase-one checks without changing PowerShell execution policy."""
+"""Run project checks without changing PowerShell execution policy."""
 import os
 import shutil
 import subprocess
@@ -14,6 +14,7 @@ if not npm:
 commands = [
     ([sys.executable, "backend/manage.py", "check"], root),
     ([sys.executable, "backend/manage.py", "makemigrations", "--check", "--dry-run"], root),
+    ([sys.executable, "scripts/test_database_safety.py"], root),
     ([sys.executable, "backend/manage.py", "test", "apps.core", "apps.accounts", "apps.activities", "apps.participations", "apps.feedback", "apps.reports", "apps.notifications", "apps.recommendations", "--noinput"], root),
     ([sys.executable, "scripts/test_matching_ai_evaluation.py"], root),
     ([sys.executable, "scripts/test_feedback_ai_evaluation.py"], root),

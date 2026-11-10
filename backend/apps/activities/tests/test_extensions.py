@@ -117,6 +117,18 @@ class ActivityExtensionTests(APITestCase):
             response = APIClient().get('/api/v1/activities/', {'date_from': '2027-01-02', 'date_to': '2027-01-02'})
             self.assertEqual(response.data['count'], expected)
 
+    def test_date_filters_reject_unsafe_database_boundaries_in_public_and_managed_lists(self):
+        clients = [(APIClient(), '/api/v1/activities/'), (self.client, self.url)]
+        for client, url in clients:
+            for name in ['date_from', 'date_to']:
+                for value in ['0001-01-01', '0999-12-31', '1000-01-01', '9999-12-31']:
+                    with self.subTest(url=url, name=name, value=value):
+                        response = client.get(url, {name: value})
+                        self.assertEqual(response.status_code, 400, response.data)
+                        self.assertIn(name, response.data['error']['details'])
+            response = client.get(url, {'date_from': '1000-01-02', 'date_to': '9999-12-30'})
+            self.assertEqual(response.status_code, 200, response.data)
+
     def test_cover_normalized_private_then_public_replace_and_delete(self):
         response = self.upload()
         self.assertEqual(response.status_code, 200, response.data)

@@ -64,7 +64,7 @@ export default function AdminLayout({ children }) {
         <WorkspaceMenuClose menu={menu} />
         <nav aria-label="Điều hướng Quản trị viên">{items.map(([key, to, label, Icon]) => <Link key={key} to={to} className={section === key ? 'active' : undefined} aria-current={section === key ? 'page' : undefined}><Icon size={19} aria-hidden="true" />{label}</Link>)}</nav>
         <Link to="/ho-so" className="od-sidebar-account" aria-label="Xem hồ sơ cá nhân"><Avatar key={profile.data?.profile.avatar_url || 'empty'} url={profile.data?.profile.avatar_url} /><div><strong>{user.full_name}</strong><span>Quản trị viên</span></div></Link>
-        <button type="button" className="od-logout" disabled={busy} onClick={logout}><LogOut size={18} aria-hidden="true" />Đăng xuất</button>
+        <button type="button" className="od-logout" data-unsaved-navigation disabled={busy} onClick={logout}><LogOut size={18} aria-hidden="true" />Đăng xuất</button>
         <Link className="od-home-link" to="/">Về trang chủ</Link>
       </aside>
       <div ref={menu.workspaceRef} className="od-workspace">

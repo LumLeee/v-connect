@@ -1,6 +1,22 @@
 # AI ghép nối tình nguyện viên và hoạt động
 
-Cập nhật ngày 09/11/2026, triển khai tại local; chưa đồng nghĩa đã commit hoặc đẩy lên GitHub. Ghép nối hai chiều đã bổ sung mô hình embedding đa ngôn ngữ chạy trên CPU của backend. AI so sánh ý nghĩa giữa kỹ năng/sở thích và nội dung hoạt động; các điều kiện tham gia vẫn do code kiểm tra trước. Chức năng không tự đăng ký, gửi lời mời, duyệt ứng viên hoặc chấm điểm đóng góp. [AI hỗ trợ phản hồi và bản nháp báo cáo](AI_PHAN_HOI_VA_BAO_CAO.md) dùng chung mô hình, ở mức thử nghiệm và cần người dùng kiểm tra.
+Ghép nối hai chiều dùng quy tắc và mô hình embedding đa ngôn ngữ chạy trên CPU của backend. AI so sánh ý nghĩa giữa kỹ năng/sở thích và nội dung hoạt động; các điều kiện tham gia vẫn do code kiểm tra trước. Chức năng không tự đăng ký, gửi lời mời, duyệt ứng viên hoặc chấm điểm đóng góp. [AI hỗ trợ phản hồi và bản nháp báo cáo](AI_PHAN_HOI_VA_BAO_CAO.md) dùng chung mô hình, ở mức thử nghiệm và cần người dùng kiểm tra.
+
+## Sử dụng, điều kiện và API
+
+Tình nguyện viên mở **Gợi ý phù hợp**, xem điểm/lý do rồi mở hoạt động để đăng ký. Nhà tổ chức chọn hoạt động trong **Ghép nối tình nguyện viên** để xem ứng viên. [Lời mời](HOAT_DONG_VA_THAM_GIA.md) là thao tác riêng do Nhà tổ chức chủ động gửi.
+
+Trong hồ sơ, Volunteer bật **Cho phép Nhà tổ chức tìm thấy tôi trong gợi ý** rồi lưu. `matching_visible` mặc định `false`, có thể thu hồi; tắt không ảnh hưởng gợi ý hoạt động cho chính mình.
+
+| Phương thức | API | Quyền/phạm vi |
+| --- | --- | --- |
+| GET | `/api/v1/matching/activities/` | Volunteer, theo hồ sơ của chính mình |
+| GET | `/api/v1/organizer/activities/<id>/matching/` | Chủ hoạt động; chỉ Volunteer đang hoạt động và bật `matching_visible` |
+| PATCH | `/api/v1/auth/profile/` | Chủ hồ sơ, body `{"volunteer":{"matching_visible":true}}` hoặc `false`, yêu cầu CSRF |
+
+Chỉ xét hoạt động Công khai có `published_at`, chưa bắt đầu, còn chỗ được duyệt và Nhà tổ chức đang hoạt động. Loại người đã có đơn Chờ duyệt/Được duyệt/Bị từ chối của hoạt động; đơn tự hủy được xét lại. Loại xung đột với hoạt động Công khai khác đã được duyệt; hai hoạt động tiếp giáp giờ được chấp nhận, đơn chờ ở nơi khác không chặn gợi ý. Kiểm tra giờ/xung đột tuân theo `ACTIVITY_TIME_CHECKS_ENABLED`; xem [quy tắc thời gian](HOAT_DONG_VA_THAM_GIA.md).
+
+Kết quả ứng viên chỉ trả ID, họ tên, điểm và giải thích phần kỹ năng/sở thích/lịch trùng, cùng trạng thái lời mời nếu có; không trả thông tin liên hệ, toàn bộ hồ sơ hoặc các khung giờ rảnh. Mỗi lần tải kiểm tra lại quyền và dữ liệu hiện tại. Không lưu lịch sử gợi ý hoặc gửi thông báo chỉ vì có gợi ý.
 
 ## Cài đặt và chuẩn bị mô hình
 
@@ -47,9 +63,9 @@ Hai vector được chuẩn hóa, so sánh bằng cosine `c` trong khoảng `[-1
 
 | Thành phần | Điểm tối đa | Cách tính |
 | --- | --- | --- |
-| Kỹ năng khai báo trùng yêu cầu | 35 | Thành phần kỹ năng của quy tắc cũ × 0,7 |
-| Sở thích trùng cụm từ | 14 | Thành phần sở thích của quy tắc cũ × 0,7 |
-| Lịch rảnh bao phủ hoạt động | 21 | Thành phần lịch rảnh của quy tắc cũ × 0,7 |
+| Kỹ năng khai báo trùng yêu cầu | 35 | `50 × số kỹ năng trùng / số kỹ năng yêu cầu × 0,7`; không yêu cầu kỹ năng thì 0 |
+| Sở thích trùng cụm từ | 14 | `20 × 0,7` nếu có ít nhất một cụm sở thích trong tên/mô tả; bỏ khác biệt hoa thường, dấu tiếng Việt và dấu câu |
+| Lịch rảnh bao phủ hoạt động | 21 | `30 × tỷ lệ thời gian được lịch rảnh bao phủ × 0,7`; lịch lặp hằng tuần theo giờ Việt Nam |
 | Tương đồng nội dung bằng AI | 30 | `30 × max(0, (c - 0.35) / (1 - 0.35))` |
 
 Từng thành phần được làm tròn hai chữ số, tổng không vượt 100. Ví dụ cosine `0.675` cộng 15/30 điểm AI. Phần trăm tương đồng hiển thị là `max(0, c) × 100`, không phải xác suất được duyệt hoặc xác suất người dùng đồng ý tham gia. Điểm AI không biến một kỹ năng suy diễn thành kỹ năng người dùng đã khai báo.
@@ -104,9 +120,7 @@ Chạy lại từ thư mục gốc; lệnh chỉ đọc bộ dữ liệu và g�
 
 Báo cáo lưu model revision, checksum bộ dữ liệu, kết quả từng ca và kết quả riêng từng nhóm. `--minimum-accuracy` là tùy chọn kiểm tra ngưỡng tỉ lệ xếp đúng của **điểm kết hợp**, không phải số đo xác suất.
 
-Kiểm thử backend với inference mô phỏng kiểm tra công thức, vector lỗi, dự phòng, hồ sơ rỗng, phân trang và phân quyền. Nhóm 61 kiểm thử backend liên quan đã đạt trên MySQL tạm riêng; đây là kiểm tra tính đúng của mã và nghiệp vụ, tách biệt với chất lượng ngữ nghĩa của mô hình thật. Sáu kiểm thử công cụ đánh giá không dùng database đã đạt. Tích hợp AI không thêm bảng hoặc migration mới.
-
-Hoàn tất kiểm chứng giao diện ngày 09/11/2026: 30 ca liên quan trên desktop/narrow đã đạt qua hai lượt chạy. Bao gồm ghép nối hai chiều bằng model thật với điểm quy tắc bằng 0, bật/thu hồi quyền xuất hiện, gửi và chấp nhận lời mời bằng giao diện, từ chối/thu hồi lời mời, dự phòng toàn danh sách, phân trang và hợp đồng API cũ. Đã xem ảnh giao diện thực tế và kiểm tra không tràn ngang ở 320–1440 px. Lint, build và `pip check` đạt; Vite còn cảnh báo kích thước bundle lớn. Database kiểm thử và tiến trình kiểm thử đã được dọn riêng.
+Kiểm thử nghiệp vụ dùng inference mô phỏng để kiểm tra công thức, vector lỗi, dự phòng, hồ sơ rỗng, phân trang và phân quyền. Luồng model thật kiểm tra điểm AI, bật/thu hồi quyền xuất hiện và gửi/chấp nhận lời mời; đây là kiểm tra tích hợp, tách biệt với chất lượng ngữ nghĩa ở bảng đánh giá trên. Cờ hồ sơ được bổ sung bởi migration `accounts.0006_volunteerprofile_matching_visible`; tích hợp AI không thêm bảng mới.
 
 Chạy kiểm thử trình duyệt với model thật đã chuẩn bị và database kiểm thử riêng theo hướng dẫn runner của dự án:
 

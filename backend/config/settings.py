@@ -4,6 +4,8 @@ from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
+from config.test_database import validate_test_database_name
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
@@ -69,7 +71,7 @@ TEMPLATES = [{
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 DATABASES = {"default": {
-    "ENGINE": "django.db.backends.mysql",
+    "ENGINE": "config.db",
     "NAME": os.environ.get("DB_NAME", "v_connect"),
     "USER": os.environ.get("DB_USER", "v_connect"),
     "PASSWORD": required_env("DB_PASSWORD"),
@@ -87,8 +89,8 @@ DATABASES = {"default": {
         "CHARSET": "utf8mb4", "COLLATION": "utf8mb4_unicode_ci",
     },
 }}
-if DATABASES["default"]["TEST"]["NAME"] == DATABASES["default"]["NAME"]:
-    raise ImproperlyConfigured("DB_TEST_NAME must differ from DB_NAME.")
+validate_test_database_name(DATABASES["default"]["TEST"]["NAME"], DATABASES["default"]["NAME"])
+TEST_RUNNER = 'config.test_runner.SafeDiscoverRunner'
 AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = ["apps.accounts.backends.IdentityBackend"]
 AUTH_PASSWORD_VALIDATORS = [

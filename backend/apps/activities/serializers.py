@@ -24,6 +24,7 @@ class MilestoneSerializer(StrictFieldsMixin, serializers.ModelSerializer):
 class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
     time_checks_disabled = serializers.SerializerMethodField()
     organizer_name = serializers.SerializerMethodField()
+    organizer_active = serializers.BooleanField(source='organizer.is_active', read_only=True)
     capacity = serializers.IntegerField(min_value=1, max_value=100000)
     approved_count = serializers.SerializerMethodField()
     required_skills = serializers.PrimaryKeyRelatedField(queryset=Skill.objects.all(), many=True, required=False)
@@ -34,7 +35,7 @@ class ActivitySerializer(StrictFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = Activity
         fields = ['id', 'title', 'description', 'address', 'starts_at', 'ends_at', 'capacity',
-                  'status', 'organizer_name', 'published_at', 'created_at', 'updated_at', 'approved_count',
+                  'status', 'organizer_name', 'organizer_active', 'published_at', 'created_at', 'updated_at', 'approved_count',
                   'required_skills', 'skill_details', 'cover_url', 'timeline', 'time_checks_disabled']
         read_only_fields = ['id', 'status', 'organizer_name', 'published_at', 'created_at', 'updated_at']
 

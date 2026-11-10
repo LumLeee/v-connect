@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from django.core.cache import cache
 from django.db import IntegrityError, connections, transaction
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, override_settings
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIClient, APITestCase
@@ -76,6 +76,29 @@ class ParticipationTests(APITestCase):
         self.assertEqual(self.post(self.url).status_code, 201)
         self.assertEqual(Participation.objects.count(), 1)
         self.assertEqual(self.client.get('/api/v1/participations/').data['count'], 1)
+
+    def test_inactive_organizer_blocks_new_registration_even_in_demo_time_mode(self):
+        self.owner.is_active = False
+        self.owner.save(update_fields=['is_active'])
+        for time_checks in (True, False):
+            with self.subTest(time_checks=time_checks), override_settings(ACTIVITY_TIME_CHECKS_ENABLED=time_checks):
+                response = self.post(self.url)
+                self.assertEqual(response.status_code, 400)
+                self.assertFalse(Participation.objects.filter(activity=self.activity, volunteer=self.one).exists())
+        self.owner.is_active = True
+        self.owner.save(update_fields=['is_active'])
+        self.assertEqual(self.post(self.url).status_code, 201)
+
+    def test_inactive_organizer_still_allows_cancellation_but_not_reregistration(self):
+        entry = services.register(self.activity.pk, self.one)
+        services.review(self.activity.pk, entry.pk, self.owner, 'approved')
+        self.owner.is_active = False
+        self.owner.save(update_fields=['is_active'])
+        self.assertEqual(self.post(self.url + 'cancel/').status_code, 200)
+        self.assertEqual(self.post(self.url).status_code, 400)
+        entry.refresh_from_db()
+        self.assertEqual(entry.status, 'cancelled')
+        self.assertEqual(entry.cancellation_reason, 'volunteer')
 
     def test_rejection_is_final_and_foreign_ids_not_accepted(self):
         entry = services.register(self.activity.pk, self.one)

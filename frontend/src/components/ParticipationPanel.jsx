@@ -16,10 +16,11 @@ function VolunteerPanel({ activity, refresh }) {
   const [failure, setFailure] = useState('')
   const participation = data?.participation
   const open = activity.status === 'published' && (activity.time_checks_disabled || new Date(activity.starts_at) > new Date())
+  const organizerUnavailable = activity.organizer_active === false
   const registerAllowed = !participation || (participation.status === 'cancelled' && participation.cancellation_reason === 'volunteer')
   const full = activity.approved_count >= activity.capacity
   const checkinOpen = activity.status === 'published' && (activity.time_checks_disabled || (new Date(activity.starts_at) <= new Date() && new Date(activity.ends_at) >= new Date()))
-  const showRegister = open && registerAllowed
+  const showRegister = open && registerAllowed && !organizerUnavailable
   const showCheckin = participation?.status === 'approved' && !participation.attendance && checkinOpen
   const showFeedback = participation?.attendance && activity.status === 'completed'
   const showHistory = participation?.attendance && !showFeedback
@@ -46,6 +47,7 @@ function VolunteerPanel({ activity, refresh }) {
       {participation?.activity_changed && <p className="activity-empty">Thời gian hoặc địa điểm đã thay đổi từ lúc bạn đăng ký. Hãy kiểm tra lịch và địa điểm mới nhất trong thông tin hoạt động.</p>}
       {participation?.cancellation_reason === 'activity_cancelled' && <p>Đơn đăng ký đã bị hủy do hoạt động bị hủy.</p>}
       {!open && !participation?.attendance && <p>Đã đóng đăng ký, hủy đăng ký và xét duyệt.</p>}
+      {organizerUnavailable && <p>Tạm ngừng nhận đăng ký vì tài khoản nhà tổ chức không còn hoạt động.</p>}
       {showRegister && <p>{full ? 'Hoạt động đã đủ số lượng người được duyệt.' : 'Đơn đăng ký sẽ được nhà tổ chức xét duyệt.'}</p>}
       {showRegister && !full && <p className="va-participation-privacy">Khi đăng ký, họ tên, email và số điện thoại của bạn được chia sẻ với nhà tổ chức để liên hệ.</p>}
       {participation?.status === 'rejected' && <p>Đơn đã bị từ chối; bạn không thể đăng ký lại hoạt động này.</p>}
@@ -55,7 +57,7 @@ function VolunteerPanel({ activity, refresh }) {
         {showFeedback && <Link className="button primary" to={`/hoat-dong/${activity.id}/phan-hoi`}>Gửi hoặc xem phản hồi của tôi</Link>}
         {showHistory && <Link className="button primary" to="/tinh-nguyen-vien/lich-su">Xem lịch sử hoạt động</Link>}
         {showRegistrations && <Link className="button primary" to="/tinh-nguyen-vien/dang-ky">Xem các đăng ký của tôi</Link>}
-        {!participation && !open && <Link className="button secondary" to="/hoat-dong">Khám phá hoạt động khác</Link>}
+        {!participation && (!open || organizerUnavailable) && <Link className="button secondary" to="/hoat-dong">Khám phá hoạt động khác</Link>}
       </div>
       {canCancel && <div className="va-participation-cancel"><button className="button secondary" disabled={busy} onClick={() => { setFailure(''); setConfirm(true) }}>Hủy đăng ký</button></div>}
       {activity.time_checks_disabled && <p className="va-participation-policy">Đang thử nghiệm: tạm bỏ giới hạn thời gian đăng ký, hủy và xét duyệt.</p>}

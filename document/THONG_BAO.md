@@ -1,10 +1,8 @@
 # Thông báo trong website, nhắc lịch và email
 
-Ngày cập nhật: 04/10/2026.
-
 ## Phạm vi sử dụng
 
-Người đã đăng nhập mở biểu tượng chuông ở thanh đầu trang hoặc truy cập `/thong-bao`. Chuông hiển thị số chưa đọc, cập nhật khi chuyển trang, quay lại cửa sổ và mỗi phút khi trang đang mở. Trung tâm thông báo có bộ lọc Tất cả/Chưa đọc/Đã đọc, phân trang, đánh dấu từng mục hoặc tất cả đã đọc, và nút xem nội dung liên quan.
+Người đã đăng nhập mở chuông trên thanh đầu trang hoặc `/thong-bao`. Chuông hiển thị số chưa đọc, cập nhật khi chuyển trang, quay lại cửa sổ, có sự kiện thay đổi thông báo và mỗi 15 giây khi trang đang hiển thị. Biểu tượng rung khi nhận được ID thông báo mới. Trung tâm có bộ lọc Tất cả/Chưa đọc/Đã đọc, phân trang và đánh dấu từng mục/tất cả đã đọc. Bố cục theo vai trò xem [Giao diện](GIAO_DIEN.md).
 
 Mỗi tài khoản chỉ đọc và thay đổi thông báo của chính mình. Thông báo được giữ trong lịch sử ngay cả khi hoạt động thay đổi trạng thái; trang chi tiết luôn kiểm tra quyền và thể hiện dữ liệu hiện tại. Chưa có xóa thông báo hay thông báo đẩy của trình duyệt.
 
@@ -14,13 +12,21 @@ Mỗi tài khoản chỉ đọc và thay đổi thông báo của chính mình. 
 | Tình nguyện viên tự hủy đăng ký | Nhà tổ chức sở hữu hoạt động | Danh sách đăng ký |
 | Duyệt hoặc từ chối | Tình nguyện viên gửi đơn | Chi tiết hoạt động |
 | Đổi giờ bắt đầu/kết thúc hoặc địa chỉ | Người đang chờ duyệt và đã được duyệt | Chi tiết hoạt động |
-| Hủy hoạt động | Người đang chờ duyệt và đã được duyệt, trước khi hệ thống hủy đơn | Chi tiết hoạt động |
+| Hủy hoạt động | Người đang chờ duyệt và đã được duyệt, trước khi hệ thống hủy đơn | Danh sách đăng ký đã hủy |
 | Xác nhận có mặt lần đầu | Người được điểm danh | Lịch sử tham gia |
 | Gửi phản hồi | Nhà tổ chức sở hữu hoạt động | Danh sách phản hồi |
 | Admin ẩn phản hồi | Tác giả phản hồi, kèm lý do | Phản hồi của người đó |
+| Xác nhận hoặc điều chỉnh điểm đóng góp | Tình nguyện viên được chấm điểm | Đóng góp của tôi |
+| Gửi hoặc thu hồi lời mời | Tình nguyện viên nhận lời mời | Lời mời của tôi |
+| Chấp nhận hoặc từ chối lời mời | Nhà tổ chức gửi lời mời | Danh sách lời mời của hoạt động |
+| Chấp nhận lời mời và được tự động duyệt | Tình nguyện viên nhận lời mời | Quản lý đăng ký |
 | Trước giờ bắt đầu 1 giờ | Người đã được duyệt trước hoặc đúng mốc nhắc | Chi tiết hoạt động |
 
 Chỉ đổi tiêu đề, kỹ năng, ảnh bìa hoặc gửi lại cùng lịch/địa chỉ không tạo thông báo thay đổi lịch. Thử lại thao tác điểm danh/ẩn phản hồi không sinh thêm thông báo cho cùng quyết định. Không tạo lại thông báo cho nghiệp vụ đã xảy ra trước khi cài chức năng này.
+
+Với thông báo cũ dẫn tới chi tiết hoạt động, API chuyển đích của Volunteer sang danh sách đăng ký cá nhân khi hoạt động không còn Công khai; hoạt động bị hủy dùng bộ lọc Đã hủy. Liên kết không cấp quyền truy cập vượt dữ liệu tham gia của người nhận.
+
+Email dùng liên kết tới trang cá nhân/quản lý theo vai trò ngay từ lúc gửi, để vẫn mở được khi hoạt động đổi trạng thái sau đó. Tình nguyện viên mở danh sách đăng ký, chủ hoạt động mở chi tiết quản lý, Admin mở kết quả hoạt động; các liên kết chức năng riêng vẫn được giữ.
 
 ## Quy tắc nhắc lịch
 
@@ -29,7 +35,7 @@ Chỉ đổi tiêu đề, kỹ năng, ảnh bìa hoặc gửi lại cùng lịch
 - Nếu được duyệt sau mốc một giờ thì bỏ qua mốc đã qua, không gửi bù cho lần duyệt muộn.
 - Tiến trình kiểm tra mỗi phút. Khi tiến trình tạm dừng, lần chạy tiếp theo có thể gửi lời nhắc trễ trong khoảng một giờ trước lúc bắt đầu; sau giờ bắt đầu thì bỏ qua.
 - Hai tiến trình cùng chạy không tạo trùng lời nhắc. Khóa nhận diện gồm đơn đăng ký, lịch bắt đầu và lần xét duyệt. Đổi lịch có thể tạo lời nhắc mới cho lịch mới nếu đủ điều kiện.
-- Email lời nhắc được kiểm tra lại trước khi gửi: đơn còn được duyệt, lịch và lần xét duyệt không đổi, hoạt động còn Công khai và chưa bắt đầu. Email lời nhắc cũ không còn hợp lệ được bỏ qua. Thông báo đã lưu trong website vẫn là lịch sử.
+- Email lời nhắc được kiểm tra lại trước khi gửi: đơn còn được duyệt, lịch và lần xét duyệt không đổi, hoạt động còn Công khai và chưa bắt đầu. Nội dung lấy tiêu đề/địa điểm mới nhất ở mỗi lần gửi hoặc thử lại. Email lời nhắc cũ không còn hợp lệ được bỏ qua. Thông báo đã lưu trong website vẫn là lịch sử.
 
 ## Email và tùy chọn người dùng
 
@@ -99,14 +105,6 @@ Các đường dẫn dưới `/api/v1/notifications/` yêu cầu đăng nhập; 
 
 `Notification` lưu nội dung và trạng thái đọc; `EmailDelivery` là hàng đợi; `NotificationPreference` lưu lựa chọn từng người. `services.py` tạo thông báo, `delivery.py` tạo lời nhắc và gửi thư; management command dùng cho lịch chạy. Không cung cấp API cho khách tự chỉ định người nhận hoặc nội dung thông báo.
 
-Migration `notifications.0001_initial` thêm bảng mới. Trước khi áp dụng trên MySQL80 đã tạo snapshot `tmp/backups/snapshot-20261004-120642`, xác minh checksum và đối chiếu dữ liệu cũ sau migration không thay đổi.
+Migration `notifications.0001_initial` tạo các bảng thông báo. Sao lưu và chạy toàn bộ migration hiện có theo [Vận hành và sao lưu](VAN_HANH_VA_SAO_LUU.md).
 
-## Kiểm chứng
-
-Backend đã qua 142 tests toàn dự án, gồm 19 tests thông báo: quyền sở hữu, CSRF, dữ liệu sai, rollback, các sự kiện nghiệp vụ, gửi lặp, mốc một giờ, duyệt muộn, thay đổi lịch, hủy đơn, email bị tắt, lỗi gửi, thu hồi tác vụ và hai worker đồng thời. Thêm 8 tests bảo vệ runner; lint và build đạt.
-
-Email được kiểm chứng bằng backend email nội bộ và mô phỏng lỗi, không gửi tới người dùng thật. Chưa cấu hình hoặc kiểm chứng SMTP bên ngoài.
-
-Playwright đạt **58/58 ca** trên desktop 1280px và màn hình hẹp 390px. Luồng thông báo kiểm tra hai vai trò, liên kết tới danh sách đăng ký/hoạt động, số chưa đọc, đánh dấu tất cả, bộ lọc, bật/tắt email lưu qua tải lại, Admin không có email, lỗi kết nối và đăng xuất. Kiểm tra không tràn ngang ở 320/390/768/1280px. Đã kiểm tra trực quan ảnh desktop và màn hình hẹp. Máy chủ kiểm thử tăng hàng đợi kết nối để xử lý các yêu cầu tải trang đồng thời; các kiểm tra bảo vệ database vẫn được giữ nguyên.
-
-Minh chứng cục bộ: `tmp/notifications-check.log`, `tmp/notifications-e2e.log`, ảnh trong `tmp/e2e-d6ce82abb8d5/screenshots/`. Dữ liệu kiểm thử nằm trong database MySQL riêng và đã được dọn sau khi chạy.
+Kiểm thử tập trung vào quyền sở hữu, CSRF, rollback, chống gửi trùng, mốc một giờ, duyệt muộn, đổi lịch, hủy đơn, tùy chọn email, lỗi gửi và hai worker đồng thời. Email được kiểm tra bằng backend nội bộ/mô phỏng lỗi; chưa xác minh SMTP bên ngoài. Cách chạy xem [Trạng thái và kiểm thử](TRANG_THAI_VA_KIEM_THU.md).

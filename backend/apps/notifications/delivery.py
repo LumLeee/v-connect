@@ -8,8 +8,14 @@ from django.utils import timezone
 
 from apps.activities.models import Activity
 from apps.participations.models import Participation
+from .links import notification_href
 from .models import EmailDelivery, Notification, NotificationPreference
 from .services import notify
+
+
+def reminder_body(activity):
+    local_start = timezone.localtime(activity.starts_at).strftime('%H:%M ngày %d/%m/%Y')
+    return f'“{activity.title}” bắt đầu lúc {local_start}. Địa điểm: {activity.address}.'
 
 
 def create_reminders(limit=200):
@@ -32,9 +38,8 @@ def create_reminders(limit=200):
                 # Existence check also avoids spending the per-run budget on old reminders.
                 if Notification.objects.filter(dedupe_key=key).exists():
                     continue
-                local_start = timezone.localtime(activity.starts_at).strftime('%H:%M ngày %d/%m/%Y')
                 notify(entry.volunteer, 'reminder', 'Sắp đến giờ tham gia hoạt động',
-                       f'“{activity.title}” bắt đầu lúc {local_start}. Địa điểm: {activity.address}.',
+                       reminder_body(activity),
                        activity, dedupe_key=key, reminder={'reminder_participation': entry,
                            'reminder_starts_at': activity.starts_at, 'reminder_reviewed_at': entry.reviewed_at})
                 created += 1
@@ -73,7 +78,7 @@ def deliver_emails(limit=200):
             job.locked_at = now
             job.save(update_fields=['status', 'attempts', 'locked_at'])
             claim = job.attempts
-        job = EmailDelivery.objects.select_related('notification__recipient').get(pk=job.pk)
+        job = EmailDelivery.objects.select_related('notification__recipient', 'notification__activity').get(pk=job.pk)
         note, recipient = job.notification, job.notification.recipient
         opted_out = NotificationPreference.objects.filter(user=recipient, email_enabled=False).exists()
         outcome, error = 'sent', ''
@@ -81,8 +86,14 @@ def deliver_emails(limit=200):
             outcome = 'skipped'
         else:
             try:
+                # A queued reminder can outlive an address/title edit. Rebuild it
+                # on every attempt; rescheduled/cancelled reminders are skipped above.
+                body = reminder_body(note.activity) if note.kind == 'reminder' else note.body
+                # Email links must also work if the activity becomes private
+                # after delivery, so use the recipient's durable account view.
+                href = notification_href(note, recipient, persistent=True)
                 message = EmailMessage(subject='[V-Connect] ' + note.title,
-                    body=f'{note.body}\n\nXem chi tiết: {settings.FRONTEND_URL}{note.href}\n\n'
+                    body=f'{body}\n\nXem chi tiết: {settings.FRONTEND_URL}{href}\n\n'
                          f'Tùy chọn nhận email: {settings.FRONTEND_URL}/thong-bao',
                     from_email=settings.DEFAULT_FROM_EMAIL, to=[recipient.email],
                     headers={'Message-ID': f'<notification-{note.pk}@v-connect.local>'})

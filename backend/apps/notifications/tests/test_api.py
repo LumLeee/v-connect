@@ -4,6 +4,7 @@ from threading import Barrier
 from unittest.mock import patch
 from io import StringIO
 
+from django.conf import settings
 from django.core import mail
 from django.core.cache import cache
 from django.core.management import call_command
@@ -262,6 +263,39 @@ class NotificationTests(APITestCase):
         self.assertEqual(EmailDelivery.objects.get().status, 'skipped')
         self.assertEqual(len(mail.outbox), 0)
 
+    def test_queued_reminder_uses_location_updated_without_rescheduling(self):
+        self.reminder_entry()
+        Notification.objects.all().delete()
+        self.assertEqual(create_reminders(), 1)
+        old_address = self.activity.address
+        original_start = self.activity.starts_at
+        self.client.force_login(self.owner)
+        response = self.mutation(f'/api/v1/organizer/activities/{self.activity.pk}/',
+                                 {'address': 'Nhà văn hóa Sơn Trà'}, 'patch')
+        self.assertEqual(response.status_code, 200)
+        self.activity.refresh_from_db()
+        self.assertEqual(self.activity.starts_at, original_start)
+
+        deliver_emails()
+        reminder = next(message for message in mail.outbox if 'Sắp đến giờ' in message.subject)
+        self.assertIn('Nhà văn hóa Sơn Trà', reminder.body)
+        self.assertNotIn(f'Địa điểm: {old_address}.', reminder.body)
+        self.assertEqual(EmailDelivery.objects.get(notification__kind='reminder').status, 'sent')
+
+    def test_reminder_retry_refreshes_current_activity_details(self):
+        self.reminder_entry()
+        Notification.objects.all().delete()
+        create_reminders()
+        with patch('apps.notifications.delivery.EmailMessage.send', side_effect=RuntimeError('offline')):
+            self.assertEqual(deliver_emails(), 1)
+        Activity.objects.filter(pk=self.activity.pk).update(title='Tên mới', address='Địa điểm mới')
+        EmailDelivery.objects.update(available_at=timezone.now() - timedelta(seconds=1))
+
+        self.assertEqual(deliver_emails(), 1)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('“Tên mới”', mail.outbox[0].body)
+        self.assertIn('Địa điểm: Địa điểm mới.', mail.outbox[0].body)
+
     def test_expired_reminder_and_locked_user_emails_are_not_sent(self):
         self.reminder_entry()
         Notification.objects.all().delete()
@@ -282,9 +316,59 @@ class NotificationTests(APITestCase):
         self.assertEqual(deliver_emails(), 1)
         self.assertEqual(deliver_emails(), 0)
         self.assertEqual(mail.outbox[0].to, [self.one.email])
-        self.assertIn(f'/hoat-dong/{self.activity.pk}', mail.outbox[0].body)
+        self.assertIn('/tinh-nguyen-vien/dang-ky', mail.outbox[0].body)
         self.assertIn('Nội dung tiếng Việt', mail.outbox[0].body)
         self.assertEqual(EmailDelivery.objects.get().status, 'sent')
+
+    def test_queued_public_email_links_follow_current_activity_visibility(self):
+        for status, href in [('published', f'/hoat-dong/{self.activity.pk}'),
+                             ('completed', '/tinh-nguyen-vien/dang-ky'),
+                             ('cancelled', '/tinh-nguyen-vien/dang-ky?status=cancelled'),
+                             ('draft', '/tinh-nguyen-vien/dang-ky')]:
+            with self.subTest(status=status):
+                Notification.objects.all().delete()
+                Activity.objects.filter(pk=self.activity.pk).update(status='published')
+                note = notify(self.one, 'review_approved', 'Kết quả', 'Nội dung', self.activity)
+                Activity.objects.filter(pk=self.activity.pk).update(status=status)
+                self.assertEqual(deliver_emails(), 1)
+                rows = self.client.get(self.base).data['results']
+                self.assertEqual(next(row for row in rows if row['id'] == str(note.pk))['href'], href)
+                email_href = '/tinh-nguyen-vien/dang-ky'
+                self.assertIn(f'Xem chi tiết: {settings.FRONTEND_URL}{email_href}\n', mail.outbox[-1].body)
+                self.assertNotIn(f'Xem chi tiết: {settings.FRONTEND_URL}/hoat-dong/{self.activity.pk}\n', mail.outbox[-1].body)
+
+    def test_email_sent_while_public_still_leads_to_own_activity_after_completion(self):
+        self.approved()
+        Notification.objects.all().delete()
+        notify(self.one, 'review_approved', 'Kết quả', 'Nội dung', self.activity)
+        self.assertEqual(deliver_emails(), 1)
+        self.assertIn(f'Xem chi tiết: {settings.FRONTEND_URL}/tinh-nguyen-vien/dang-ky\n', mail.outbox[0].body)
+
+        Activity.objects.filter(pk=self.activity.pk).update(status='completed')
+        self.assertEqual(self.client.get(f'/api/v1/activities/{self.activity.pk}/').status_code, 404)
+        registrations = self.client.get('/api/v1/participations/')
+        self.assertEqual(registrations.status_code, 200)
+        self.assertEqual(registrations.data['results'][0]['activity']['id'], str(self.activity.pk))
+
+    def test_unpublished_notice_link_uses_recipient_role_and_keeps_explicit_destination(self):
+        admin = User.objects.create_superuser('notice.link.admin', full_name='Admin', email='notice.admin@example.invalid')
+        recipients = [(self.owner, f'/nha-to-chuc/hoat-dong/{self.activity.pk}'),
+                      (admin, f'/bao-cao/hoat-dong/{self.activity.pk}')]
+        for recipient, href in recipients:
+            with self.subTest(role=recipient.role):
+                Notification.objects.all().delete()
+                notify(recipient, 'test', 'Kết quả', 'Nội dung', self.activity)
+                Activity.objects.filter(pk=self.activity.pk).update(status='completed')
+                self.assertEqual(deliver_emails(), 1)
+                self.assertIn(f'Xem chi tiết: {settings.FRONTEND_URL}{href}\n', mail.outbox[-1].body)
+                self.client.force_login(recipient)
+                self.assertEqual(self.client.get(self.base).data['results'][0]['href'], href)
+
+        Notification.objects.all().delete()
+        href = f'/nha-to-chuc/hoat-dong/{self.activity.pk}/phan-hoi'
+        notify(self.owner, 'feedback_received', 'Phản hồi mới', 'Nội dung', self.activity, href=href)
+        self.assertEqual(deliver_emails(), 1)
+        self.assertIn(f'Xem chi tiết: {settings.FRONTEND_URL}{href}\n', mail.outbox[-1].body)
 
     def test_email_optout_after_queue_and_no_email_admin(self):
         notify(self.one, 'test', 'Tắt sau khi xếp hàng', 'Nội dung')

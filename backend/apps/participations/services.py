@@ -25,6 +25,8 @@ def register(activity_id, volunteer):
     # All mutations lock the activity first, including capacity edits/cancellation.
     activity = get_object_or_404(Activity.objects.select_for_update(), pk=activity_id, published_at__isnull=False)
     require_open(activity)
+    if not activity.organizer.is_active:
+        raise ValidationError('Nhà tổ chức không còn hoạt động; hiện không thể đăng ký tham gia.')
     entry = Participation.objects.filter(activity=activity, volunteer=volunteer).first()
     if entry and not (entry.status == 'cancelled' and entry.cancellation_reason == 'volunteer'):
         raise ValidationError('Bạn đã đăng ký hoặc bị từ chối; không thể gửi thêm đơn cho hoạt động này.')

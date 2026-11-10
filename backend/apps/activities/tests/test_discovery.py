@@ -2,6 +2,8 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from django.core.cache import cache
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 from rest_framework.test import APIClient, APITestCase
 
@@ -61,6 +63,39 @@ class DiscoveryTests(APITestCase):
         self.client.force_login(self.owner)
         with patch('apps.activities.views.timezone.now', return_value=self.open.ends_at):
             self.assertEqual(self.client.get('/api/v1/organizer/activities/').data['count'], 1)
+
+    def test_public_list_queries_do_not_grow_with_the_number_of_activities(self):
+        first = self.activity(title='Query budget activity', capacity=3)
+        self.participation(first)
+        Participation.objects.create(activity=first, volunteer=self.two, status='pending',
+            registered_starts_at=first.starts_at, registered_ends_at=first.ends_at, registered_address=first.address)
+        params = {'search': 'Query budget activity', 'page_size': 20}
+        with CaptureQueriesContext(connection) as one_row:
+            response = self.client.get(self.url, params)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data['results'][0]['approved_count'], 1)
+
+        for _ in range(19):
+            self.activity(title='Query budget activity')
+        with CaptureQueriesContext(connection) as twenty_rows:
+            response = self.client.get(self.url, params)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(len(response.data['results']), 20)
+        self.assertEqual(len(twenty_rows), len(one_row))
+        counts = {item['id']: item['approved_count'] for item in response.data['results']}
+        self.assertEqual(counts.pop(str(first.pk)), 1)
+        self.assertEqual(set(counts.values()), {0})
+        detail = self.client.get(f'{self.url}{first.pk}/')
+        self.assertEqual(detail.status_code, 200, detail.data)
+        self.assertEqual(detail.data['approved_count'], 1)
+
+    def test_activity_payload_includes_organizer_active_state(self):
+        for active in [True, False]:
+            self.owner.is_active = active
+            self.owner.save(update_fields=['is_active'])
+            response = self.client.get(f'{self.url}{self.open.pk}/')
+            self.assertEqual(response.status_code, 200, response.data)
+            self.assertEqual(response.data['organizer_active'], active)
 
     def test_search_results_use_stable_start_time_order_across_pages(self):
         activities = []

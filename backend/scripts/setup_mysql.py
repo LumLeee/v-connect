@@ -11,6 +11,9 @@ from pathlib import Path
 import MySQLdb
 from dotenv import load_dotenv
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from config.test_database import validate_test_database_name
+
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 
@@ -22,7 +25,8 @@ def main():
     for identifier in (database, test_database, username):
         if not re.fullmatch(r"[a-zA-Z][a-zA-Z0-9_]{0,31}", identifier):
             raise ValueError("Use simple alphanumeric names, at most 32 characters.")
-    if database == test_database or username in {"root", "mysql", "admin"}:
+    validate_test_database_name(test_database, database)
+    if username in {"root", "mysql", "admin"}:
         raise ValueError("Use a dedicated application user and separate test database.")
     if len(password) < 16:
         raise ValueError("Set DB_PASSWORD to a random value of at least 16 characters.")

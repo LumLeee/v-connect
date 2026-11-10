@@ -87,17 +87,11 @@ Chạy lại phép đo offline từ thư mục dự án:
 .\.venv\Scripts\python.exe -m unittest discover -s scripts -p test_feedback_ai_evaluation.py -v
 ```
 
-Không ghi đè kết quả v1 để giả làm kết quả thuật toán mới. Công cụ báo lỗi nếu model không active, batch bị cắt hoặc số kết quả không khớp. Bộ kiểm tra công cụ đã đạt 5 ca về tính metric, không loại nhãn Chưa rõ khỏi độ chính xác, nguồn cờ, tương ứng đầu vào và không truyền điểm sao vào model. Kết quả kiểm thử ứng dụng, trình duyệt và build được ghi riêng sau khi hoàn tất đợt tích hợp.
+Không ghi đè kết quả v1 để giả làm kết quả thuật toán mới. Công cụ báo lỗi nếu model không active, batch bị cắt hoặc số kết quả không khớp. Bộ kiểm tra công cụ kiểm tra metric, cách tính cả nhãn Chưa rõ, nguồn cờ, tương ứng đầu vào và việc không truyền điểm sao vào model.
 
 ## Kiểm chứng tích hợp
 
-Hoàn tất ngày 09/11/2026 trên database MySQL tạm riêng, không dùng database ứng dụng đang chạy:
-
-- 91 kiểm thử backend liên quan đạt: phân tích phản hồi, bản nháp, mẫu tổng kết, phản hồi cũ, ghép nối và dịch vụ embedding. Bao phủ phân quyền, CSRF, giới hạn tần suất, vector/đầu vào lỗi, dự phòng, nguồn thay đổi và loại nội dung bị ẩn trước inference.
-- 22 ca trình duyệt liên quan đạt qua các lượt chạy trên desktop/narrow: 12 ca giao diện mới, 2 ca mô hình thật, 8 ca hồi quy phản hồi và mẫu tổng kết. Luồng model thật bắt buộc đúng model/revision và trạng thái active; kiểm tra trích dẫn là đoạn nguyên văn trong phản hồi nguồn, số liệu khớp API gốc, không tự ghi dữ liệu, bản sửa chỉ nằm trên trang và phản hồi vừa bị ẩn không xuất hiện khi phân tích/tạo nháp lại.
-- 11 kiểm thử công cụ đánh giá AI và 9 kiểm thử bảo vệ runner đạt. Lint, build và kiểm tra dependency đạt; Vite còn cảnh báo bundle JavaScript lớn. Đã xem ảnh giao diện thật và kiểm tra không tràn ngang ở 320–1440 px.
-
-Các kiểm thử nghiệp vụ trên chứng minh hoạt động của mã nguồn, không nâng kết quả chất lượng mô hình vượt các giới hạn v2 đã công bố. Công cụ, database và tiến trình kiểm tra tạm được dọn sau khi chạy.
+Kiểm thử backend bao phủ phân quyền, CSRF, giới hạn tần suất, vector/đầu vào lỗi, dự phòng, nguồn thay đổi và loại phản hồi bị ẩn trước inference. Luồng model thật bắt buộc đúng model/revision và trạng thái active; kiểm tra trích dẫn nguyên văn, số liệu khớp API, bản sửa chỉ nằm trên trang và phản hồi vừa bị ẩn không xuất hiện trong nguồn mới. Những kiểm tra này xác nhận hành vi mã nguồn, không nâng kết quả chất lượng mô hình vượt giới hạn v2 đã công bố. Quy trình database riêng xem [Trạng thái và kiểm thử](TRANG_THAI_VA_KIEM_THU.md).
 
 Chạy lại kiểm thử trình duyệt với model đã chuẩn bị và database kiểm thử riêng theo hướng dẫn của dự án:
 
